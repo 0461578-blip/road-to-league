@@ -40,6 +40,32 @@ button{pointer-events:auto;background:#45d9ff;color:#041018;border:0;border-radi
 </style>
 </head>
 <body>
+<canvas id="fallbackGame" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;background:#07110a"></canvas>
+<script>
+(function(){
+ const c=document.getElementById('fallbackGame'),x=c.getContext('2d');
+ let W=0,H=0,px=.18,py=.5,score=0; const k={};
+ function size(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);W=innerWidth;H=innerHeight}
+ addEventListener('resize',size); size();
+ addEventListener('keydown',e=>k[e.key.toLowerCase()]=true); addEventListener('keyup',e=>k[e.key.toLowerCase()]=false);
+ function draw(){
+  const w=innerWidth,h=innerHeight;
+  x.clearRect(0,0,w,h); x.fillStyle='#123d22';x.fillRect(0,0,w,h);
+  x.strokeStyle='#fff';x.lineWidth=2;
+  for(let i=0;i<=20;i++){let xx=i*w/20;x.beginPath();x.moveTo(xx,0);x.lineTo(xx,h);x.stroke()}
+  x.font='900 22px Arial';x.fillStyle='#fff';x.fillText('ROAD TO THE LEAGUE • FALLBACK MODE',20,35);
+  x.font='900 14px Arial';x.fillText('WASD / ARROWS = MOVE   •   E = THROW   •   C = CATCH',20,h-22);
+  let qx=px*w,qy=py*h;
+  x.fillStyle='#28b9ed';x.beginPath();x.arc(qx,qy,22,0,Math.PI*2);x.fill();
+  x.fillStyle='#fff';x.font='bold 12px Arial';x.fillText('YOU',qx-14,qy+4);
+  x.fillStyle='#ef5265';x.beginPath();x.arc(w*.52,h*.43,20,0,Math.PI*2);x.fill();
+  x.fillStyle='#ef5265';x.beginPath();x.arc(w*.68,h*.58,20,0,Math.PI*2);x.fill();
+  x.fillStyle='#7b431f';x.beginPath();x.ellipse(qx+28,qy-8,9,6,0,0,Math.PI*2);x.fill();
+  if(k.w||k.arrowup)py-=.006;if(k.s||k.arrowdown)py+=.006;if(k.a||k.arrowleft)px-=.006;if(k.d||k.arrowright)px+=.006;
+  px=Math.max(.03,Math.min(.97,px));py=Math.max(.08,Math.min(.92,py));requestAnimationFrame(draw);
+ } draw();
+})();
+</script>
 <div id="hardBoot" style="position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#02050a,#071a2a);color:#fff;font-family:Arial,sans-serif;text-align:center;cursor:pointer"><div><div style="font-size:14px;letter-spacing:6px;color:#45d9ff;font-weight:900">ROAD TO THE</div><div style="font-size:clamp(52px,11vw,110px);font-weight:1000;line-height:.85;margin:10px 0">LEAGUE<br><span style="color:#45d9ff">3D</span></div><div style="font-size:18px;letter-spacing:3px;font-weight:900;padding:18px 28px;border:2px solid #45d9ff;border-radius:14px;display:inline-block;animation:bootPulse 1.2s infinite">TAP ANY BUTTON TO CONTINUE</div><div style="margin-top:18px;color:#8ea4b8;font-size:12px">WASD / ARROWS • E THROW • C CATCH</div></div></div><style>@keyframes bootPulse{50%{transform:scale(1.04);box-shadow:0 0 35px #45d9ff55}}</style>
 <script>document.getElementById('hardBoot').addEventListener('click',()=>{document.getElementById('hardBoot').remove()});addEventListener('keydown',()=>{const x=document.getElementById('hardBoot');if(x)x.remove()},{once:false});</script>
 <div id="mainMenu" role="button" tabindex="0" aria-label="Tap any button to continue">
@@ -79,13 +105,13 @@ button{pointer-events:auto;background:#45d9ff;color:#041018;border:0;border-radi
 import * as THREE from 'three';
 
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x0a1118);
+scene.background=null;
 scene.fog=new THREE.Fog(0x0a1118,70,180);
 
 const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,300);
 camera.position.set(0,7,13);
 
-const renderer=new THREE.WebGLRenderer({antialias:true});
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;

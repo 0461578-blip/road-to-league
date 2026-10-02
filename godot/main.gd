@@ -40,6 +40,7 @@ var block_targets: Dictionary = {}
 var route_phase := 0
 var status_label: Label
 var hud_label: Label
+var anim_time := 0.0
 
 func _ready() -> void:
     _build_world()
@@ -54,13 +55,15 @@ func _process(delta: float) -> void:
     _update_routes(delta)
     _update_defense(delta)
     _update_pass(delta)
+    _animate_players(delta)
     _update_camera(delta)
     _update_ui()
 
 func _material(color: Color) -> StandardMaterial3D:
     var m := StandardMaterial3D.new()
     m.albedo_color = color
-    m.roughness = 0.72
+    m.roughness = 0.52
+    m.metallic = 0.04
     return m
 
 func _box(parent: Node3D, size: Vector3, pos: Vector3, color: Color) -> MeshInstance3D:
@@ -121,36 +124,69 @@ func _build_world() -> void:
         _box(self, Vector3(0.16,0.16,8), Vector3(x,8,0), Color("#ffd34d"))
 
     for z in [-31.0, 31.0]:
-        for r in range(7):
-            _box(self, Vector3(122,1.1,3), Vector3(0,1.0+r*1.5,z + (-r*2 if z < 0 else r*2)), Color("#34403a"))
+        for r in range(8):
+            _box(self, Vector3(122,1.0,3), Vector3(0,1.0+r*1.45,z + (-r*1.7 if z < 0 else r*1.7)), Color("#30363d"))
+        _box(self, Vector3(122,0.25,0.25), Vector3(0,12.2,z), Color("#d5d9dc"))
+
+    for x in [-48.0,-24.0,0.0,24.0,48.0]:
+        _cylinder(self, 0.22, 16.0, Vector3(x,8,-30), Color("#4b5259"))
+        _box(self, Vector3(1.2,0.8,0.35), Vector3(x,16,-30), Color("#e9edf0"))
+        _cylinder(self, 0.22, 16.0, Vector3(x,8,30), Color("#4b5259"))
+        _box(self, Vector3(1.2,0.8,0.35), Vector3(x,16,30), Color("#e9edf0"))
 
     camera = Camera3D.new()
     camera.current = true
-    camera.fov = 68
+    camera.fov = 62
     add_child(camera)
 
 func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
+    # Detailed original blocky football avatar.
     var g := Node3D.new()
     add_child(g)
     g.position = position
 
-    _box(g, Vector3(0.9,1.05,0.55), Vector3(0,1.45,0), team)
-    _box(g, Vector3(1.22,0.28,0.72), Vector3(0,1.88,0), team)
-    _box(g, Vector3(0.55,0.62,0.55), Vector3(0,2.28,0), SKIN)
-    _box(g, Vector3(0.66,0.34,0.62), Vector3(0,2.57,0), team)
-    _box(g, Vector3(0.72,0.08,0.08), Vector3(0,2.36,-0.34), WHITE)
+    for side in [-1, 1]:
+        _box(g, Vector3(0.32,0.78,0.36), Vector3(side*0.23,0.55,0), DARK)
+        _box(g, Vector3(0.42,0.18,0.62), Vector3(side*0.23,0.12,-0.10), Color("#090b0d"))
+
+    _box(g, Vector3(0.92,1.02,0.58), Vector3(0,1.48,0), team)
+    _box(g, Vector3(1.18,0.24,0.72), Vector3(0,1.91,0), team)
+    _box(g, Vector3(0.82,0.12,0.62), Vector3(0,1.10,0), DARK)
 
     for side in [-1, 1]:
-        _box(g, Vector3(0.25,0.75,0.28), Vector3(side*0.63,1.45,0), SKIN)
-        _box(g, Vector3(0.30,0.18,0.34), Vector3(side*0.67,1.02,-0.02), WHITE)
-        _box(g, Vector3(0.30,0.82,0.32), Vector3(side*0.23,0.63,0), DARK)
-        _box(g, Vector3(0.34,0.16,0.55), Vector3(side*0.23,0.12,-0.1), DARK)
+        _box(g, Vector3(0.28,0.72,0.30), Vector3(side*0.63,1.47,0), team)
+        _box(g, Vector3(0.24,0.34,0.28), Vector3(side*0.65,1.04,-0.02), SKIN)
+
+    _box(g, Vector3(0.24,0.18,0.24), Vector3(0,2.05,0), SKIN)
+    _box(g, Vector3(0.56,0.62,0.56), Vector3(0,2.34,0), SKIN)
+    _box(g, Vector3(0.68,0.34,0.66), Vector3(0,2.67,0), team)
+    _box(g, Vector3(0.74,0.10,0.70), Vector3(0,2.49,-0.22), DARK)
+    _box(g, Vector3(0.76,0.08,0.12), Vector3(0,2.36,-0.36), WHITE)
+
+    var number := {"QB":"12","WR":"11","WR2":"80","RB":"22","TE":"87","FB":"45","OL":"64","DL":"90","LB":"52","CB":"21","S":"31"}.get(position_name,"0")
+    var number_label := Label3D.new()
+    number_label.text = number
+    number_label.font_size = 42
+    number_label.modulate = WHITE
+    number_label.position = Vector3(0,1.55,-0.305)
+    g.add_child(number_label)
 
     g.set_meta("team", team)
     g.set_meta("position_name", position_name)
     g.set_meta("route_progress", 0.0)
     players.append({"node":g, "team":team, "position":position_name})
     return g
+
+func _animate_players(delta: float) -> void:
+    anim_time += delta
+    if not play_live:
+        return
+    for p in players:
+        var n: Node3D = p.node
+        var phase := float(n.get_instance_id() % 17) * 0.37
+        var bob := sin(anim_time * 10.0 + phase) * 0.035
+        n.position.y = bob
+        n.rotation.y = lerp_angle(n.rotation.y, 0.0, 0.08)
 
 func _build_teams() -> void:
     user_player = _player(BLUE, Vector3(-25,0,0), "QB")
@@ -228,6 +264,11 @@ func _update_user(delta: float) -> void:
 
     if Input.is_action_just_pressed("catch_ball") and role == "WR":
         _attempt_catch()
+
+    for i in range(4):
+        if Input.is_action_just_pressed("play_%d" % (i + 1)):
+            play_index = i
+            play_name = playbook[i]
 
     if Input.is_action_just_pressed("snap_play") and not play_live:
         play_live = true
@@ -310,14 +351,15 @@ func _throw_ball() -> void:
     ball_target = wr_player.position + Vector3(0,1.3,0)
 
 func _update_pass(delta: float) -> void:
-    if not ball_in_air:
-        football.position = user_player.position + Vector3(0,1.5,0)
     for p in players:
         if p.team == BLUE:
             var pos: String = p.position
-            if pos == "RB": p.node.position = Vector3(play_yard_start-2,0,2)
-            elif pos == "TE": p.node.position = Vector3(play_yard_start,0,6)
-            elif pos == "FB": p.node.position = Vector3(play_yard_start-3,0,-3)
+            if pos == "RB":
+                p.node.position = Vector3(play_yard_start-2,0,2)
+            elif pos == "TE":
+                p.node.position = Vector3(play_yard_start,0,6)
+            elif pos == "FB":
+                p.node.position = Vector3(play_yard_start-3,0,-3)
             elif pos == "OL":
                 var idx := players.find(p)
                 p.node.position = Vector3(play_yard_start-2,0,(idx%5-2)*2)
@@ -329,6 +371,9 @@ func _update_pass(delta: float) -> void:
             p.node.position.x = play_yard_start+9
         elif p.position == "S":
             p.node.position.x = play_yard_start+17
+
+    if not ball_in_air:
+        football.position = user_player.position + Vector3(0,1.5,0)
         return
 
     ball_t += delta
@@ -403,4 +448,4 @@ func _update_ui() -> void:
     var mins := int(game_clock)/60
     var secs := int(game_clock)%60
     hud_label.text = "YOU: %s   PLAY: %s   %d & %d   LOS 25\nHOME %d — %d AWAY   %02d:%02d" % [role,play_name,down,distance,home_score,away_score,mins,secs]
-    status_label.text = "WASD MOVE   SHIFT SPRINT   SPACE SNAP   E THROW   C CATCH   Q SWITCH WR   1-4 PLAY CALL   STAMINA %d   |   11v11 ORIGINAL ROBLOX-STYLE" % int(stamina)
+    status_label.text = "WASD MOVE   SHIFT SPRINT   SPACE SNAP   E THROW   C CATCH   Q SWITCH WR   1-4 PLAY CALL   STAMINA %d   |   3D BLOCKY FOOTBALL SIM" % int(stamina)

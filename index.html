@@ -55,7 +55,7 @@ for(const x of [-48,-24,0,24,48]){cyl(.2,15,[x,7.5,-30],mat(0x555b61));cyl(.2,15
 function player(team,num){const g=new THREE.Group();scene.add(g);g.userData={team,num,baseY:0,v: new THREE.Vector3()};const tm=team===blue?blue:red;
 const torso=new THREE.Mesh(new THREE.BoxGeometry(1.05,.9,.65),tm);torso.position.y=1.35;torso.castShadow=true;g.add(torso);
 const pad=new THREE.Mesh(new THREE.BoxGeometry(1.3,.28,.82),mat(team===blue?0x174c9a:0x8d2232));pad.position.y=1.72;pad.castShadow=true;g.add(pad);
-for(const s of [-1,1]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.32,.85,.36),black);leg.position.set(s*.25,.45,0);leg.castShadow=true;g.add(leg);const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.5,6,10),tm);arm.position.set(s*.65,1.25,0);arm.rotation.z=s*.18;g.add(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.14,12,8),skin);hand.position.set(s*.72,.88,0);g.add(hand)}
+for(const s of [-1,1]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.32,.85,.36),black);leg.position.set(s*.25,.45,0);leg.castShadow=true;g.add(leg);const arm=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,.7,12),tm);arm.position.set(s*.65,1.25,0);arm.rotation.z=s*.18;g.add(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.14,12,8),skin);hand.position.set(s*.72,.88,0);g.add(hand)}
 const h=new THREE.Mesh(new THREE.SphereGeometry(.34,16,12),skin);h.position.y=2.25;h.castShadow=true;g.add(h);
 const hel=new THREE.Mesh(new THREE.SphereGeometry(.43,16,12,0,Math.PI*2,0,Math.PI*.62),tm);hel.position.y=2.45;g.add(hel);
 const mask=boxLocal(new THREE.BoxGeometry(.68,.07,.08),black);mask.position.set(0,2.3,-.39);g.add(mask);

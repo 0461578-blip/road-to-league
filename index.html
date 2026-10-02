@@ -26,7 +26,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.m
 const $=id=>document.getElementById(id);
 let scene,camera,renderer,clock,started=false,playLive=false,ball,pass=null,userRole='QB';
 let playName='SLANT',down=1,distance=10,home=0,away=0,gameTime=720,stamina=100;
-let user,wrUser,players=[],routes=[],routeStartX=0,catchScore=0,tackleFlash=0;
+let user,wrUser,wr2User,players=[],routes=[],routeStartX=0,catchScore=0,tackleFlash=0,wrIndex=0,cameraMode=0;
 
 const keys={};
 addEventListener('keydown',e=>{
@@ -34,7 +34,7 @@ addEventListener('keydown',e=>{
  if(!started)start();
  if(e.key==='1')setPlay('SLANT'); if(e.key==='2')setPlay('GO'); if(e.key==='3')setPlay('OUT'); if(e.key==='4')setPlay('CURL');
  if(e.key==='Enter')snap(); if(e.key.toLowerCase()==='e')throwBall(); if(e.key.toLowerCase()==='c')catchBall();
- if(e.key.toLowerCase()==='q')switchWR(); if(e.key===' ')doMove();
+ if(e.key.toLowerCase()==='q')switchWR(); if(e.key.toLowerCase()==='r')nextWR(); if(e.key.toLowerCase()==='v')cameraMode=cameraMode?0:1; if(e.key===' ')doMove();
 });
 addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 $('menu').onclick=start;
@@ -96,7 +96,7 @@ function setupTeams(){
  for(const z of [-6,0,6]){const d=blockyPlayer(red);d.position.set(-17,0,z);d.userData.positionName='LB';addPlayer(d)}
  for(const z of [-9,9]){const d=blockyPlayer(red);d.position.set(-16,0,z);d.userData.positionName='CB';addPlayer(d)}
  for(const z of [-4,4]){const d=blockyPlayer(red);d.position.set(-8,0,z);d.userData.positionName='S';addPlayer(d)}
- user=qb;wrUser=wr1;routeStartX=-25;goalLine();
+ user=qb;wrUser=wr1;wr2User=wr2;routeStartX=-25;goalLine();
 }
 function setPlay(n){if(playLive)return;playName=n;$('play').textContent=n;drawRoutes()}
 function drawRoutes(){
@@ -108,7 +108,8 @@ function drawRoutes(){
  if(playName==='CURL')add([[-25,-9],[-5,-9],[-9,-9]]);
 }
 function snap(){if(playLive)return;playLive=true;routes.forEach(x=>x.visible=false);players.forEach(p=>p.userData.state='run');}
-function switchWR(){if(!playLive||pass)return;userRole='WR';user=wrUser;$('role').textContent='WR'}
+function switchWR(){if(pass)return;if(userRole==='QB'){userRole='WR';wrIndex=0;user=wrUser;$('role').textContent='WR1'}else{userRole='QB';user=players.find(p=>p.userData.positionName==='QB');$('role').textContent='QB'}}
+function nextWR(){if(!playLive||pass||userRole!=='WR')return;wrIndex=wrIndex?0:1;user=wrIndex?wr2User:wrUser;$('role').textContent=wrIndex?'WR2':'WR1'}
 function moveUser(dt){
  const p=user;let dx=0,dz=0;if(keys.w||keys.arrowup)dx++;if(keys.s||keys.arrowdown)dx--;if(keys.a||keys.arrowleft)dz--;if(keys.d||keys.arrowright)dz++;
  const moving=dx||dz;let sprint=keys.shift&&stamina>0;if(sprint)stamina=Math.max(0,stamina-dt*28);else stamina=Math.min(100,stamina+dt*18);
@@ -151,7 +152,7 @@ function catchBall(){
  }
 }
 function finishCatch(){ $('catch').style.display='none';const gain=Math.max(4,Math.round(user.position.x+25));distance=Math.max(0,distance-gain);if(distance<=0){home+=7;down=1;distance=10}else down++;$('down').textContent=down;$('dist').textContent=distance;playLive=true;pass=null;setTimeout(()=>resetPlay(true),500)}
-function resetPlay(success){playLive=false;pass=null;userRole='QB';user=players.find(p=>p.userData.positionName==='QB');wrUser=players.find(p=>p.userData.positionName==='WR');$('role').textContent='QB';players.forEach(p=>{p.userData.route=0;p.userData.state='idle'});wrUser.position.set(-25,0,-9);user.position.set(-25,0,0);drawRoutes();routes.forEach(x=>x.visible=true);if(!success){down++;if(down>4){down=1;distance=10}}$('down').textContent=down;$('dist').textContent=distance}
+function resetPlay(success){playLive=false;pass=null;userRole='QB';wrIndex=0;user=players.find(p=>p.userData.positionName==='QB');wrUser=players.find(p=>p.userData.positionName==='WR');wr2User=players.filter(p=>p.userData.positionName==='WR')[1]||wrUser;$('role').textContent='QB';players.forEach(p=>{p.userData.route=0;p.userData.state='idle'});wrUser.position.set(-25,0,-9);user.position.set(-25,0,0);drawRoutes();routes.forEach(x=>x.visible=true);if(!success){down++;if(down>4){down=1;distance=10}}$('down').textContent=down;$('dist').textContent=distance}
 function doMove(){if(userRole==='WR'&&playLive){user.position.y=.8;setTimeout(()=>user.position.y=0,260)}}
 function updatePass(dt){
  if(!pass)return;pass.t+=dt;const p=Math.min(1,pass.t/pass.d),pos=pass.start.clone().lerp(pass.target,p);pos.y+=Math.sin(Math.PI*p)*5.5;ball.position.copy(pos);
@@ -176,8 +177,8 @@ function loop(){
  if(playLive){moveUser(dt);runRoutes(dt);defend(dt);updatePass(dt);if(!pass&&userRole==='QB'&&keys.e){keys.e=false;throwBall()}}
  else {if(userRole==='QB')moveUser(dt)}
  ball.position.copy(pass?ball.position:user.position).add(new THREE.Vector3(0,1.5,0));
- $('los').textContent=25; $('status').textContent='STAMINA '+Math.round(stamina)+' · Green timing is the catch target.';
- const target=user;camera.position.lerp(new THREE.Vector3(target.position.x-9,6.5,target.position.z+12),.09);camera.lookAt(target.position.x+3,1.3,target.position.z);
+ $('los').textContent=25; $('status').textContent='STAMINA '+Math.round(stamina)+' · Q QB/WR · R NEXT WR · V CAMERA · Green timing is the catch target.';
+ const target=user;const desired=cameraMode?new THREE.Vector3(target.position.x-11,7.5,target.position.z+15):new THREE.Vector3(target.position.x-6.5,3.8,target.position.z+8);camera.position.lerp(desired,Math.min(1,dt*8));camera.lookAt(target.position.x+2.5,1.4,target.position.z);camera.fov=cameraMode?60:70;camera.updateProjectionMatrix();
  renderer.render(scene,camera);requestAnimationFrame(loop);
 }
 </script></body></html>

@@ -31,6 +31,13 @@ var home_score := 0
 var away_score := 0
 var game_clock := 720.0
 var catch_window := 0.0
+var playbook := ["SLANT","GO","OUT","CURL"]
+var play_index := 0
+var play_yard_start := -25.0
+var first_down_x := -15.0
+var tackle_cooldown := 0.0
+var block_targets: Dictionary = {}
+var route_phase := 0
 var status_label: Label
 var hud_label: Label
 
@@ -42,6 +49,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
     game_clock = maxf(0.0, game_clock - delta)
+    tackle_cooldown = maxf(0.0, tackle_cooldown - delta)
     _update_user(delta)
     _update_routes(delta)
     _update_defense(delta)
@@ -223,23 +231,46 @@ func _update_user(delta: float) -> void:
 
     if Input.is_action_just_pressed("snap_play") and not play_live:
         play_live = true
+        route_phase = 0
+        _assign_blocks()
 
 func _update_routes(delta: float) -> void:
     if not play_live or role == "WR":
         return
 
-    var target := Vector3(-10,0,-2)
+    var target := Vector3(-17,0,-9)
+    if route_phase == 0 and wr_player.position.distance_to(target) < 0.8:
+        route_phase = 1
+    if route_phase == 1:
+        target = Vector3(-10,0,-2)
     if play_name == "GO":
         target = Vector3(12,0,-9)
     elif play_name == "OUT":
-        target = Vector3(-10,0,-17)
+        target = Vector3(-10,0,-9) if route_phase == 0 else Vector3(-10,0,-17)
     elif play_name == "CURL":
-        target = Vector3(-9,0,-9)
+        target = Vector3(-5,0,-9) if route_phase == 0 else Vector3(-9,0,-9)
 
     var v := target - wr_player.position
     v.y = 0
     if v.length() > 0.5:
         wr_player.position += v.normalized() * 5.4 * delta
+
+func _assign_blocks() -> void:
+    block_targets.clear()
+    for p in players:
+        if p.team != BLUE or p.position != "OL":
+            continue
+        var best: Dictionary = {}
+        var best_dist := 999.0
+        for d in players:
+            if d.team != RED or (d.position != "DL" and d.position != "LB"):
+                continue
+            var dist := p.node.position.distance_to(d.node.position)
+            if dist < best_dist:
+                best_dist = dist
+                best = d
+        if not best.is_empty():
+            block_targets[p.node.get_instance_id()] = best.node
 
 func _update_defense(delta: float) -> void:
     if not play_live:
@@ -250,13 +281,24 @@ func _update_defense(delta: float) -> void:
             continue
         var node: Node3D = p.node
         var target := wr_player if p.position == "CB" or p.position == "S" else user_player
+        var blocked := false
+        for blocker in players:
+            if blocker.team == BLUE and blocker.position == "OL" and block_targets.get(blocker.node.get_instance_id(), null) == node:
+                var bv: Vector3 = node.position - blocker.node.position
+                bv.y = 0
+                if bv.length() < 2.0:
+                    blocked = true
+                    node.position += bv.normalized() * delta * 1.6 if bv.length() > 0.1 else Vector3.ZERO
+                    break
+        if blocked:
+            continue
         var v := target.position - node.position
         v.y = 0
-        var speed := 4.2 if p.position == "DL" else 4.8
+        var speed := 4.0 if p.position == "DL" else 4.8
         if v.length() > 1.2:
             node.position += v.normalized() * speed * delta
 
-        if role == "WR" and node.position.distance_to(user_player.position) < 1.1 and not ball_in_air:
+        if role == "WR" and node.position.distance_to(user_player.position) < 1.25 and not ball_in_air and tackle_cooldown <= 0.0:
             _tackle()
 
 func _throw_ball() -> void:
@@ -270,6 +312,23 @@ func _throw_ball() -> void:
 func _update_pass(delta: float) -> void:
     if not ball_in_air:
         football.position = user_player.position + Vector3(0,1.5,0)
+    for p in players:
+        if p.team == BLUE:
+            var pos: String = p.position
+            if pos == "RB": p.node.position = Vector3(play_yard_start-2,0,2)
+            elif pos == "TE": p.node.position = Vector3(play_yard_start,0,6)
+            elif pos == "FB": p.node.position = Vector3(play_yard_start-3,0,-3)
+            elif pos == "OL":
+                var idx := players.find(p)
+                p.node.position = Vector3(play_yard_start-2,0,(idx%5-2)*2)
+        elif p.position == "DL":
+            p.node.position.x = play_yard_start+3
+        elif p.position == "LB":
+            p.node.position.x = play_yard_start+8
+        elif p.position == "CB":
+            p.node.position.x = play_yard_start+9
+        elif p.position == "S":
+            p.node.position.x = play_yard_start+17
         return
 
     ball_t += delta
@@ -290,20 +349,41 @@ func _attempt_catch() -> void:
         catch_window = timing
         if timing >= 0.82:
             ball_in_air = false
-            home_score += 7 if user_player.position.x >= 54 else 0
+            var gained := int(round(user_player.position.x - play_yard_start))
+            if user_player.position.x >= first_down_x:
+                distance = 10
+                down = 1
+            else:
+                distance = max(1, distance - max(1, gained))
+                down += 1
+                if down > 4:
+                    down = 1
+                    distance = 10
+            if user_player.position.x >= 54:
+                home_score += 7
             _reset_play()
 
 func _tackle() -> void:
+    if tackle_cooldown > 0.0:
+        return
+    tackle_cooldown = 0.6
     ball_in_air = false
+    down += 1
+    if down > 4:
+        down = 1
+        distance = 10
     _reset_play()
 
 func _reset_play() -> void:
     play_live = false
+    route_phase = 0
     role = "QB"
     user_player = _find_position("QB")
     wr_player = _find_position("WR")
-    user_player.position = Vector3(-25,0,0)
-    wr_player.position = Vector3(-25,0,-9)
+    play_yard_start = -25.0
+    first_down_x = play_yard_start + float(distance)
+    user_player.position = Vector3(play_yard_start,0,0)
+    wr_player.position = Vector3(play_yard_start,0,-9)
     football.position = user_player.position + Vector3(0,1.5,0)
 
 func _find_position(name: String) -> Node3D:
@@ -323,4 +403,4 @@ func _update_ui() -> void:
     var mins := int(game_clock)/60
     var secs := int(game_clock)%60
     hud_label.text = "YOU: %s   PLAY: %s   %d & %d   LOS 25\nHOME %d — %d AWAY   %02d:%02d" % [role,play_name,down,distance,home_score,away_score,mins,secs]
-    status_label.text = "WASD MOVE   SHIFT SPRINT   SPACE SNAP   E THROW   C CATCH   Q SWITCH WR   STAMINA %d   |   11v11 ORIGINAL ROBLOX-STYLE" % int(stamina)
+    status_label.text = "WASD MOVE   SHIFT SPRINT   SPACE SNAP   E THROW   C CATCH   Q SWITCH WR   1-4 PLAY CALL   STAMINA %d   |   11v11 ORIGINAL ROBLOX-STYLE" % int(stamina)

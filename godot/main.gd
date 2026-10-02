@@ -136,7 +136,9 @@ func _build_world() -> void:
 
     camera = Camera3D.new()
     camera.current = true
-    camera.fov = 62
+    camera.fov = 68
+    camera.near = 0.05
+    camera.far = 500.0
     add_child(camera)
 
 func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
@@ -429,6 +431,8 @@ func _reset_play() -> void:
     first_down_x = play_yard_start + float(distance)
     user_player.position = Vector3(play_yard_start,0,0)
     wr_player.position = Vector3(play_yard_start,0,-9)
+    if camera != null:
+        camera.global_position = user_player.global_position + Vector3(-8.5,4.8,10.5)
     football.position = user_player.position + Vector3(0,1.5,0)
 
 func _find_position(name: String) -> Node3D:
@@ -440,9 +444,10 @@ func _find_position(name: String) -> Node3D:
 func _update_camera(delta: float) -> void:
     if camera == null or user_player == null:
         return
-    var desired := user_player.position + Vector3(-9,6.5,12)
-    camera.position = camera.position.lerp(desired,0.10)
-    camera.look_at(user_player.position + Vector3(3,1.3,0))
+    var desired := user_player.global_position + Vector3(-8.5,4.8,10.5)
+    desired.y = maxf(desired.y, 3.0)
+    camera.global_position = camera.global_position.lerp(desired, minf(1.0, delta * 6.0))
+    camera.look_at(user_player.global_position + Vector3(2.5,1.4,0), Vector3.UP)
 
 func _update_ui() -> void:
     var mins := int(game_clock)/60

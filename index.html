@@ -49,7 +49,8 @@ for(let x=-60;x<=60;x+=5)box([.06,.035,52],[x,.04,0],white);
 for(let x=-60;x<=60;x+=10)box([.13,.04,52],[x,.06,0],white);
 for(let x=-55;x<=55;x+=5)for(const z of [-3.2,3.2])box([.06,.04,.7],[x,.07,z],white);
 box([10,.04,52],[-55,.07,0],mat(0x234f9b));box([10,.04,52],[55,.07,0],mat(0x7b2940));const lineOfScrimmage=box([.18,.035,52],[-25,.09,0],mat(0x1e90ff));
-let firstDownX=-15;const firstDownMarker=box([.22,.06,52],[firstDownX,.13,0],mat(0xffff00));\nfor(let x=-50;x<=50;x+=10){for(const z of [-7,7]){const t=document.createElement('canvas');t.width=128;t.height=64;const q=t.getContext('2d');q.fillStyle='white';q.font='bold 48px Arial';q.textAlign='center';q.fillText(String(Math.abs(x)||50),64,48);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(t),transparent:true,opacity:.8}));sp.position.set(x,.08,z);sp.scale.set(4,2,1);scene.add(sp)}} 
+let firstDownX=-15;const firstDownMarker=box([.22,.06,52],[firstDownX,.13,0],mat(0xffff00));
+for(let x=-50;x<=50;x+=10){for(const z of [-7,7]){const t=document.createElement('canvas');t.width=128;t.height=64;const q=t.getContext('2d');q.fillStyle='white';q.font='bold 48px Arial';q.textAlign='center';q.fillText(String(Math.abs(x)||50),64,48);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(t),transparent:true,opacity:.8}));sp.position.set(x,.08,z);sp.scale.set(4,2,1);scene.add(sp)}} 
 for(const z of [-31,31])for(let r=0;r<7;r++)box([122,1.2,2.2],[0,1.2+r*1.3,z+(z>0?r*1.5:-r*1.5)],mat(0x262d31));
 for(const x of [-48,-24,0,24,48]){cyl(.2,15,[x,7.5,-30],mat(0x555b61));cyl(.2,15,[x,7.5,30],mat(0x555b61));box([1.5,.8,.4],[x,15.5,-30],white);box([1.5,.8,.4],[x,15.5,30],white)}
 function player(team,num){const g=new THREE.Group();scene.add(g);g.userData={team,num,baseY:0,v:new THREE.Vector3()};const tm=team===blue?blue:red;
@@ -74,7 +75,8 @@ const nose=new THREE.Mesh(new THREE.ConeGeometry(.055,.12,8),skin2);nose.rotatio
 const eyeMat=mat(0x151515);for(const s of[-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.035,10,8),eyeMat);eye.position.set(s*.12,2.36,-.33);g.add(eye)}
 const hel=new THREE.Mesh(new THREE.SphereGeometry(.43,24,16,0,Math.PI*2,0,Math.PI*.62),tm);hel.position.y=2.45;g.add(hel);
 const mask=boxLocal(new THREE.BoxGeometry(.7,.07,.1),black);mask.position.set(0,2.30,-.40);g.add(mask);
-const n=new THREE.Sprite(new THREE.SpriteMaterial({map:numberTexture(num),transparent:true}));n.position.set(0,1.35,-.36);n.scale.set(.6,.6,1);g.add(n);return g}\nfunction boxLocal(geo,m){const o=new THREE.Mesh(geo,m);o.castShadow=true;return o}
+const n=new THREE.Sprite(new THREE.SpriteMaterial({map:numberTexture(num),transparent:true}));n.position.set(0,1.35,-.36);n.scale.set(.6,.6,1);g.add(n);return g}
+function boxLocal(geo,m){const o=new THREE.Mesh(geo,m);o.castShadow=true;return o}
 function numberTexture(n){const c=document.createElement('canvas');c.width=128;c.height=128;const x=c.getContext('2d');x.fillStyle='white';x.font='bold 88px Arial';x.textAlign='center';x.fillText(n,64,92);return new THREE.CanvasTexture(c)}
 const qb=player(blue,'12'),wr=player(blue,'11');qb.position.set(-25,0,0);qb.rotation.y=Math.PI;wr.position.set(-25,0,-9);wr.rotation.y=Math.PI;
 const teammates=[];for(let i=-2;i<=2;i++){const p=player(blue,'6'+(i+2));p.position.set(-27,0,i*2);teammates.push(p)}

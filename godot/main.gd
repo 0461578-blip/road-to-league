@@ -1,7 +1,7 @@
 extends Node3D
 
-# Road to the League — original Roblox-inspired 3D football foundation.
-# Built as an original implementation; no proprietary game assets are copied.
+# Road to the League — original Roblox-inspired 3D football game.
+# The menu/camera are original implementations inspired by common football-game UI patterns.
 
 const FIELD_X := 120.0
 const FIELD_Z := 52.0
@@ -18,6 +18,7 @@ var wr_player: Node3D
 var football: MeshInstance3D
 var camera: Camera3D
 var play_live := false
+var game_started := false
 var role := "QB"
 var play_name := "SLANT"
 var ball_in_air := false
@@ -41,14 +42,20 @@ var route_phase := 0
 var status_label: Label
 var hud_label: Label
 var anim_time := 0.0
+var menu_layer: CanvasLayer
+var menu_panel: PanelContainer
 
 func _ready() -> void:
     _build_world()
     _build_teams()
     _build_ui()
     _reset_play()
+    _show_main_menu()
 
 func _process(delta: float) -> void:
+    if not game_started:
+        _update_menu_camera(delta)
+        return
     game_clock = maxf(0.0, game_clock - delta)
     tackle_cooldown = maxf(0.0, tackle_cooldown - delta)
     _update_user(delta)
@@ -136,14 +143,14 @@ func _build_world() -> void:
 
     camera = Camera3D.new()
     camera.current = true
-    camera.fov = 72
-    camera.near = 0.05
+    camera.fov = 70.0
+    camera.near = 0.1
     camera.far = 500.0
     add_child(camera)
+    camera.global_position = Vector3(-34, 16, 26)
+    camera.look_at(Vector3(-8, 0.5, 0), Vector3.UP)
 
 func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
-    # High-detail original football avatar: blocky proportions with rounded 3D parts,
-    # helmet shell, facemask, shoulder pads, jersey, pants, socks and cleats.
     var g := Node3D.new()
     add_child(g)
     g.position = position
@@ -152,29 +159,23 @@ func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
     var dark_mat := _material(Color("#101317"))
     var white_mat := _material(WHITE)
 
-    # Legs / socks / cleats
     for side in [-1, 1]:
         _box(g, Vector3(0.30,0.72,0.34), Vector3(side*0.22,0.52,0), Color("#17202a"))
         _box(g, Vector3(0.34,0.30,0.36), Vector3(side*0.22,0.19,-0.01), WHITE)
         _box(g, Vector3(0.44,0.16,0.68), Vector3(side*0.22,0.06,-0.10), Color("#090b0d"))
 
-    # Padded pants / waist
     _box(g, Vector3(0.88,0.48,0.58), Vector3(0,0.96,0), Color("#202833"))
     _box(g, Vector3(0.96,0.90,0.62), Vector3(0,1.48,0), team)
-
-    # Shoulder pads + jersey chest
     _box(g, Vector3(1.30,0.28,0.78), Vector3(0,1.82,0), team)
     _box(g, Vector3(0.78,0.46,0.64), Vector3(0,1.78,-0.02), team)
     _box(g, Vector3(0.80,0.10,0.66), Vector3(0,1.24,-0.01), dark_mat)
 
-    # Arms, gloves
     for side in [-1, 1]:
         var arm := _cylinder(g,0.16,0.68,Vector3(side*0.67,1.47,0),team)
         arm.rotation_degrees = Vector3(0,0,side*8)
         var glove := _cylinder(g,0.13,0.28,Vector3(side*0.69,1.03,-0.04),Color("#111820"))
         glove.rotation_degrees = Vector3(0,0,side*8)
 
-    # Neck + head
     _cylinder(g,0.14,0.22,Vector3(0,2.03,0),skin_mat.albedo_color)
     var head_mesh := SphereMesh.new()
     head_mesh.radius = 0.36
@@ -183,10 +184,8 @@ func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
     head.mesh = head_mesh
     head.material_override = skin_mat
     head.position = Vector3(0,2.35,0)
-    head.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
     g.add_child(head)
 
-    # Helmet shell
     var helmet_mesh := SphereMesh.new()
     helmet_mesh.radius = 0.44
     helmet_mesh.height = 0.58
@@ -195,16 +194,13 @@ func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
     helmet.material_override = _material(team.darkened(0.12))
     helmet.scale = Vector3(1.08,0.72,1.08)
     helmet.position = Vector3(0,2.56,0)
-    helmet.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
     g.add_child(helmet)
 
-    # Helmet front / facemask
     _box(g,Vector3(0.70,0.10,0.10),Vector3(0,2.48,-0.37),Color("#0b0d10"))
     for side in [-1,1]:
         var bar := _cylinder(g,0.035,0.38,Vector3(side*0.25,2.40,-0.40),Color("#0b0d10"))
         bar.rotation_degrees = Vector3(90,0,0)
 
-    # Jersey number
     var number := {"QB":"12","WR":"11","WR2":"80","RB":"22","TE":"87","FB":"45","OL":"64","DL":"90","LB":"52","CB":"21","S":"31"}.get(position_name,"0")
     var number_label := Label3D.new()
     number_label.text = number
@@ -215,7 +211,6 @@ func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
     number_label.position = Vector3(0,1.55,-0.34)
     g.add_child(number_label)
 
-    # Small team stripe
     _box(g,Vector3(0.86,0.08,0.64),Vector3(0,1.30,-0.02),WHITE)
 
     g.set_meta("team", team)
@@ -283,6 +278,80 @@ func _build_ui() -> void:
     title.add_theme_font_size_override("font_size", 24)
     layer.add_child(title)
 
+func _show_main_menu() -> void:
+    menu_layer = CanvasLayer.new()
+    menu_layer.layer = 20
+    add_child(menu_layer)
+
+    var dim := ColorRect.new()
+    dim.color = Color(0.015,0.02,0.03,0.72)
+    dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    menu_layer.add_child(dim)
+
+    menu_panel = PanelContainer.new()
+    menu_panel.position = Vector2(72,110)
+    menu_panel.size = Vector2(470,500)
+    menu_layer.add_child(menu_panel)
+
+    var box := VBoxContainer.new()
+    box.add_theme_constant_override("separation", 18)
+    menu_panel.add_child(box)
+
+    var title := Label.new()
+    title.text = "ROAD TO\nTHE LEAGUE"
+    title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    title.add_theme_font_size_override("font_size", 46)
+    box.add_child(title)
+
+    var subtitle := Label.new()
+    subtitle.text = "BUILD YOUR CAREER • EARN YOUR SPOT • MAKE THE LEAGUE"
+    subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    subtitle.add_theme_font_size_override("font_size", 15)
+    box.add_child(subtitle)
+
+    var start := Button.new()
+    start.text = "PLAY GAME"
+    start.custom_minimum_size = Vector2(0,68)
+    start.add_theme_font_size_override("font_size", 25)
+    start.pressed.connect(_start_game)
+    box.add_child(start)
+
+    var career := Button.new()
+    career.text = "ROAD TO GLORY"
+    career.custom_minimum_size = Vector2(0,54)
+    career.add_theme_font_size_override("font_size", 19)
+    career.pressed.connect(_start_game)
+    box.add_child(career)
+
+    var controls := Label.new()
+    controls.text = "WASD  MOVE    SHIFT  SPRINT\nSPACE  SNAP    E  THROW    C  CATCH\nQ  SWITCH TO WR    1–4  PLAY CALL"
+    controls.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    controls.add_theme_font_size_override("font_size", 15)
+    box.add_child(controls)
+
+func _start_game() -> void:
+    game_started = true
+    if menu_layer:
+        menu_layer.queue_free()
+        menu_layer = null
+    _reset_play()
+    _snap_camera_to_player()
+
+func _update_menu_camera(delta: float) -> void:
+    if camera == null:
+        return
+    var t := Time.get_ticks_msec() / 1000.0
+    var center := Vector3(-18,1.5,0)
+    var desired := center + Vector3(-25.0 + sin(t*0.18)*3.0, 11.0 + sin(t*0.35)*1.0, 28.0)
+    camera.global_position = camera.global_position.lerp(desired, minf(1.0,delta*2.5))
+    camera.look_at(center,Vector3.UP)
+
+func _snap_camera_to_player() -> void:
+    if camera == null or user_player == null:
+        return
+    camera.global_position = user_player.global_position + Vector3(-10.0,8.0,15.0)
+    camera.look_at(user_player.global_position + Vector3(5.0,1.0,0),Vector3.UP)
+
 func _update_user(delta: float) -> void:
     if not play_live:
         return
@@ -305,6 +374,7 @@ func _update_user(delta: float) -> void:
     if Input.is_action_just_pressed("switch_wr") and not ball_in_air:
         role = "WR"
         user_player = wr_player
+        _snap_camera_to_player()
 
     if Input.is_action_just_pressed("throw_ball") and role == "QB":
         _throw_ball()
@@ -325,7 +395,6 @@ func _update_user(delta: float) -> void:
 func _update_routes(delta: float) -> void:
     if not play_live or role == "WR":
         return
-
     var target := Vector3(-17,0,-9)
     if route_phase == 0 and wr_player.position.distance_to(target) < 0.8:
         route_phase = 1
@@ -337,7 +406,6 @@ func _update_routes(delta: float) -> void:
         target = Vector3(-10,0,-9) if route_phase == 0 else Vector3(-10,0,-17)
     elif play_name == "CURL":
         target = Vector3(-5,0,-9) if route_phase == 0 else Vector3(-9,0,-9)
-
     var v := target - wr_player.position
     v.y = 0
     if v.length() > 0.5:
@@ -363,7 +431,6 @@ func _assign_blocks() -> void:
 func _update_defense(delta: float) -> void:
     if not play_live:
         return
-
     for p in players:
         if p.team != RED:
             continue
@@ -385,7 +452,6 @@ func _update_defense(delta: float) -> void:
         var speed := 4.0 if p.position == "DL" else 4.8
         if v.length() > 1.2:
             node.position += v.normalized() * speed * delta
-
         if role == "WR" and node.position.distance_to(user_player.position) < 1.25 and not ball_in_air and tackle_cooldown <= 0.0:
             _tackle()
 
@@ -476,8 +542,7 @@ func _reset_play() -> void:
     first_down_x = play_yard_start + float(distance)
     user_player.position = Vector3(play_yard_start,0,0)
     wr_player.position = Vector3(play_yard_start,0,-9)
-    if camera != null:
-        camera.global_position = user_player.global_position + Vector3(-8.5,4.8,10.5)
+    _snap_camera_to_player()
     football.position = user_player.position + Vector3(0,1.5,0)
 
 func _find_position(name: String) -> Node3D:
@@ -489,15 +554,15 @@ func _find_position(name: String) -> Node3D:
 func _update_camera(delta: float) -> void:
     if camera == null or user_player == null:
         return
-    var desired := user_player.global_position + Vector3(-8.5,4.8,10.5)
-    desired.y = maxf(desired.y, 3.0)
-    camera.global_position = camera.global_position.lerp(desired, minf(1.0, delta * 8.0))
-    camera.look_at(user_player.global_position + Vector3(2.5,1.4,0), Vector3.UP)
-    if camera.global_position.y < 2.5:
-        camera.global_position.y = 2.5
+    var desired := user_player.global_position + Vector3(-10.0,8.0,15.0)
+    desired.y = maxf(desired.y, 4.5)
+    camera.global_position = camera.global_position.lerp(desired, minf(1.0, delta * 7.0))
+    camera.look_at(user_player.global_position + Vector3(5.0,1.0,0), Vector3.UP)
+    if camera.global_position.y < 4.0:
+        camera.global_position.y = 4.0
 
 func _update_ui() -> void:
     var mins := int(game_clock)/60
     var secs := int(game_clock)%60
     hud_label.text = "YOU: %s   PLAY: %s   %d & %d   LOS 25\nHOME %d — %d AWAY   %02d:%02d" % [role,play_name,down,distance,home_score,away_score,mins,secs]
-    status_label.text = "WASD MOVE   SHIFT SPRINT   SPACE SNAP   E THROW   C CATCH   Q SWITCH WR   1-4 PLAY CALL   STAMINA %d   |   3D BLOCKY FOOTBALL SIM" % int(stamina)
+    status_label.text = "WASD MOVE   SHIFT SPRINT   SPACE SNAP   E THROW   C CATCH   Q SWITCH WR   1-4 PLAY CALL   STAMINA %d   |   3D FOOTBALL" % int(stamina)

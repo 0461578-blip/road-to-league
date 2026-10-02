@@ -70,6 +70,8 @@ for(const s of[-1,1]){
  for(let f=0;f<4;f++){const finger=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.07,8),skin2);finger.position.set(s*(.84+f*.025),.72,-.09+f*.045);g.add(finger)}
 }
 const h=new THREE.Mesh(new THREE.SphereGeometry(.34,24,18),skin);h.position.y=2.27;h.castShadow=true;g.add(h);
+const neckGuard=new THREE.Mesh(new THREE.BoxGeometry(1.18,.18,.72),mat(team===blue?0x103c7d:0x731b28));neckGuard.position.y=1.94;neckGuard.castShadow=true;g.add(neckGuard);
+const jerseyNum=new THREE.Sprite(new THREE.SpriteMaterial({map:numberTexture(num),transparent:true}));jerseyNum.position.set(0,1.43,-.39);jerseyNum.scale.set(.48,.48,1);g.add(jerseyNum);
 const earL=new THREE.Mesh(new THREE.SphereGeometry(.065,12,8),skin);earL.position.set(-.34,2.27,0);g.add(earL);const earR=earL.clone();earR.position.x=.34;g.add(earR);
 const nose=new THREE.Mesh(new THREE.ConeGeometry(.055,.12,8),skin2);nose.rotation.x=Math.PI/2;nose.position.set(0,2.29,-.35);g.add(nose);
 const eyeMat=mat(0x151515);for(const s of[-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.035,10,8),eyeMat);eye.position.set(s*.12,2.36,-.33);g.add(eye)}
@@ -82,12 +84,12 @@ const qb=player(blue,'12'),wr=player(blue,'11');qb.position.set(-25,0,0);qb.rota
 const teammates=[];for(let i=-2;i<=2;i++){const p=player(blue,'6'+(i+2));p.position.set(-27,0,i*2);teammates.push(p)}
 const rb=player(blue,'22');rb.position.set(-30,0,5);rb.rotation.y=Math.PI;
 // Offensive line stance: five linemen in a real pre-snap 3-point stance.
-const line=[-4,-2,0,2,4];for(const z of line){const p=player(blue,'70');p.position.set(-24,0,z);p.rotation.z=.06;p.children.forEach(o=>{if(o.position.y<2)o.rotation.x=-.16});teammates.push(p)}
+const line=[-4,-2,0,2,4];for(const z of line){const p=player(blue,'70');p.position.set(-24,0,z);p.rotation.z=.06;p.userData.stance='3POINT';p.children.forEach(o=>{if(o.position.y<2.05){o.rotation.x=-.22;} if(o.position.y>2.05){o.rotation.x=.12;}});teammates.push(p)}
 // Receivers split wide, RB behind QB, everyone set before the snap.
 wr.position.set(-25,0,-9);wr.rotation.y=Math.PI;rb.position.set(-30,0,5);rb.rotation.y=Math.PI;
-for(const z of [-6,-2,2,6]){const p=player(red,'90');p.position.set(-22,0,z);p.rotation.z=-.08;p.children.forEach(o=>{if(o.position.y<2)o.rotation.x=-.12});teammates.push(p)}
-for(const z of [-8,0,8]){const p=player(red,'52');p.position.set(-17,0,z);teammates.push(p)}
-for(const z of [-10,10]){const p=player(red,'21');p.position.set(-16,0,z);teammates.push(p)}
+for(const z of [-6,-2,2,6]){const p=player(red,'90');p.position.set(-22,0,z);p.rotation.z=-.08;p.userData.stance='DEFENSIVE';p.children.forEach(o=>{if(o.position.y<2.05)o.rotation.x=-.14;});teammates.push(p)}
+for(const z of [-8,0,8]){const p=player(red,'52');p.position.set(-17,0,z);p.userData.stance='DEFENSIVE';p.children.forEach(o=>{if(o.position.y<2.05)o.rotation.x=-.14;});teammates.push(p)}
+for(const z of [-10,10]){const p=player(red,'21');p.position.set(-16,0,z);p.userData.stance='DEFENSIVE';p.children.forEach(o=>{if(o.position.y<2.05)o.rotation.x=-.1;});teammates.push(p)}
 const ball=new THREE.Mesh(new THREE.SphereGeometry(.2,16,10),mat(0x6d391a));ball.scale.z=1.7;scene.add(ball);
 let user=qb,role='QB',live=false,ballAir=false,ballT=0,ballStart=new THREE.Vector3(),ballTarget=new THREE.Vector3(),down=1,dist=10,scoreH=0,scoreA=0,clock=720,stamina=100,play='SLANT',catchOpen=false,careerXP=0,rep=0,driveStart=-25,penaltyYard=0,ballCalled=false,aiThrowTimer=0;
 const keys={};let truckTimer=0,hitStickTimer=0,injuryTimer=0,weatherType='clear',homeTeam='Kansas City Chiefs',awayTeam='Buffalo Bills',gameTime='day';

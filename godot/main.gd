@@ -491,8 +491,10 @@ func _update_camera(delta: float) -> void:
         return
     var desired := user_player.global_position + Vector3(-8.5,4.8,10.5)
     desired.y = maxf(desired.y, 3.0)
-    camera.global_position = camera.global_position.lerp(desired, minf(1.0, delta * 6.0))
+    camera.global_position = camera.global_position.lerp(desired, minf(1.0, delta * 8.0))
     camera.look_at(user_player.global_position + Vector3(2.5,1.4,0), Vector3.UP)
+    if camera.global_position.y < 2.5:
+        camera.global_position.y = 2.5
 
 func _update_ui() -> void:
     var mins := int(game_clock)/60

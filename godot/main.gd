@@ -145,6 +145,40 @@ func _build_world() -> void:
             _box(self, Vector3(122,1.0,3), Vector3(0,1.0+r*1.45,z + (-r*1.7 if z < 0 else r*1.7)), Color("#30363d"))
         _box(self, Vector3(122,0.25,0.25), Vector3(0,12.2,z), Color("#d5d9dc"))
 
+    # Stadium details: yard numbers, sidelines, benches, and crowd sections.
+    for x in range(-50, 51, 10):
+        var yard_label := Label3D.new()
+        var yard_num := abs(x) if x != 0 else 50
+        yard_label.text = str(yard_num)
+        yard_label.font_size = 72
+        yard_label.modulate = Color(1,1,1,0.82)
+        yard_label.outline_size = 8
+        yard_label.position = Vector3(x,0.07,-6.8)
+        yard_label.rotation_degrees = Vector3(-90,0,0)
+        add_child(yard_label)
+        var yard_label2 := Label3D.new()
+        yard_label2.text = str(yard_num)
+        yard_label2.font_size = 72
+        yard_label2.modulate = Color(1,1,1,0.82)
+        yard_label2.outline_size = 8
+        yard_label2.position = Vector3(x,0.07,6.8)
+        yard_label2.rotation_degrees = Vector3(-90,180,0)
+        add_child(yard_label2)
+    # Hash marks and a subtle sideline strip make the field read like a broadcast field.
+    for x in range(-55, 56, 1):
+        for z in [-3.2,3.2]:
+            _box(self, Vector3(0.055,0.035,0.45), Vector3(x,0.045,z), WHITE)
+    _box(self, Vector3(FIELD_X,0.08,0.9), Vector3(0,0.08,-25.4), Color("#e7e7e7"))
+    _box(self, Vector3(FIELD_X,0.08,0.9), Vector3(0,0.08,25.4), Color("#e7e7e7"))
+    # Low crowd stands.
+    for z in [-31.5,31.5]:
+        for row in range(6):
+            _box(self, Vector3(118,1.0,2.2), Vector3(0,1.2+row*1.35,z + (row*1.45 if z > 0 else -row*1.45)), Color("#252b31"))
+    # Team benches / sideline structures.
+    for x in [-34,-18,-2,14,30,46]:
+        _box(self, Vector3(7.0,0.5,1.8), Vector3(x,0.35,-27.0), Color("#59616a"))
+        _box(self, Vector3(7.0,2.2,0.18), Vector3(x,1.35,-27.8), Color("#aeb4b8"))
+
     for x in [-48.0,-24.0,0.0,24.0,48.0]:
         _cylinder(self, 0.22, 16.0, Vector3(x,8,-30), Color("#4b5259"))
         _box(self, Vector3(1.2,0.8,0.35), Vector3(x,16,-30), Color("#e9edf0"))
@@ -153,7 +187,7 @@ func _build_world() -> void:
 
     camera = Camera3D.new()
     camera.current = true
-    camera.fov = 58.0
+    camera.fov = 54.0
     camera.near = 0.1
     camera.far = 500.0
     add_child(camera)
@@ -278,8 +312,8 @@ func _build_ui() -> void:
     layer.add_child(status_label)
 
     var title := Label.new()
-    title.text = "ROAD TO THE LEAGUE"
-    title.position = Vector2(470,18)
+    title.text = "ROAD TO THE LEAGUE  •  FRIDAY NIGHT"
+    title.position = Vector2(420,18)
     title.add_theme_font_size_override("font_size", 24)
     layer.add_child(title)
 

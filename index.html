@@ -1,8 +1,119 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Road to the League</title><style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07110a;font-family:Arial,sans-serif;color:white}canvas{display:block;width:100%;height:100%}#menu{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#12314a,#020509 75%);text-align:center;cursor:pointer}#card{padding:45px 30px;border:1px solid #ffffff22;border-radius:24px;background:#07111fee;box-shadow:0 20px 80px #000}#k{letter-spacing:6px;color:#45d9ff;font-weight:900}h1{font-size:clamp(50px,10vw,100px);line-height:.85;margin:12px 0}h1 span{color:#45d9ff}.tap{display:inline-block;padding:16px 25px;border:2px solid #45d9ff;border-radius:12px;color:#45d9ff;font-weight:900;letter-spacing:2px;animation:p 1.2s infinite}@keyframes p{50%{transform:scale(1.04)}}#hud{position:fixed;top:15px;left:15px;z-index:3;background:#07111ddd;padding:12px 16px;border-radius:12px;font-weight:900}#help{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);z-index:3;background:#07111ddd;padding:10px 15px;border-radius:10px;font-size:12px;white-space:nowrap}@media(max-width:600px){#help{font-size:10px}} </style></head><body><canvas id="game"></canvas><div id="hud">ROAD TO THE LEAGUE • <span id="yards">0</span> YDS</div><div id="help">WASD / ARROWS MOVE • SHIFT SPRINT • E THROW • C CATCH</div><div id="menu"><div id="card"><div id="k">ROAD TO THE</div><h1>LEAGUE<br><span>FOOTBALL</span></h1><div class="tap">TAP ANY BUTTON TO CONTINUE</div><p style="color:#8ea4b8">8-BIT FIELD EDITION</p></div></div><script>
-const cv=document.getElementById('game'),ctx=cv.getContext('2d'),menu=document.getElementById('menu'),yd=document.getElementById('yards');let W,H,started=false;const k={};let px=.18,py=.5,ballX=.21,ballY=.5,yards=0,throwing=0;
-function resize(){W=innerWidth;H=innerHeight;cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}addEventListener('resize',resize);resize();
-function start(){if(started)return;started=true;menu.remove()}menu.addEventListener('click',start);addEventListener('keydown',e=>{k[e.key.toLowerCase()]=true;if(!started)start();if(e.key.toLowerCase()==='e')throwing=1;if(e.key.toLowerCase()==='c'&&throwing){yards+=10+Math.floor(Math.random()*20);throwing=0;yd.textContent=yards}});addEventListener('keyup',e=>k[e.key.toLowerCase()]=false);
-function player(x,y,c,label){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 11px Arial';ctx.fillText(label,x-14,y+4)}
-function loop(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#14652f';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2;for(let i=0;i<=20;i++){let x=i*W/20;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let i=0;i<=10;i++){let y=i*H/10;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.fillStyle='#173d80';ctx.fillRect(0,0,W*.07,H);ctx.fillRect(W*.93,0,W*.07,H);
-if(started){let s=k.shift?.009:.005;if(k.w||k.arrowup)py-=s;if(k.s||k.arrowdown)py+=s;if(k.a||k.arrowleft)px-=s;if(k.d||k.arrowright)px+=s;px=Math.max(.08,Math.min(.92,px));py=Math.max(.08,Math.min(.92,py));ballX=px+.035;ballY=py-.015;if(throwing){ballX+=.15;ctx.fillStyle='#7b431f';ctx.beginPath();ctx.ellipse(ballX*W,ballY*H,11,7,0,0,Math.PI*2);ctx.fill()}player(px*W,py*H,'#25b8ed','YOU');player(.52*W,.40*H,'#ef5265','DB');player(.70*W,.60*H,'#ef5265','DB');ctx.fillStyle='#fff';ctx.font='900 16px Arial';ctx.fillText('END ZONE',W*.925,H*.5)}requestAnimationFrame(loop)}loop();
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Road to the League 3D</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05080c;color:#fff;font-family:Arial,sans-serif}
+#menu{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 40%,#173c58,#020509 72%);cursor:pointer}
+.card{padding:48px 34px;border:1px solid #ffffff25;border-radius:28px;background:#07111df5;box-shadow:0 30px 100px #000;max-width:850px}
+.kicker{letter-spacing:7px;color:#45d9ff;font-weight:900}.title{font-size:clamp(54px,10vw,108px);line-height:.82;font-weight:1000;margin:14px 0}.title span{color:#45d9ff}.tap{display:inline-block;padding:18px 30px;border:2px solid #45d9ff;border-radius:14px;color:#45d9ff;font-weight:1000;letter-spacing:2px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.04);box-shadow:0 0 40px #45d9ff55}}
+#hud{position:fixed;z-index:10;top:14px;left:14px;padding:12px 16px;background:#06101de8;border:1px solid #ffffff18;border-radius:12px;font-size:13px;pointer-events:none}
+#hint{position:fixed;z-index:10;bottom:14px;left:50%;transform:translateX(-50%);padding:10px 15px;background:#06101de8;border-radius:10px;font-size:12px;pointer-events:none}
+#catch{position:fixed;z-index:11;left:50%;top:70%;transform:translate(-50%,-50%);font-size:20px;font-weight:1000;letter-spacing:2px;padding:12px 20px;border:2px solid #fff;border-radius:12px;background:#000b;display:none}
+</style>
+</head>
+<body>
+<div id="menu"><div class="card"><div class="kicker">ROAD TO THE</div><div class="title">LEAGUE<br><span>3D</span></div><p style="color:#9fb0c1;letter-spacing:3px">QB • WR • AI DEFENSE • TIMED CATCHING</p><div class="tap">TAP ANY BUTTON TO CONTINUE</div></div></div>
+<div id="hud">QB MODE • <b id="mode">YOU: QB</b> • YDS <b id="yards">0</b> • CATCHES <b id="catches">0</b></div>
+<div id="hint">WASD MOVE • SHIFT SPRINT • E THROW • C TAKE CONTROL / CATCH</div>
+<div id="catch">PRESS C — CATCH</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+
+const menu=document.getElementById('menu'),modeEl=document.getElementById('mode'),yardsEl=document.getElementById('yards'),catchesEl=document.getElementById('catches'),catchEl=document.getElementById('catch');
+let started=false;
+const keys={};
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(!started)start()});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+menu.addEventListener('click',start);
+
+let scene,camera,renderer,qb,wr,cb,rb,ball,ballState=null,controlled='qb',catchReady=false,yards=0,catches=0,clock=0;
+const routes={start:new THREE.Vector3(7,0,-7),end:new THREE.Vector3(23,0,-14)};
+
+function start(){if(started)return;started=true;menu.remove();init()}
+
+function human(jersey,skin=0x8b5a3c){
+ const g=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.CapsuleGeometry(.55,1.05,6,12),new THREE.MeshStandardMaterial({color:jersey,roughness:.75}));body.position.y=1.45;g.add(body);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.34,18,14),new THREE.MeshStandardMaterial({color:skin,roughness:.8}));head.position.y=2.62;g.add(head);
+ const helmet=new THREE.Mesh(new THREE.SphereGeometry(.41,18,12,0,Math.PI*2,0,Math.PI*.55),new THREE.MeshStandardMaterial({color:jersey,roughness:.4,metalness:.05}));helmet.position.y=2.72;g.add(helmet);
+ const visor=new THREE.Mesh(new THREE.BoxGeometry(.28,.07,.05),new THREE.MeshStandardMaterial({color:0x101820,transparent:true,opacity:.8}));visor.position.set(0,2.67,-.32);g.add(visor);
+ const shoulder=new THREE.Mesh(new THREE.BoxGeometry(1.35,.25,.72),new THREE.MeshStandardMaterial({color:jersey}));shoulder.position.y=1.95;g.add(shoulder);
+ g.userData.parts={arms:[],hands:[],legs:[]};
+ for(const s of [-1,1]){
+  const upper=new THREE.Mesh(new THREE.CapsuleGeometry(.14,.58,5,8),new THREE.MeshStandardMaterial({color:skin}));upper.position.set(s*.68,1.55,0);upper.rotation.z=s*.18;g.add(upper);g.userData.parts.arms.push(upper);
+  const hand=new THREE.Group();hand.position.set(s*.76,1.16,0);
+  const palm=new THREE.Mesh(new THREE.SphereGeometry(.16,12,10),new THREE.MeshStandardMaterial({color:skin}));hand.add(palm);
+  for(let i=0;i<5;i++){const finger=new THREE.Mesh(new THREE.CapsuleGeometry(.035,.14,4,6),new THREE.MeshStandardMaterial({color:skin}));finger.position.set((i-2)*.045,-.12,.02);finger.rotation.x=Math.PI/2;hand.add(finger)}
+  g.add(hand);g.userData.parts.hands.push(hand);
+  const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.18,.85,5,8),new THREE.MeshStandardMaterial({color:0x151a20}));leg.position.set(s*.27,.62,0);g.add(leg);g.userData.parts.legs.push(leg);
+  const shoe=new THREE.Mesh(new THREE.BoxGeometry(.3,.14,.58),new THREE.MeshStandardMaterial({color:0x090b0e}));shoe.position.set(s*.27,.12,-.08);g.add(shoe);
+ }
+ return g;
+}
+
+function init(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x071019);scene.fog=new THREE.Fog(0x071019,45,145);
+ camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,250);
+ renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xdcecff,0x15220f,2.4));
+ const sun=new THREE.DirectionalLight(0xffffff,3);sun.position.set(-30,50,20);sun.castShadow=true;scene.add(sun);
+ const field=new THREE.Mesh(new THREE.BoxGeometry(110,.25,55),new THREE.MeshStandardMaterial({color:0x17632f,roughness:1}));field.receiveShadow=true;scene.add(field);
+ for(let x=-50;x<=50;x+=5){const l=new THREE.Mesh(new THREE.BoxGeometry(.08,.035,54),new THREE.MeshBasicMaterial({color:0xffffff}));l.position.set(x,.15,0);scene.add(l)}
+ for(let z=-25;z<=25;z+=5){const l=new THREE.Mesh(new THREE.BoxGeometry(110,.035,.08),new THREE.MeshBasicMaterial({color:0xffffff}));l.position.set(0,.15,z);scene.add(l)}
+ for(const x of [-52,52]){const ez=new THREE.Mesh(new THREE.BoxGeometry(5,.04,55),new THREE.MeshStandardMaterial({color:0x183f82}));ez.position.set(x,.17,0);scene.add(ez)}
+ qb=human(0x26b8ed,0x8a5a3c);qb.position.set(-22,0,0);scene.add(qb);
+ wr=human(0x26b8ed,0x6f4630);wr.position.set(-4,0,-8);scene.add(wr);
+ cb=human(0xef5265,0x7a5036);cb.position.set(2,0,-6);scene.add(cb);
+ rb=human(0xef5265,0x6d4630);rb.position.set(8,0,4);scene.add(rb);
+ ball=new THREE.Mesh(new THREE.SphereGeometry(.2,16,12),new THREE.MeshStandardMaterial({color:0x713e1c,roughness:.75}));ball.scale.set(.8,.8,1.6);scene.add(ball);
+ ball.position.set(-22,2,0);
+ addEventListener('resize',resize);
+ requestAnimationFrame(loop);
+}
+
+function resize(){if(!renderer)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+
+function throwPass(){
+ if(ballState||controlled!=='qb')return;
+ controlled='wr';modeEl.textContent='YOU: WR — RUN & CATCH';
+ ballState={t:0,dur:1.35,start:qb.position.clone().add(new THREE.Vector3(0,2.2,0)),target:wr.position.clone().add(new THREE.Vector3(0,1.5,0))};
+}
+
+function updateWR(dt){
+ if(controlled!=='wr')return;
+ let dx=0,dz=0;if(keys.w||keys.arrowup)dz-=1;if(keys.s||keys.arrowdown)dz+=1;if(keys.a||keys.arrowleft)dx-=1;if(keys.d||keys.arrowright)dx+=1;
+ if(dx||dz){const sp=keys.shift?.17:.1;const len=Math.hypot(dx,dz);wr.position.x+=dx/len*sp;wr.position.z+=dz/len*sp}
+ if(ballState){const d=wr.position.distanceTo(ball.position);catchReady=d<2.2 && ballState.t>.55;catchEl.style.display=catchReady?'block':'none';}
+}
+
+function catchBall(){
+ if(controlled!=='wr'||!ballState)return;
+ const d=wr.position.distanceTo(ball.position);
+ if(d<2.5 && ballState.t>.55 && ballState.t<1.5){ballState=null;catchReady=false;catchEl.style.display='none';catches++;yards+=Math.max(5,Math.round(Math.abs(wr.position.x+22)));catchesEl.textContent=catches;yardsEl.textContent=yards;modeEl.textContent='YOU: WR — CAUGHT';setTimeout(()=>modeEl.textContent='YOU: QB',900)}
+}
+
+function ai(){
+ wr.position.x+=.018;wr.position.z=-8+Math.sin(clock*1.2)*3.5;
+ cb.position.x+=(wr.position.x+1.5-cb.position.x)*.025;cb.position.z+=(wr.position.z-cb.position.z)*.03;
+ rb.position.x+=(qb.position.x-rb.position.x)*.008;rb.position.z+=(qb.position.z-rb.position.z)*.01;
+ if(!ballState&&controlled==='qb'&&clock>3){throwPass();clock=0}
+}
+
+function loop(now){
+ const dt=.016;clock+=dt;
+ if(started){
+  if(controlled==='qb'){let dx=0,dz=0;if(keys.w||keys.arrowup)dz-=1;if(keys.s||keys.arrowdown)dz+=1;if(keys.a||keys.arrowleft)dx-=1;if(keys.d||keys.arrowright)dx+=1;if(dx||dz){const sp=keys.shift?.15:.08;const len=Math.hypot(dx,dz);qb.position.x+=dx/len*sp;qb.position.z+=dz/len*sp}if(keys.e){keys.e=false;throwPass()}}
+  else{if(keys.c){keys.c=false;catchBall()}updateWR(dt)}
+  ai();
+  if(ballState){ballState.t+=dt;const p=Math.min(1,ballState.t/ballState.dur);const pos=ballState.start.clone().lerp(ballState.target,p);pos.y+=Math.sin(Math.PI*p)*6;ball.position.copy(pos);if(p>=1){if(controlled==='wr'&&!catchReady){ballState=null;catchEl.style.display='none';modeEl.textContent='YOU: QB'}}}
+  else if(controlled==='qb')ball.position.copy(qb.position).add(new THREE.Vector3(0,2.1,0));
+  const target=controlled==='wr'?wr:qb;camera.position.lerp(new THREE.Vector3(target.position.x+8,5.8,target.position.z+12),.08);camera.lookAt(target.position.x+2,1.2,target.position.z);
+  renderer.render(scene,camera);
+ }
+ requestAnimationFrame(loop);
+}
+</script>
+</body></html>

@@ -69,7 +69,7 @@ func _process(delta: float) -> void:
 func _material(color: Color) -> StandardMaterial3D:
     var m := StandardMaterial3D.new()
     m.albedo_color = color
-    m.roughness = 0.52
+    m.roughness = 0.38
     m.metallic = 0.04
     return m
 
@@ -99,11 +99,21 @@ func _cylinder(parent: Node3D, radius: float, height: float, pos: Vector3, color
 func _build_world() -> void:
     var env := WorldEnvironment.new()
     var environment := Environment.new()
-    environment.background_mode = Environment.BG_COLOR
-    environment.background_color = Color("#8db7d5")
+    environment.background_mode = Environment.BG_SKY
+    var sky := Sky.new()
+    var sky_mat := ProceduralSkyMaterial.new()
+    sky_mat.sky_top_color = Color("#163b68")
+    sky_mat.sky_horizon_color = Color("#a7c9dc")
+    sky_mat.ground_bottom_color = Color("#172028")
+    sky_mat.ground_horizon_color = Color("#667d88")
+    sky.sky_material = sky_mat
+    environment.sky = sky
     environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
     environment.ambient_light_color = Color("#dce9ee")
-    environment.ambient_light_energy = 0.55
+    environment.ambient_light_energy = 0.72
+    environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+    environment.glow_enabled = true
+    environment.glow_intensity = 0.7
     env.environment = environment
     add_child(env)
 
@@ -143,7 +153,7 @@ func _build_world() -> void:
 
     camera = Camera3D.new()
     camera.current = true
-    camera.fov = 70.0
+    camera.fov = 58.0
     camera.near = 0.1
     camera.far = 500.0
     add_child(camera)
@@ -154,65 +164,60 @@ func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
     var g := Node3D.new()
     add_child(g)
     g.position = position
-
     var skin_mat := _material(SKIN)
-    var dark_mat := _material(Color("#101317"))
-    var white_mat := _material(WHITE)
-
+    var pad_mat := _material(team.darkened(0.18))
     for side in [-1, 1]:
-        _box(g, Vector3(0.30,0.72,0.34), Vector3(side*0.22,0.52,0), Color("#17202a"))
-        _box(g, Vector3(0.34,0.30,0.36), Vector3(side*0.22,0.19,-0.01), WHITE)
-        _box(g, Vector3(0.44,0.16,0.68), Vector3(side*0.22,0.06,-0.10), Color("#090b0d"))
-
-    _box(g, Vector3(0.88,0.48,0.58), Vector3(0,0.96,0), Color("#202833"))
-    _box(g, Vector3(0.96,0.90,0.62), Vector3(0,1.48,0), team)
-    _box(g, Vector3(1.30,0.28,0.78), Vector3(0,1.82,0), team)
-    _box(g, Vector3(0.78,0.46,0.64), Vector3(0,1.78,-0.02), team)
-    _box(g, Vector3(0.80,0.10,0.66), Vector3(0,1.24,-0.01), dark_mat)
-
-    for side in [-1, 1]:
-        var arm := _cylinder(g,0.16,0.68,Vector3(side*0.67,1.47,0),team)
-        arm.rotation_degrees = Vector3(0,0,side*8)
-        var glove := _cylinder(g,0.13,0.28,Vector3(side*0.69,1.03,-0.04),Color("#111820"))
-        glove.rotation_degrees = Vector3(0,0,side*8)
-
-    _cylinder(g,0.14,0.22,Vector3(0,2.03,0),skin_mat.albedo_color)
+        _box(g, Vector3(0.30,0.78,0.34), Vector3(side*0.24,0.48,0), Color("#151a20"))
+        _box(g, Vector3(0.38,0.30,0.40), Vector3(side*0.24,0.12,-0.03), Color("#e8ebee"))
+        _box(g, Vector3(0.46,0.12,0.72), Vector3(side*0.24,0.03,-0.08), Color("#090b0d"))
+    _box(g, Vector3(1.05,0.42,0.68), Vector3(0,1.02,0), pad_mat)
+    _box(g, Vector3(0.96,0.88,0.62), Vector3(0,1.47,0), team)
+    var shoulder := SphereMesh.new()
+    shoulder.radius = 0.62
+    shoulder.height = 0.36
+    var sh := MeshInstance3D.new()
+    sh.mesh = shoulder
+    sh.scale = Vector3(1.0,0.55,0.62)
+    sh.position = Vector3(0,1.72,0)
+    sh.material_override = pad_mat
+    g.add_child(sh)
+    for side in [-1,1]:
+        var arm := _cylinder(g,0.14,0.72,Vector3(side*0.65,1.43,0),team)
+        arm.rotation_degrees = Vector3(0,0,side*10)
+        var forearm := _cylinder(g,0.115,0.32,Vector3(side*0.69,1.05,-0.05),skin_mat.albedo_color)
+        forearm.rotation_degrees = Vector3(0,0,side*10)
+        _cylinder(g,0.13,0.20,Vector3(side*0.70,0.86,-0.06),Color("#111820"))
     var head_mesh := SphereMesh.new()
     head_mesh.radius = 0.36
     head_mesh.height = 0.72
     var head := MeshInstance3D.new()
     head.mesh = head_mesh
     head.material_override = skin_mat
-    head.position = Vector3(0,2.35,0)
+    head.position = Vector3(0,2.32,0)
     g.add_child(head)
-
     var helmet_mesh := SphereMesh.new()
-    helmet_mesh.radius = 0.44
-    helmet_mesh.height = 0.58
+    helmet_mesh.radius = 0.45
+    helmet_mesh.height = 0.62
     var helmet := MeshInstance3D.new()
     helmet.mesh = helmet_mesh
-    helmet.material_override = _material(team.darkened(0.12))
-    helmet.scale = Vector3(1.08,0.72,1.08)
-    helmet.position = Vector3(0,2.56,0)
+    helmet.material_override = _material(team.darkened(0.08))
+    helmet.scale = Vector3(1.10,0.76,1.08)
+    helmet.position = Vector3(0,2.54,0)
     g.add_child(helmet)
-
-    _box(g,Vector3(0.70,0.10,0.10),Vector3(0,2.48,-0.37),Color("#0b0d10"))
+    _box(g,Vector3(0.70,0.08,0.10),Vector3(0,2.45,-0.39),Color("#0a0c0f"))
     for side in [-1,1]:
-        var bar := _cylinder(g,0.035,0.38,Vector3(side*0.25,2.40,-0.40),Color("#0b0d10"))
+        var bar := _cylinder(g,0.035,0.42,Vector3(side*0.24,2.37,-0.41),Color("#0a0c0f"))
         bar.rotation_degrees = Vector3(90,0,0)
-
     var number := {"QB":"12","WR":"11","WR2":"80","RB":"22","TE":"87","FB":"45","OL":"64","DL":"90","LB":"52","CB":"21","S":"31"}.get(position_name,"0")
     var number_label := Label3D.new()
     number_label.text = number
-    number_label.font_size = 52
+    number_label.font_size = 58
     number_label.modulate = WHITE
-    number_label.outline_size = 8
-    number_label.outline_modulate = team.darkened(0.65)
-    number_label.position = Vector3(0,1.55,-0.34)
+    number_label.outline_size = 10
+    number_label.outline_modulate = team.darkened(0.68)
+    number_label.position = Vector3(0,1.50,-0.35)
     g.add_child(number_label)
-
-    _box(g,Vector3(0.86,0.08,0.64),Vector3(0,1.30,-0.02),WHITE)
-
+    _box(g,Vector3(0.78,0.08,0.62),Vector3(0,1.25,-0.02),Color("#f4f5f5"))
     g.set_meta("team", team)
     g.set_meta("position_name", position_name)
     g.set_meta("route_progress", 0.0)
@@ -554,7 +559,7 @@ func _find_position(name: String) -> Node3D:
 func _update_camera(delta: float) -> void:
     if camera == null or user_player == null:
         return
-    var desired := user_player.global_position + Vector3(-10.0,8.0,15.0)
+    var desired := user_player.global_position + Vector3(-12.5,6.5,17.5)
     desired.y = maxf(desired.y, 4.5)
     camera.global_position = camera.global_position.lerp(desired, minf(1.0, delta * 7.0))
     camera.look_at(user_player.global_position + Vector3(5.0,1.0,0), Vector3.UP)

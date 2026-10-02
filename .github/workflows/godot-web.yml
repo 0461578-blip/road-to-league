@@ -19,22 +19,29 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.4.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Godot
-        uses: solarlabyrinth/action-setup-godot@v3
-        with:
-          version: 4.4.1-stable
-          export-templates: true
+      - name: Setup Godot templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates
+          mkdir -p ~/.config
+          mv /root/.config/godot ~/.config/godot
+          mv /root/.local/share/godot/export_templates/4.4.1.stable ~/.local/share/godot/export_templates/4.4.1.stable
+
+      - name: Import project
+        working-directory: godot
+        run: godot --headless --import --quit-after 1 || true
 
       - name: Export Web
         working-directory: godot
         run: |
           mkdir -p ../build
-          godot --headless --path . --export-release "Web" ../build/index.html
+          godot --headless --verbose --export-release "Web" ../build/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -46,7 +53,10 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

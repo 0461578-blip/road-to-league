@@ -43,7 +43,7 @@ const sun=new THREE.DirectionalLight(0xffffff,3.2);sun.position.set(-35,55,25);s
 const mat=(c,r=.65)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
 const box=(s,p,m)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...s),m);o.position.set(...p);o.castShadow=o.receiveShadow=true;scene.add(o);return o};
 const cyl=(r,h,p,m)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),m);o.position.set(...p);o.castShadow=true;scene.add(o);return o};
-const green=mat(0x126b36),white=mat(0xf1f3f0),dark=mat(0x18201b),blue=mat(0x2368d1),red=mat(0xc82f45),black=mat(0x090d0b),brown=mat(0x6e3a1b),skin=mat(0x8b5b3c);
+const green=mat(0x126b36),white=mat(0xf1f3f0),dark=mat(0x18201b),blue=mat(0x2368d1),red=mat(0xc82f45),black=mat(0x090d0b),brown=mat(0x6e3a1b),skin=mat(0x8b5b3c),skin2=mat(0xa86f4b);
 box([120,.3,52],[0,-.15,0],green);
 for(let x=-60;x<=60;x+=5)box([.06,.035,52],[x,.04,0],white);
 for(let x=-60;x<=60;x+=10)box([.13,.04,52],[x,.06,0],white);
@@ -66,7 +66,7 @@ for(const s of[-1,1]){
  const upperArm=new THREE.Mesh(new THREE.CylinderGeometry(.13,.15,.48,14),bodyMat);upperArm.position.set(s*.66,1.42,0);upperArm.rotation.z=s*.22;g.add(upperArm);
  const forearm=new THREE.Mesh(new THREE.CylinderGeometry(.105,.12,.42,14),skin);forearm.position.set(s*.77,1.05,-.02);forearm.rotation.z=s*.22;g.add(forearm);
  const palm=new THREE.Mesh(new THREE.SphereGeometry(.13,14,10),skin);palm.position.set(s*.84,.82,-.04);g.add(palm);
- for(let f=0;f<4;f++){const finger=new THREE.Mesh(new THREE.CapsuleGeometry(.018,.07,3,6),skin2);finger.position.set(s*(.84+f*.025),.72,-.09+f*.045);g.add(finger)}
+ for(let f=0;f<4;f++){const finger=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.07,8),skin2);finger.position.set(s*(.84+f*.025),.72,-.09+f*.045);g.add(finger)}
 }
 const h=new THREE.Mesh(new THREE.SphereGeometry(.34,24,18),skin);h.position.y=2.27;h.castShadow=true;g.add(h);
 const earL=new THREE.Mesh(new THREE.SphereGeometry(.065,12,8),skin);earL.position.set(-.34,2.27,0);g.add(earL);const earR=earL.clone();earR.position.x=.34;g.add(earR);

@@ -21,10 +21,37 @@ button{pointer-events:auto;background:#45d9ff;color:#041018;border:0;border-radi
 #crosshair{position:absolute;left:50%;top:50%;width:9px;height:9px;border:1px solid #fff;border-radius:50%;transform:translate(-50%,-50%);opacity:.7}
 #mobile{display:none}
 @media(max-width:700px){#controls{display:none}#mobile{display:block;position:absolute;left:15px;bottom:15px}.mrow{display:flex;gap:7px;margin:5px}.mrow button{width:58px;height:44px}}
+
+#mainMenu{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 45%,#12314a 0,#07111c 38%,#020509 100%);font-family:Arial,sans-serif}
+#mainMenu:before{content:"";position:absolute;inset:-20%;background:repeating-linear-gradient(110deg,transparent 0 70px,#45d9ff10 72px 74px,transparent 76px 150px);transform:rotate(-8deg);animation:menuMove 10s linear infinite}
+#mainMenu:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0 28%,#0009 72%,#000e 100%);pointer-events:none}
+@keyframes menuMove{to{transform:translateX(120px) rotate(-8deg)}}
+.menuCard{position:relative;z-index:2;width:min(820px,88vw);padding:52px 30px 42px;text-align:center;border:1px solid #ffffff22;border-radius:28px;background:linear-gradient(145deg,#0c1b2bf2,#050a11ee);box-shadow:0 30px 100px #000b,0 0 70px #45d9ff18;backdrop-filter:blur(12px)}
+.menuKicker{font-size:13px;letter-spacing:7px;font-weight:900;color:#45d9ff;margin-bottom:12px}
+.menuTitle{margin:0;font-size:clamp(48px,9vw,96px);line-height:.9;font-weight:1000;letter-spacing:-5px;color:#fff;text-shadow:0 5px 0 #132536,0 0 35px #45d9ff44}
+.menuTitle span{color:#45d9ff}
+.menuSub{margin:18px 0 34px;color:#9fb0c1;font-size:14px;letter-spacing:3px;font-weight:800}
+.tap{display:inline-block;margin:0 auto 22px;padding:17px 34px;border-radius:15px;border:1px solid #45d9ff88;background:linear-gradient(135deg,#45d9ff,#168bb2);color:#021017;font-size:18px;letter-spacing:3px;font-weight:1000;box-shadow:0 0 35px #45d9ff33;animation:pulseTap 1.4s ease-in-out infinite}
+@keyframes pulseTap{50%{transform:scale(1.045);box-shadow:0 0 55px #45d9ff66}}
+.menuHints{color:#6f8295;font-size:11px;letter-spacing:1.5px}
+#loadStatus{position:relative;z-index:3;margin-top:18px;color:#ffcb6b;font-size:12px;font-weight:800;min-height:16px}
+#ui.gameHidden{opacity:0;pointer-events:none}
+#ui.gameShown{opacity:1;transition:opacity .35s}
 </style>
 </head>
 <body>
-<div id="ui">
+<div id="mainMenu" role="button" tabindex="0" aria-label="Tap any button to continue">
+  <div class="menuCard">
+    <div class="menuKicker">ROAD TO THE</div>
+    <h1 class="menuTitle"><span>LEAGUE</span><br>3D</h1>
+    <div class="menuSub">FOOTBALL • CAREER • STREET • CLUTCH</div>
+    <div class="tap">TAP ANY BUTTON TO CONTINUE</div>
+    <div class="menuHints">WASD / ARROWS TO MOVE &nbsp; • &nbsp; E TO THROW &nbsp; • &nbsp; C TO CATCH</div>
+    <div id="loadStatus"></div>
+  </div>
+</div>
+
+<div id="ui" class="gameHidden">
  <div class="top"><div class="logo">ROAD <span>TO</span> LEAGUE • 3D</div><div><span class="stat"><b id="down">1</b><small>DOWN</small></span><span class="stat"><b id="yards">0</b><small>YARDS</small></span><span class="stat"><b id="score">0</b><small>PTS</small></span><button onclick="toggleMenu()">MENU</button></div></div>
  <div id="message" class="panel"></div>
  <div id="crosshair"></div>
@@ -190,6 +217,31 @@ resetPlay();loop(performance.now());
   function detectCatch(){if(state.active||state.touchdown)return;for(const p of players()){if(p&&p.hasBall&&(p.role==="WR"||p.role==="receiver"||/WR|receiver/i.test(String(p.name||"")))){window.controlCaughtReceiver(p);return}}}
   function loop(){detectCatch();update();requestAnimationFrame(loop)}loop();
   const help=document.createElement("div");help.textContent="CATCH → CONTROL RECEIVER • WASD = RUN • SHIFT = SPRINT • END ZONE = TD";help.style.cssText="position:fixed;left:50%;bottom:14px;transform:translateX(-50%);padding:9px 14px;background:rgba(0,0,0,.72);color:#fff;border-radius:9px;font:700 12px Arial;z-index:9998;white-space:nowrap";document.body.appendChild(help);
+})();
+</script>
+
+<script>
+(function(){
+  const menu=document.getElementById('mainMenu');
+  const ui=document.getElementById('ui');
+  const status=document.getElementById('loadStatus');
+  let started=false;
+  function startGame(){
+    if(started)return;
+    started=true;
+    menu.style.transition='opacity .35s,transform .35s';
+    menu.style.opacity='0';
+    menu.style.transform='scale(1.03)';
+    ui.classList.remove('gameHidden'); ui.classList.add('gameShown');
+    setTimeout(()=>menu.remove(),400);
+  }
+  menu.addEventListener('click',startGame);
+  menu.addEventListener('keydown',e=>{e.preventDefault();startGame()});
+  addEventListener('keydown',startGame,{once:false});
+  addEventListener('pointerdown',startGame,{once:false});
+  addEventListener('error',e=>{if(status)status.textContent='GAME ENGINE ERROR — refresh once to retry';});
+  addEventListener('unhandledrejection',e=>{if(status)status.textContent='GAME ENGINE ERROR — refresh once to retry';});
+  setTimeout(()=>{if(!started && status && !status.textContent)status.textContent='READY • TAP OR PRESS ANY KEY';},1200);
 })();
 </script>
 </body>

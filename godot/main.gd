@@ -96,12 +96,12 @@ func _build_world() -> void:
     environment.background_color = Color("#8db7d5")
     environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
     environment.ambient_light_color = Color("#dce9ee")
-    environment.ambient_light_energy = 0.8
+    environment.ambient_light_energy = 0.55
     env.environment = environment
     add_child(env)
 
     var sun := DirectionalLight3D.new()
-    sun.light_energy = 2.2
+    sun.light_energy = 1.55
     sun.rotation_degrees = Vector3(-55, -25, 0)
     sun.shadow_enabled = true
     add_child(sun)
@@ -136,42 +136,87 @@ func _build_world() -> void:
 
     camera = Camera3D.new()
     camera.current = true
-    camera.fov = 68
+    camera.fov = 72
     camera.near = 0.05
     camera.far = 500.0
     add_child(camera)
 
 func _player(team: Color, position: Vector3, position_name: String) -> Node3D:
-    # Detailed original blocky football avatar.
+    # High-detail original football avatar: blocky proportions with rounded 3D parts,
+    # helmet shell, facemask, shoulder pads, jersey, pants, socks and cleats.
     var g := Node3D.new()
     add_child(g)
     g.position = position
 
+    var skin_mat := _material(SKIN)
+    var dark_mat := _material(Color("#101317"))
+    var white_mat := _material(WHITE)
+
+    # Legs / socks / cleats
     for side in [-1, 1]:
-        _box(g, Vector3(0.32,0.78,0.36), Vector3(side*0.23,0.55,0), DARK)
-        _box(g, Vector3(0.42,0.18,0.62), Vector3(side*0.23,0.12,-0.10), Color("#090b0d"))
+        _box(g, Vector3(0.30,0.72,0.34), Vector3(side*0.22,0.52,0), Color("#17202a"))
+        _box(g, Vector3(0.34,0.30,0.36), Vector3(side*0.22,0.19,-0.01), WHITE)
+        _box(g, Vector3(0.44,0.16,0.68), Vector3(side*0.22,0.06,-0.10), Color("#090b0d"))
 
-    _box(g, Vector3(0.92,1.02,0.58), Vector3(0,1.48,0), team)
-    _box(g, Vector3(1.18,0.24,0.72), Vector3(0,1.91,0), team)
-    _box(g, Vector3(0.82,0.12,0.62), Vector3(0,1.10,0), DARK)
+    # Padded pants / waist
+    _box(g, Vector3(0.88,0.48,0.58), Vector3(0,0.96,0), Color("#202833"))
+    _box(g, Vector3(0.96,0.90,0.62), Vector3(0,1.48,0), team)
 
+    # Shoulder pads + jersey chest
+    _box(g, Vector3(1.30,0.28,0.78), Vector3(0,1.82,0), team)
+    _box(g, Vector3(0.78,0.46,0.64), Vector3(0,1.78,-0.02), team)
+    _box(g, Vector3(0.80,0.10,0.66), Vector3(0,1.24,-0.01), dark_mat)
+
+    # Arms, gloves
     for side in [-1, 1]:
-        _box(g, Vector3(0.28,0.72,0.30), Vector3(side*0.63,1.47,0), team)
-        _box(g, Vector3(0.24,0.34,0.28), Vector3(side*0.65,1.04,-0.02), SKIN)
+        var arm := _cylinder(g,0.16,0.68,Vector3(side*0.67,1.47,0),team)
+        arm.rotation_degrees = Vector3(0,0,side*8)
+        var glove := _cylinder(g,0.13,0.28,Vector3(side*0.69,1.03,-0.04),Color("#111820"))
+        glove.rotation_degrees = Vector3(0,0,side*8)
 
-    _box(g, Vector3(0.24,0.18,0.24), Vector3(0,2.05,0), SKIN)
-    _box(g, Vector3(0.56,0.62,0.56), Vector3(0,2.34,0), SKIN)
-    _box(g, Vector3(0.68,0.34,0.66), Vector3(0,2.67,0), team)
-    _box(g, Vector3(0.74,0.10,0.70), Vector3(0,2.49,-0.22), DARK)
-    _box(g, Vector3(0.76,0.08,0.12), Vector3(0,2.36,-0.36), WHITE)
+    # Neck + head
+    _cylinder(g,0.14,0.22,Vector3(0,2.03,0),skin_mat.albedo_color)
+    var head_mesh := SphereMesh.new()
+    head_mesh.radius = 0.36
+    head_mesh.height = 0.72
+    var head := MeshInstance3D.new()
+    head.mesh = head_mesh
+    head.material_override = skin_mat
+    head.position = Vector3(0,2.35,0)
+    head.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+    g.add_child(head)
 
+    # Helmet shell
+    var helmet_mesh := SphereMesh.new()
+    helmet_mesh.radius = 0.44
+    helmet_mesh.height = 0.58
+    var helmet := MeshInstance3D.new()
+    helmet.mesh = helmet_mesh
+    helmet.material_override = _material(team.darkened(0.12))
+    helmet.scale = Vector3(1.08,0.72,1.08)
+    helmet.position = Vector3(0,2.56,0)
+    helmet.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+    g.add_child(helmet)
+
+    # Helmet front / facemask
+    _box(g,Vector3(0.70,0.10,0.10),Vector3(0,2.48,-0.37),Color("#0b0d10"))
+    for side in [-1,1]:
+        var bar := _cylinder(g,0.035,0.38,Vector3(side*0.25,2.40,-0.40),Color("#0b0d10"))
+        bar.rotation_degrees = Vector3(90,0,0)
+
+    # Jersey number
     var number := {"QB":"12","WR":"11","WR2":"80","RB":"22","TE":"87","FB":"45","OL":"64","DL":"90","LB":"52","CB":"21","S":"31"}.get(position_name,"0")
     var number_label := Label3D.new()
     number_label.text = number
-    number_label.font_size = 42
+    number_label.font_size = 52
     number_label.modulate = WHITE
-    number_label.position = Vector3(0,1.55,-0.305)
+    number_label.outline_size = 8
+    number_label.outline_modulate = team.darkened(0.65)
+    number_label.position = Vector3(0,1.55,-0.34)
     g.add_child(number_label)
+
+    # Small team stripe
+    _box(g,Vector3(0.86,0.08,0.64),Vector3(0,1.30,-0.02),WHITE)
 
     g.set_meta("team", team)
     g.set_meta("position_name", position_name)

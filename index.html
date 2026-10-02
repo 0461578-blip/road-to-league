@@ -40,6 +40,8 @@ button{pointer-events:auto;background:#45d9ff;color:#041018;border:0;border-radi
 </style>
 </head>
 <body>
+<div id="hardBoot" style="position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#02050a,#071a2a);color:#fff;font-family:Arial,sans-serif;text-align:center;cursor:pointer"><div><div style="font-size:14px;letter-spacing:6px;color:#45d9ff;font-weight:900">ROAD TO THE</div><div style="font-size:clamp(52px,11vw,110px);font-weight:1000;line-height:.85;margin:10px 0">LEAGUE<br><span style="color:#45d9ff">3D</span></div><div style="font-size:18px;letter-spacing:3px;font-weight:900;padding:18px 28px;border:2px solid #45d9ff;border-radius:14px;display:inline-block;animation:bootPulse 1.2s infinite">TAP ANY BUTTON TO CONTINUE</div><div style="margin-top:18px;color:#8ea4b8;font-size:12px">WASD / ARROWS • E THROW • C CATCH</div></div></div><style>@keyframes bootPulse{50%{transform:scale(1.04);box-shadow:0 0 35px #45d9ff55}}</style>
+<script>document.getElementById('hardBoot').addEventListener('click',()=>{document.getElementById('hardBoot').remove()});addEventListener('keydown',()=>{const x=document.getElementById('hardBoot');if(x)x.remove()},{once:false});</script>
 <div id="mainMenu" role="button" tabindex="0" aria-label="Tap any button to continue">
   <div class="menuCard">
     <div class="menuKicker">ROAD TO THE</div>
@@ -136,10 +138,10 @@ const ball=new THREE.Mesh(new THREE.SphereGeometry(.18,14,10),new THREE.MeshStan
 ball.scale.set(.8,.8,1.6);ball.castShadow=true;scene.add(ball);
 
 function animateHuman(p,mode,t){
- const a=p.userData.parts;if(mode==='run'){a.leg1.rotation.x=Math.sin(t*12)*.7;a.leg-1.rotation.x=-Math.sin(t*12)*.7;a.arm1.rotation.x=-Math.sin(t*12)*.45;a.arm-1.rotation.x=Math.sin(t*12)*.45}
- else if(mode==='throw'){a.arm-1.rotation.z=-1.8+Math.sin(t*10)*.3;a.arm1.rotation.z=.5}
- else if(mode==='catch'){a.arm-1.rotation.z=-1.25;a.arm1.rotation.z=1.25}
- else{a.leg1.rotation.x*=.8;a.leg-1.rotation.x*=.8;a.arm1.rotation.x*=.8;a.arm-1.rotation.x*=.8}
+ const a=p.userData.parts;if(mode==='run'){a.leg1.rotation.x=Math.sin(t*12)*.7;a['leg-1'].rotation.x=-Math.sin(t*12)*.7;a.arm1.rotation.x=-Math.sin(t*12)*.45;a['arm-1'].rotation.x=Math.sin(t*12)*.45}
+ else if(mode==='throw'){a['arm-1'].rotation.z=-1.8+Math.sin(t*10)*.3;a.arm1.rotation.z=.5}
+ else if(mode==='catch'){a['arm-1'].rotation.z=-1.25;a.arm1.rotation.z=1.25}
+ else{a.leg1.rotation.x*=.8;a['leg-1'].rotation.x*=.8;a.arm1.rotation.x*=.8;a['arm-1'].rotation.x*=.8}
 }
 
 const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' ')e.preventDefault();if(e.key.toLowerCase()==='e')throwBall();if(e.key.toLowerCase()==='c')catchBall();if(e.key.toLowerCase()==='q')tackle();if(e.key.toLowerCase()==='f')ballHawk();if(e.key.toLowerCase()==='shift')juke();if(['1','2','3','4','5'].includes(e.key))selectReceiver(+e.key)});

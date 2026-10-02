@@ -3,14 +3,14 @@
 html,body{margin:0;height:100%;overflow:hidden;background:#061018;font-family:Arial,sans-serif;color:#fff}#menu{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,#193f5b,#020509 75%);cursor:pointer;text-align:center}.card{width:min(820px,88vw);padding:50px 30px;border:1px solid #ffffff22;border-radius:26px;background:#07111df5;box-shadow:0 30px 100px #000}.k{letter-spacing:7px;color:#45d9ff;font-weight:900}.t{font-size:clamp(55px,10vw,105px);line-height:.82;font-weight:1000;margin:14px 0}.t span{color:#45d9ff}.tap{display:inline-block;margin-top:18px;padding:18px 30px;border:2px solid #45d9ff;border-radius:14px;color:#45d9ff;font-weight:1000;letter-spacing:2px;animation:p 1.2s infinite}@keyframes p{50%{transform:scale(1.04);box-shadow:0 0 45px #45d9ff55}}#hud{position:fixed;z-index:20;top:14px;left:14px;padding:12px 16px;border-radius:12px;background:#06101de8;border:1px solid #ffffff18;font-weight:900;pointer-events:none}#help{position:fixed;z-index:20;bottom:14px;left:50%;transform:translateX(-50%);padding:10px 15px;border-radius:10px;background:#06101de8;font-size:12px;white-space:nowrap;pointer-events:none}#catch{position:fixed;z-index:30;left:50%;top:72%;transform:translate(-50%,-50%);display:none;width:260px;padding:12px 16px;border:2px solid white;border-radius:12px;background:#000d;font-weight:1000;text-align:center}.meter{height:14px;margin-top:8px;border-radius:9px;background:#26313a;overflow:hidden}.meter i{display:block;height:100%;width:0;background:#45d9ff}.meter b{display:block;margin-top:6px;font-size:11px}.warn{color:#ffd66b}@media(max-width:700px){#help{font-size:9px}}
 </style></head><body>
 <div id="menu"><div class="card"><div class="k">ROAD TO THE</div><div class="t">LEAGUE<br><span>3D</span></div><div style="color:#9fb0c1;letter-spacing:2px">7v7 • QB / WR • AI DEFENSE • REAL-TIME BALL FLIGHT</div><div class="tap">TAP ANY BUTTON TO CONTINUE</div></div></div>
-<div id="hud">YOU: <span id="role">QB</span> • DOWN <span id="down">1</span> • <span id="yards">0</span> YDS • <span id="score">0</span> TD</div>
-<div id="help">WASD = RUN • HOLD SHIFT = SPRINT • SPACE = HURDLE • E = THROW • C = CATCH</div><div id="catch">CATCH WINDOW<div class="meter"><i id="meterFill"></i></div><b id="meterText">WAIT</b></div>
+<div id="hud">PLAY: <span id="playName">SLANT</span> • <span id="losHud">LOS 32</span> • YOU: <span id="role">QB</span> • DOWN <span id="down">1</span> • <span id="yards">0</span> YDS • <span id="score">0</span> TD</div>
+<div id="help">1 SLANT • 2 GO • 3 OUT • 4 CURL • ENTER SNAP • WASD RUN • SHIFT SPRINT • SPACE HURDLE • E THROW • C CATCH</div><div id="playUI"></div><div id="catch">CATCH WINDOW<div class="meter"><i id="meterFill"></i></div><b id="meterText">WAIT</b></div>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
 const menu=document.getElementById('menu'),meterFill=document.getElementById('meterFill'),meterText=document.getElementById('meterText'),roleEl=document.getElementById('role'),yardsEl=document.getElementById('yards'),scoreEl=document.getElementById('score'),downEl=document.getElementById('down'),catchEl=document.getElementById('catch');
-const keys={};let started=false,scene,camera,renderer,clock,qb,wr,cb1,cb2,ball,pass=null,role='QB',yards=0,td=0,down=1,catchReady=false,sprintEnergy=100,hurdleT=0,runSpeed=0,catchScore=0;
+const keys={};let started=false,scene,camera,renderer,clock,qb,wr,cb1,cb2,ball,pass=null,role='QB',yards=0,td=0,down=1,catchReady=false,sprintEnergy=100,hurdleT=0,runSpeed=0,catchScore=0,playStarted=false,playType='SLANT',playClock=20,los=-32,firstDown=-22,routeT=0;
 
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(!started)start();});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);menu.onclick=start;
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(!started)start();if(e.key==='1')selectPlay(1);if(e.key==='2')selectPlay(2);if(e.key==='3')selectPlay(3);if(e.key==='4')selectPlay(4);if(e.key==='Enter')snap();});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);menu.onclick=start;
 function start(){if(started)return;started=true;menu.remove();init()}
 function M(c,r=.72){return new THREE.MeshStandardMaterial({color:c,roughness:r})}
 function mesh(g,m,p=[0,0,0]){const x=new THREE.Mesh(g,m);x.position.set(...p);x.castShadow=true;x.receiveShadow=true;return x}
@@ -34,7 +34,7 @@ function human(team,skin=0x8b5a3c){
  return g;
 }
 function animate(g,t,run=false){const p=g.userData.parts;if(!p)return;const a=Math.sin(t*13)*(run?.65:.08);p.legs[0].rotation.x=a;p.legs[1].rotation.x=-a;p.arms[0].rotation.x=-a*.55;p.arms[1].rotation.x=a*.55}
-function field(){
+function lineMarker(x,color,y=.08,w=120){scene.add(mesh(new THREE.BoxGeometry(w,.035,.12),M(color,1),[x,y,0]));} function routeLine(points){const pts=points.map(p=>new THREE.Vector3(p[0],.11,p[1]));const g=new THREE.BufferGeometry().setFromPoints(pts);scene.add(new THREE.Line(g,new THREE.LineBasicMaterial({color:0x45d9ff,linewidth:4})));} function field(){
  const turf=mesh(new THREE.BoxGeometry(120,.2,53.33),M(0x176b35,1),[0,-.12,0]);scene.add(turf);
  const white=M(0xffffff,1);
  for(let x=-60;x<=60;x+=5)scene.add(mesh(new THREE.BoxGeometry(.07,.025,53),white,[x,.02,0]));
@@ -42,7 +42,7 @@ function field(){
  for(let z=-26.5;z<=26.5;z+=5)scene.add(mesh(new THREE.BoxGeometry(120,.025,.07),white,[0,.02,z]));
  for(let x=-55;x<=55;x+=5)for(const z of [-5.7,5.7])scene.add(mesh(new THREE.BoxGeometry(.65,.03,.08),white,[x,.04,z]));
  for(const x of [-55,55])scene.add(mesh(new THREE.BoxGeometry(10,.035,53),M(x<0?0x183f80:0x752331),[x,.04,0]));
- for(const x of [-60,60])goal(x);
+ for(const x of [-60,60])goal(x); lineMarker(los,0x1769ff); lineMarker(firstDown,0xf4c542);
  // sideline + numbers
  for(const x of [-60,-50,-40,-30,-20,-10,0,10,20,30,40,50,60])label(x===0?'50':String(Math.abs(x)),x,-7.7);
 }
@@ -60,20 +60,20 @@ function init(){
  scene.add(new THREE.HemisphereLight(0xeaf5ff,0x15200f,2.4));const sun=new THREE.DirectionalLight(0xffffff,3.4);sun.position.set(-35,60,25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
  field();stadium();
  qb=human(0x1976d2);wr=human(0x1976d2,0x6f4630);cb1=human(0xc6283d);cb2=human(0xc6283d,0x6b4732);
- qb.position.set(-32,0,0);wr.position.set(-5,0,-8);cb1.position.set(-2,0,-5);cb2.position.set(8,0,6);scene.add(qb,wr,cb1,cb2);
+ qb.position.set(los-2,0,0);wr.position.set(los,0,-8);cb1.position.set(los+1,0,-5);cb2.position.set(los+8,0,6); const linemen=[]; for(let i=-2;i<=2;i++){const ol=human(0x1976d2);ol.scale.set(.95,.95,.95);ol.position.set(los-1.5,0,i*2.1);linemen.push(ol);scene.add(ol)} const te=human(0x1976d2);te.position.set(los,0,6);scene.add(te);scene.add(qb,wr,cb1,cb2);
  ball=mesh(new THREE.SphereGeometry(.2,20,14),M(0x713e1c),[0,2,0]);ball.scale.set(.8,.8,1.7);scene.add(ball);
  clock=new THREE.Clock();addEventListener('resize',resize);requestAnimationFrame(loop);
 }
 function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
 function move(p,s){let dx=0,dz=0;if(keys.w||keys.arrowup)dz--;if(keys.s||keys.arrowdown)dz++;if(keys.a||keys.arrowleft)dx--;if(keys.d||keys.arrowright)dx++;if(dx||dz){let sprint=keys.shift&&sprintEnergy>1;if(sprint)sprintEnergy=Math.max(0,sprintEnergy-.9);else sprintEnergy=Math.min(100,sprintEnergy+.35);const v=s*(sprint?2.35:1),l=Math.hypot(dx,dz);runSpeed=v;p.position.x+=dx/l*v;p.position.z+=dz/l*v;p.position.x=THREE.MathUtils.clamp(p.position.x,-57,57);p.position.z=THREE.MathUtils.clamp(p.position.z,-23,23);p.rotation.y=Math.atan2(dx,dz);p.userData.running=true}else p.userData.running=false}
-function hurdle(p){if(role!=='WR'||hurdleT>0)return;hurdleT=.72;p.userData.hurdling=true} function throwBall(){if(role!=='QB'||pass)return;role='WR';roleEl.textContent='WR';pass={t:0,d:1.25,start:qb.position.clone().add(new THREE.Vector3(0,1.9,0)),target:wr.position.clone().add(new THREE.Vector3(0,1.5,0))};}
+function hurdle(p){if(role!=='WR'||hurdleT>0)return;hurdleT=.72;p.userData.hurdling=true} function drawRoute(){if(playType==='SLANT')routeLine([[los,-8],[los+8,-8],[los+16,-2]]);if(playType==='GO')routeLine([[los,-8],[los+28,-8]]);if(playType==='OUT')routeLine([[los,-8],[los+14,-8],[los+14,-18]]);if(playType==='CURL')routeLine([[los,-8],[los+16,-8],[los+11,-8]])} function selectPlay(n){if(playStarted)return;playType=['','SLANT','GO','OUT','CURL'][n]||'SLANT';document.getElementById('playName').textContent=playType;drawRoute()} function snap(){if(playStarted)return;playStarted=true;playClock=0;drawRoute()} function throwBall(){if(role!=='QB'||pass||!playStarted)return;role='WR';roleEl.textContent='WR';pass={t:0,d:1.25,start:qb.position.clone().add(new THREE.Vector3(0,1.9,0)),target:wr.position.clone().add(new THREE.Vector3(0,1.5,0))};}
 function catchBall(){if(role!=='WR'||!pass)return;const d=wr.position.distanceTo(ball.position);if(d<2.8&&pass.t>.42&&pass.t<1.35){pass=null;catchReady=false;catchEl.style.display='none';catchesEl.textContent=++catches;yards+=Math.max(8,Math.round(wr.position.x+32));yardsEl.textContent=yards;role='QB';roleEl.textContent='QB';down++;downEl.textContent=down}}
 let catches=0;
 function ai(){cb1.position.x+=(wr.position.x+.8-cb1.position.x)*.035;cb1.position.z+=(wr.position.z-cb1.position.z)*.035;cb2.position.x+=(wr.position.x+6-cb2.position.x)*.008;cb2.position.z+=(wr.position.z-cb2.position.z)*.012}
 function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
- if(role==='QB'){move(qb,.11);if(keys.e){keys.e=false;throwBall()}}else{move(wr,.13);if(keys.space){keys.space=false;hurdle(wr)}if(keys.c){keys.c=false;catchBall()}}
- if(!pass)ball.position.copy(role==='QB'?qb.position:wr.position).add(new THREE.Vector3(0,1.9,0));
- if(hurdleT>0){hurdleT-=dt;wr.position.y=Math.sin(Math.PI*(1-hurdleT/.72))*.95;wr.rotation.x=.35}else{wr.position.y=0;wr.rotation.x=0;wr.userData.hurdling=false} if(pass){pass.t+=dt;const p=Math.min(1,pass.t/pass.d),pos=pass.start.clone().lerp(pass.target,p);pos.y+=Math.sin(Math.PI*p)*7;ball.position.copy(pos);const d=wr.position.distanceTo(ball.position);catchReady=d<2.8&&pass.t>.42&&pass.t<1.35;catchEl.style.display=catchReady?'block':'none';if(catchReady){const timing=1-Math.min(1,Math.abs(pass.t-.78)/.36);catchScore=Math.round(timing*100);meterFill.style.width=catchScore+'%';meterText.textContent=catchScore>=85?'PERFECT CATCH':catchScore>=60?'GOOD CATCH':'LATE CATCH'}else{meterFill.style.width='0%';meterText.textContent='GET IN RANGE';}if(p>=1&&!catchReady){pass=null;role='QB';roleEl.textContent='QB';catchEl.style.display='none'}}
- ai();if(runSpeed>.11)animate(qb,t,true);else animate(qb,t,false);if(runSpeed>.11)animate(wr,t,true);else animate(wr,t,false);animate(cb1,t,true);animate(cb2,t,true);
+ if(playStarted&&playClock<20)playClock+=dt;if(role==='QB'){move(qb,.11);if(keys.e){keys.e=false;throwBall()}}else{move(wr,.13);if(keys.space){keys.space=false;hurdle(wr)}if(keys.c){keys.c=false;catchBall()}}
+ if(!playStarted){ball.position.set(los-2,1.1,0)} else if(!pass)ball.position.copy(role==='QB'?qb.position:wr.position).add(new THREE.Vector3(0,1.9,0));
+ if(hurdleT>0){hurdleT-=dt;wr.position.y=Math.sin(Math.PI*(1-hurdleT/.72))*.95;wr.rotation.x=.35}else{wr.position.y=0;wr.rotation.x=0;wr.userData.hurdling=false} if(pass){pass.t+=dt;const p=Math.min(1,pass.t/pass.d),pos=pass.start.clone().lerp(pass.target,p);pos.y+=Math.sin(Math.PI*p)*7;ball.position.copy(pos);const d=wr.position.distanceTo(ball.position);catchReady=d<2.8&&pass.t>.42&&pass.t<1.35;catchEl.style.display=catchReady?'block':'none';if(catchReady){const timing=1-Math.min(1,Math.abs(pass.t-.78)/.36);catchScore=Math.round(timing*100);meterFill.style.width=catchScore+'%';meterText.textContent=catchScore>=85?'PERFECT CATCH':catchScore>=60?'GOOD CATCH':'LATE CATCH'}else{meterFill.style.width='0%';meterText.textContent='GET IN RANGE';}if(p>=1&&!catchReady){pass=null;role='QB';roleEl.textContent='QB';catchEl.style.display='none';playStarted=false;down++;downEl.textContent=down}}
+ document.getElementById('losHud').textContent='LOS '+Math.round(Math.abs(los));ai();if(runSpeed>.11)animate(qb,t,true);else animate(qb,t,false);if(runSpeed>.11)animate(wr,t,true);else animate(wr,t,false);animate(cb1,t,true);animate(cb2,t,true);
  const target=role==='WR'?wr:qb;camera.position.lerp(new THREE.Vector3(target.position.x+8,5.4,target.position.z+11),.09);camera.lookAt(target.position.x+3,1.4,target.position.z);renderer.render(scene,camera);requestAnimationFrame(loop)}
 </script></body></html>

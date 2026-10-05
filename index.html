@@ -37,6 +37,7 @@ button{border:0;border-radius:10px;padding:16px 26px;background:#37e77c;color:#0
 <div id="hud"></div><div id="score"></div><div id="playbar"></div><div id="teamBadge"></div><div id="throwMeter"><div class="tmTitle">THROW POWER • GREEN = ACCURATE • YELLOW = RISK • RED = BAD THROW</div><div class="tmTrack"><div class="green"></div><div class="yellow"></div><div class="red"></div></div><div class="tmMarker"></div></div><div id="snapPrompt">PRESS SPACE TO HIKE<br><small>QB READY • OFFENSE SET</small></div><div id="career"></div><div id="catch"><div>PRESS C TO CATCH</div><div class="bar"><i></i></div></div><div id="controls">WASD MOVE &nbsp; SHIFT SPRINT &nbsp; G TRUCK &nbsp; F HIT STICK &nbsp; SPACE SNAP &nbsp; E THROW &nbsp; C CATCH &nbsp; Q WR &nbsp; X CALL BALL &nbsp; 1–8 PLAYS &nbsp; R RESET</div><div id="weatherFx"></div><div id="toast"></div><div id="flag"></div>
 <div id="mobileControls"><div id="stick" class="touchBtn"><div id="stickKnob"></div></div><button id="btnA" class="touchBtn">A</button><button id="btnB" class="touchBtn smallBtn">B</button><button id="btnX" class="touchBtn smallBtn">X</button><button id="btnY" class="touchBtn smallBtn">Y</button><button id="btnLB" class="touchBtn">LB</button><button id="btnRB" class="touchBtn">RB</button><button id="btnMenu" class="touchBtn">☰</button><div id="mobileHint">LEFT STICK MOVE • A CATCH • X CALL • Y SWITCH • RB THROW • LB SNAP</div></div><script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x08120d);
 scene.fog=new THREE.Fog(0x08120d,65,230);
@@ -46,6 +47,20 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth
 scene.add(new THREE.HemisphereLight(0xcfe4ff,0x1a281d,2.2));
 const sun=new THREE.DirectionalLight(0xffffff,3.2);sun.position.set(-35,55,25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-90;sun.shadow.camera.right=90;sun.shadow.camera.top=70;sun.shadow.camera.bottom=-70;scene.add(sun);
 const mat=(c,r=.65)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
+const humanLoader=new GLTFLoader();
+const humanGLTF=await humanLoader.loadAsync('https://raw.githubusercontent.com/nirholas/three.ws/main/public/avatars/parametric-base.glb');
+const humanTemplate=humanGLTF.scene;
+const humanScale=1.72;
+function cloneHuman(){const g=humanTemplate.clone(true);g.scale.setScalar(humanScale);g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material?.clone)o.material=o.material.clone();}});return g;}
+function addUniformKit(g,primary,secondary,num){
+  const jersey=new THREE.Mesh(new THREE.CapsuleGeometry(.43,.62,8,16),mat(primary,.82)); jersey.scale.set(.95,1,.78); jersey.position.y=1.25; jersey.name='realJersey'; jersey.castShadow=true; g.add(jersey);
+  const pads=new THREE.Mesh(new THREE.BoxGeometry(1.16,.20,.72),mat(secondary,.72)); pads.position.y=1.57; pads.name='realPads'; pads.castShadow=true; g.add(pads);
+  const pants=new THREE.Mesh(new THREE.CapsuleGeometry(.38,.42,8,12),mat(secondary,.82)); pants.scale.set(1,.72,.78); pants.position.y=.78; pants.name='realPants'; pants.castShadow=true; g.add(pants);
+  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.37,24,18,0,Math.PI*2,0,Math.PI*.64),mat(primary,.55)); helmet.position.y=2.03; helmet.name='realHelmet'; helmet.castShadow=true; g.add(helmet);
+  const facemask=new THREE.Mesh(new THREE.TorusGeometry(.27,.018,6,24,Math.PI),black); facemask.rotation.x=Math.PI/2; facemask.position.set(0,1.91,-.31); facemask.name='realFacemask'; g.add(facemask);
+  const nt=new THREE.Sprite(new THREE.SpriteMaterial({map:numberTexture(num),transparent:true})); nt.position.set(0,1.27,-.43); nt.scale.set(.42,.42,1); nt.name='realFrontNum'; g.add(nt);
+  return g;
+}
 const box=(s,p,m)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(...s),m);o.position.set(...p);o.castShadow=o.receiveShadow=true;scene.add(o);return o};
 const cyl=(r,h,p,m)=>{const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),m);o.position.set(...p);o.castShadow=true;scene.add(o);return o};
 const green=mat(0x126b36),white=mat(0xf1f3f0),dark=mat(0x18201b),blue=mat(0x2368d1),red=mat(0xc82f45),black=mat(0x090d0b),brown=mat(0x6e3a1b),skin=mat(0x8b5b3c),skin2=mat(0xa86f4b);
@@ -59,31 +74,10 @@ for(let x=-50;x<=50;x+=10){for(const z of [-7,7]){const t=document.createElement
 for(const z of [-31,31])for(let r=0;r<7;r++)box([122,1.2,2.2],[0,1.2+r*1.3,z+(z>0?r*1.5:-r*1.5)],mat(0x262d31));
 for(const x of [-48,-24,0,24,48]){cyl(.2,15,[x,7.5,-30],mat(0x555b61));cyl(.2,15,[x,7.5,30],mat(0x555b61));box([1.5,.8,.4],[x,15.5,-30],white);box([1.5,.8,.4],[x,15.5,30],white)}
 function player(team,num){
- const g=new THREE.Group();scene.add(g);
- g.userData={team,num,side:team===blue?'home':'away',baseY:0,v:new THREE.Vector3()};
- const jersey=mat(team===blue?0x174c9a:0x9a2638),pants=mat(team===blue?0x101c36:0x202020),sockMat=white,skinTone=Math.random()>.5?skin:skin2;
- const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.72,8,16),jersey);torso.name='torso';torso.position.y=1.35;torso.scale.z=.78;torso.castShadow=true;g.add(torso);
- const pad=new THREE.Mesh(new THREE.BoxGeometry(1.18,.22,.72),mat(team===blue?0x103c7d:0x731b28));pad.name='pads';pad.position.y=1.72;pad.castShadow=true;g.add(pad);
- const neck=new THREE.Mesh(new THREE.CylinderGeometry(.12,.15,.18,12),skinTone);neck.position.y=1.94;g.add(neck);
- for(const s of[-1,1]){
-   const thigh=new THREE.Mesh(new THREE.CapsuleGeometry(.16,.42,6,12),pants);thigh.name='thigh'+s;thigh.position.set(s*.22,.88,0);thigh.castShadow=true;g.add(thigh);
-   const shin=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.38,6,12),pants);shin.name='shin'+s;shin.position.set(s*.22,.43,-.03);shin.castShadow=true;g.add(shin);
-   const sock=new THREE.Mesh(new THREE.CapsuleGeometry(.115,.14,5,10),sockMat);sock.position.set(s*.22,.17,-.05);g.add(sock);
-   const foot=new THREE.Mesh(new THREE.BoxGeometry(.34,.16,.62),black);foot.name='foot'+s;foot.position.set(s*.22,.045,-.20);foot.castShadow=true;g.add(foot);
-   const upperArm=new THREE.Mesh(new THREE.CapsuleGeometry(.115,.34,6,12),jersey);upperArm.name='upperArm'+s;upperArm.position.set(s*.62,1.48,0);upperArm.rotation.z=s*.18;g.add(upperArm);
-   const forearm=new THREE.Mesh(new THREE.CapsuleGeometry(.095,.30,6,12),skinTone);forearm.name='forearm'+s;forearm.position.set(s*.72,1.13,-.02);forearm.rotation.z=s*.18;g.add(forearm);
-   const palm=new THREE.Mesh(new THREE.SphereGeometry(.12,14,10),skinTone);palm.name='hand'+s;palm.position.set(s*.77,.91,-.03);g.add(palm);
- }
- const h=new THREE.Mesh(new THREE.SphereGeometry(.31,24,18),skinTone);h.name='head';h.position.y=2.27;h.castShadow=true;g.add(h);
- const earL=new THREE.Mesh(new THREE.SphereGeometry(.06,12,8),skinTone);earL.position.set(-.30,2.27,0);g.add(earL);const earR=earL.clone();earR.position.x=.30;g.add(earR);
- const nose=new THREE.Mesh(new THREE.ConeGeometry(.045,.11,8),skinTone);nose.rotation.x=Math.PI/2;nose.position.set(0,2.28,-.30);g.add(nose);
- const eyeMat=mat(0x101010);for(const s of[-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.032,10,8),eyeMat);eye.position.set(s*.105,2.35,-.285);g.add(eye)}
- const hel=new THREE.Mesh(new THREE.SphereGeometry(.40,24,16,0,Math.PI*2,0,Math.PI*.62),jersey);hel.name='helmet';hel.position.y=2.46;g.add(hel);
- const mask=new THREE.Mesh(new THREE.TorusGeometry(.27,.018,6,24,Math.PI),black);mask.rotation.x=Math.PI/2;mask.position.set(0,2.30,-.33);g.add(mask);
- const front=new THREE.Sprite(new THREE.SpriteMaterial({map:numberTexture(num),transparent:true}));front.name='frontNum';front.position.set(0,1.38,-.36);front.scale.set(.44,.44,1);g.add(front);
- const back=new THREE.Sprite(new THREE.SpriteMaterial({map:numberTexture(num),transparent:true}));back.name='backNum';back.position.set(0,1.42,.36);back.rotation.y=Math.PI;back.scale.set(.48,.48,1);g.add(back);
- const sleeveL=new THREE.Mesh(new THREE.CapsuleGeometry(.11,.16,5,10),jersey);sleeveL.name='sleeveL';sleeveL.position.set(-.64,1.52,0);g.add(sleeveL);
- const sleeveR=sleeveL.clone();sleeveR.name='sleeveR';sleeveR.position.x=.64;g.add(sleeveR);
+ const g=cloneHuman(); scene.add(g);
+ const primary=team===blue?0x174c9a:0x9a2638, secondary=team===blue?0x101c36:0x202020;
+ g.userData={team,num,side:team===blue?'home':'away',baseY:0,v:new THREE.Vector3(),humanModel:true};
+ addUniformKit(g,primary,secondary,num);
  return g;
 }
 function boxLocal(geo,m){const o=new THREE.Mesh(geo,m);o.castShadow=true;return o}
@@ -139,13 +133,8 @@ const NFL_UNIFORMS={
 };
 function uniformColors(name,fallback){if(NFL_UNIFORMS[name])return NFL_UNIFORMS[name];let h=0;for(const c of name)h=(h*31+c.charCodeAt(0))>>>0;const a=((h>>16)&255)<<16|((h>>8)&255)<<8|(h&255);return [a^0x101010,0xffffff];}
 function recolorPlayer(p,colors){
- const jm=p.children.find(o=>o.name==='torso')?.material;
- const pm=p.children.find(o=>o.name==='pads')?.material;
- const hm=p.children.find(o=>o.name==='helmet')?.material;
- if(jm){jm.color.setHex(colors[0]);jm.needsUpdate=true}
- if(pm){pm.color.setHex(colors[0]*0.72);pm.needsUpdate=true}
- if(hm){hm.color.setHex(colors[0]);hm.needsUpdate=true}
- p.children.forEach(o=>{if(o.name==='frontNum'||o.name==='backNum'){o.material.map.needsUpdate=true}});
+ const jm=p.getObjectByName('realJersey')?.material, pm=p.getObjectByName('realPads')?.material, hm=p.getObjectByName('realHelmet')?.material, pants=p.getObjectByName('realPants')?.material;
+ if(jm){jm.color.setHex(colors[0]);jm.needsUpdate=true} if(pm){pm.color.setHex(colors[1]);pm.needsUpdate=true} if(hm){hm.color.setHex(colors[0]);hm.needsUpdate=true} if(pants){pants.color.setHex(colors[1]);pants.needsUpdate=true}
 }
 function applyUniforms(){
  const homeColors=uniformColors(homeTeam),awayColors=uniformColors(awayTeam);
@@ -207,30 +196,29 @@ function cam(dt){const target=user.position.clone();const desired=target.clone()
 function updateThrowMeter(dt){const meter=document.querySelector('#throwMeter');if(role==='QB'&&live&&!ballAir&&throwMeterActive){meter.style.display='block';if(eHeld){throwPower+=throwDir*dt*1.7;if(throwPower>=1){throwPower=1;throwDir=-1}if(throwPower<=0){throwPower=0;throwDir=1}}if(throwPower>=1){throwPower=1;throwDir=-1}if(throwPower<=0){throwPower=0;throwDir=1}meter.querySelector('.tmMarker').style.left=(throwPower*100)+'%'}else if(!throwMeterActive)meter.style.display='none'}
 function setStance(p,type){
  p.userData.stance=type;
- const L=p.getObjectByName('thigh-1'),R=p.getObjectByName('thigh1'),SL=p.getObjectByName('shin-1'),SR=p.getObjectByName('shin1');
- const AL=p.getObjectByName('upperArm-1'),AR=p.getObjectByName('upperArm1'),FL=p.getObjectByName('forearm-1'),FR=p.getObjectByName('forearm1');
+ const bones=[];p.traverse(o=>{if(o.isBone)bones.push(o)}); const hip=bones.find(b=>/hips|pelvis/i.test(b.name)); const spine=bones.find(b=>/spine/i.test(b.name)); const head=bones.find(b=>/head/i.test(b.name)); const L=bones.find(b=>/(left.*leg|left.*thigh)/i.test(b.name)),R=bones.find(b=>/(right.*leg|right.*thigh)/i.test(b.name)),AL=bones.find(b=>/left.*arm/i.test(b.name)),AR=bones.find(b=>/right.*arm/i.test(b.name));
  p.rotation.x=0;p.position.y=0;
  if(type==='3POINT'){
    p.rotation.x=-0.24;
-   if(L)L.rotation.z=-.24;if(R)R.rotation.z=.24;if(SL)SL.rotation.z=.12;if(SR)SR.rotation.z=-.12;
+   if(L)L.rotation.z=-.18;if(R)R.rotation.z=.18;
    if(AL)AL.rotation.z=-.28;if(AR)AR.rotation.z=.18;
-   if(FL)FL.position.set(-.73,.67,-.23);if(FR)FR.position.set(.78,1.00,-.08);
+   if(AL)AL.rotation.z=-.28;if(AR)AR.rotation.z=.18;if(spine)spine.rotation.x=-.10;
  }else if(type==='DEFENSIVE'){
    p.rotation.x=-0.16;
-   if(L)L.rotation.z=-.28;if(R)R.rotation.z=.28;if(SL)SL.rotation.z=.16;if(SR)SR.rotation.z=-.16;
+   if(L)L.rotation.z=-.22;if(R)R.rotation.z=.22;
    if(AL)AL.rotation.z=-.2;if(AR)AR.rotation.z=.2;
-   if(FL)FL.position.set(-.72,1.02,-.10);if(FR)FR.position.set(.72,1.02,-.10);
+   if(AL)AL.rotation.z=-.20;if(AR)AR.rotation.z=.20;if(spine)spine.rotation.x=-.16;
  }else if(type==='WR'){
    p.rotation.x=-0.10;
-   if(L)L.rotation.z=-.16;if(R)R.rotation.z=.16;if(SL)SL.rotation.z=.08;if(SR)SR.rotation.z=-.08;
-   if(FL)FL.position.set(-.70,1.08,-.12);if(FR)FR.position.set(.70,1.08,-.12);
+   if(L)L.rotation.z=-.12;if(R)R.rotation.z=.12;
+   if(AL)AL.rotation.z=-.12;if(AR)AR.rotation.z=.12;if(spine)spine.rotation.x=-.08;
  }else if(type==='RB'){
    p.rotation.x=-0.18;
-   if(L)L.rotation.z=-.22;if(R)R.rotation.z=.22;if(SL)SL.rotation.z=.10;if(SR)SR.rotation.z=-.10;
-   if(FL)FL.position.set(-.58,1.15,-.18);if(FR)FR.position.set(.58,1.15,-.18);
+   if(L)L.rotation.z=-.16;if(R)R.rotation.z=.16;
+   if(AL)AL.rotation.z=-.10;if(AR)AR.rotation.z=.10;if(spine)spine.rotation.x=-.12;
  }else if(type==='QB'){
    p.rotation.x=0;
-   if(FL)FL.position.set(-.42,1.20,-.12);if(FR)FR.position.set(.42,1.20,-.12);
+   if(AL)AL.rotation.z=-.08;if(AR)AR.rotation.z=.08;
  }
 }
 function snapUpdate(dt){if(snapPhase===1){snapTimer-=dt;const u=Math.min(1,1-snapTimer/.55);ball.position.lerpVectors(snapBallStart,snapBallEnd,u);qb.position.y=0.12*Math.sin(u*Math.PI);if(snapTimer<=0){snapPhase=2;live=true;ball.position.copy(qb.position).add(new THREE.Vector3(0,1.15,0));qb.position.y=0;driveStart=qb.position.x;lineOfScrimmage.position.x=driveStart;firstDownX=driveStart+dist;firstDownMarker.position.x=firstDownX;toast('HIKE! • PLAY LIVE');} }if(snapPhase===0&&!live)document.querySelector('#snapPrompt').style.display='block';else document.querySelector('#snapPrompt').style.display='none'}

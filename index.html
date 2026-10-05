@@ -38,6 +38,7 @@ button{border:0;border-radius:10px;padding:16px 26px;background:#37e77c;color:#0
 <div id="mobileControls"><div id="stick" class="touchBtn"><div id="stickKnob"></div></div><button id="btnA" class="touchBtn">A</button><button id="btnB" class="touchBtn smallBtn">B</button><button id="btnX" class="touchBtn smallBtn">X</button><button id="btnY" class="touchBtn smallBtn">Y</button><button id="btnLB" class="touchBtn">LB</button><button id="btnRB" class="touchBtn">RB</button><button id="btnMenu" class="touchBtn">☰</button><div id="mobileHint">LEFT STICK MOVE • A CATCH • X CALL • Y SWITCH • RB THROW • LB SNAP</div></div><script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
+import { SkeletonUtils } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/SkeletonUtils.js';
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x08120d);
 scene.fog=new THREE.Fog(0x08120d,65,230);
@@ -51,7 +52,7 @@ const humanLoader=new GLTFLoader();
 const humanGLTF=await humanLoader.loadAsync('https://raw.githubusercontent.com/nirholas/three.ws/main/public/avatars/parametric-base.glb');
 const humanTemplate=humanGLTF.scene;
 const humanScale=1.72;
-function cloneHuman(){const g=humanTemplate.clone(true);g.scale.setScalar(humanScale);g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material?.clone)o.material=o.material.clone();}});return g;}
+function cloneHuman(){const g=SkeletonUtils.clone(humanTemplate);g.scale.setScalar(humanScale);g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material?.clone)o.material=o.material.clone();}});return g;}
 function addUniformKit(g,primary,secondary,num){
   const jersey=new THREE.Mesh(new THREE.CapsuleGeometry(.43,.62,8,16),mat(primary,.82)); jersey.scale.set(.95,1,.78); jersey.position.y=1.25; jersey.name='realJersey'; jersey.castShadow=true; g.add(jersey);
   const pads=new THREE.Mesh(new THREE.BoxGeometry(1.16,.20,.72),mat(secondary,.72)); pads.position.y=1.57; pads.name='realPads'; pads.castShadow=true; g.add(pads);

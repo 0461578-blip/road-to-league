@@ -580,26 +580,56 @@ function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(document.
 </script>
 <script id="rtgSetupFix">
 (function(){
-  const setup={
-    NFL:()=>typeof chooseLeague==='function'&&chooseLeague('NFL'),
-    COLLEGE:()=>typeof chooseLeague==='function'&&chooseLeague('COLLEGE'),
-    HIGH_SCHOOL:()=>typeof chooseLeague==='function'&&chooseLeague('HIGH SCHOOL')
-  };
-  function wire(id,type){
-    const el=document.getElementById(id); if(!el)return;
-    el.onclick=null;
-    el.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();setup[type]();},true);
+  function lists(type){
+    type=String(type||'NFL').toUpperCase();
+    if(type==='COLLEGE')return {type:'COLLEGE',list:window.collegeTeams||[]};
+    if(type==='HIGH SCHOOL')return {type:'HIGH SCHOOL',list:window.highSchoolTeams||[]};
+    return {type:'NFL',list:window.nflTeams||[]};
   }
-  wire('nflMode','NFL');wire('collegeMode','COLLEGE');wire('hsMode','HIGH_SCHOOL');
-  const swap=document.getElementById('swapTeams');
-  if(swap)swap.addEventListener('click',function(){
-    const h=document.getElementById('homeTeam'),a=document.getElementById('awayTeam');
-    const t=h.value;h.value=a.value;a.value=t;homeTeam=h.value;awayTeam=a.value;
-  },true);
-  window.addEventListener('load',function(){
-    if(typeof chooseLeague==='function')chooseLeague('NFL');
-    const st=document.getElementById('setupStatus');
-    if(st)st.textContent='NFL • READY';
+  function show(type){
+    try{
+      const x=lists(type); if(!x.list.length)throw new Error('team list is empty');
+      window.teamType=x.type;
+      window.homeTeam=x.list.includes(window.homeTeam)?window.homeTeam:x.list[0];
+      window.awayTeam=x.list.includes(window.awayTeam)&&window.awayTeam!==window.homeTeam?window.awayTeam:(x.list[1]||x.list[0]);
+      ['homeTeam','awayTeam'].forEach(function(id,idx){
+        const s=document.getElementById(id); if(!s)return;
+        s.innerHTML='';
+        x.list.forEach(function(n){const o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o);});
+        s.value=idx===0?window.homeTeam:window.awayTeam;
+      });
+      const overlay=document.getElementById('teamSelectOverlay');
+      if(!overlay)throw new Error('team selector missing');
+      overlay.classList.add('open'); overlay.style.display='block';
+      document.querySelectorAll('.tsMode').forEach(b=>b.classList.toggle('active',b.dataset.type===x.type));
+      ['tsHomeGrid','tsAwayGrid'].forEach(function(id,idx){
+        const g=document.getElementById(id); if(!g)return; g.innerHTML='';
+        x.list.forEach(function(n){
+          const b=document.createElement('button'); b.type='button'; b.className='tsTeam';
+          b.innerHTML='<span class="tsMini">'+n.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase()+'</span><span>'+n+'</span>';
+          if((idx===0?window.homeTeam:window.awayTeam)===n)b.classList.add('selected');
+          b.onclick=function(e){e.preventDefault();e.stopPropagation();if(idx===0)window.homeTeam=n;else window.awayTeam=n;show(x.type);};
+          g.appendChild(b);
+        });
+      });
+      const hn=document.getElementById('tsHomeName'),an=document.getElementById('tsAwayName');
+      if(hn)hn.textContent=window.homeTeam;if(an)an.textContent=window.awayTeam;
+      const hl=document.getElementById('tsHomeLogo'),al=document.getElementById('tsAwayLogo');
+      if(hl)hl.textContent=window.homeTeam.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase();
+      if(al)al.textContent=window.awayTeam.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase();
+      const st=document.getElementById('setupStatus');if(st)st.textContent=x.type+' • '+x.list.length+' TEAMS READY';
+    }catch(err){console.error(err);const st=document.getElementById('setupStatus');if(st)st.textContent='TEAM SELECT ERROR';}
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    [['nflMode','NFL'],['collegeMode','COLLEGE'],['hsMode','HIGH SCHOOL']].forEach(function(p){
+      const b=document.getElementById(p[0]);if(b)b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();show(p[1]);},true);
+    });
+    const tb=document.getElementById('teamMenuBtn');if(tb)tb.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();show(window.teamType||'NFL');},true);
+    document.querySelectorAll('.tsMode').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();show(b.dataset.type);},true);});
+    const close=function(e){e.preventDefault();e.stopPropagation();const o=document.getElementById('teamSelectOverlay');if(o){o.classList.remove('open');o.style.display='none';}};
+    const a=document.getElementById('tsClose'),b=document.getElementById('tsCancel');if(a)a.addEventListener('click',close,true);if(b)b.addEventListener('click',close,true);
+    const start=document.getElementById('tsPlay');if(start)start.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const h=document.getElementById('homeTeam'),a=document.getElementById('awayTeam');if(h)window.homeTeam=h.value;if(a)window.awayTeam=a.value;const o=document.getElementById('teamSelectOverlay');if(o){o.classList.remove('open');o.style.display='none';}const m=document.getElementById('menu');if(m)m.style.display='none';if(typeof reset==='function')reset();},true);
+    const swap=document.getElementById('swapTeams');if(swap)swap.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const h=document.getElementById('homeTeam'),a=document.getElementById('awayTeam');if(h&&a){const t=h.value;h.value=a.value;a.value=t;window.homeTeam=h.value;window.awayTeam=a.value;}},true);
   });
 })();
 </script></body></html>

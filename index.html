@@ -119,6 +119,51 @@ linear-gradient(90deg,#ffffff09 1px,transparent 1px);background-size:60px 60px;t
  #rtgIntro .introTitle{letter-spacing:-4px}.introCopy{font-size:12px!important}
  #gameActionBar{bottom:150px}.catchAction{top:auto;bottom:150px}
 }
+</style><style id="rtgRevamp">
+#menu{background:#030405!important}
+#menu .rtgHome{position:absolute;inset:0;overflow:auto;background:
+radial-gradient(circle at 74% 42%,#e51d2a18 0 4%,transparent 28%),
+linear-gradient(115deg,#030405 0%,#070b10 48%,#101419 100%);font-family:Arial,Helvetica,sans-serif}
+.rtgTopbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,64px);border-bottom:1px solid #ffffff12;background:#030405cc;backdrop-filter:blur(14px);position:relative;z-index:5}
+.rtgBrand{font-size:11px;font-weight:1000;letter-spacing:3px}.liveDot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e51d2a;box-shadow:0 0 14px #e51d2a;margin-right:9px}
+.rtgSeason{font-size:9px;color:#69737e;letter-spacing:2px}.rtgSeason b{color:#e51d2a}
+.rtgHero{position:relative;min-height:calc(100vh - 218px);display:flex;align-items:center;padding:30px clamp(18px,5vw,80px);isolation:isolate}
+.rtgHero:before{content:"";position:absolute;inset:0;z-index:-3;background:linear-gradient(90deg,#030405 0%,#030405ee 36%,#03040555 67%,#030405 100%)}
+.rtgHero:after{content:"";position:absolute;inset:0;z-index:-4;background:
+linear-gradient(110deg,transparent 0 58%,#ffffff06 58.2% 58.6%,transparent 58.8%),
+repeating-linear-gradient(90deg,transparent 0 74px,#ffffff05 75px 76px);opacity:.5}
+.rtgHeroShade{position:absolute;right:-8%;top:0;width:62%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#d51c2a20 0 12%,transparent 52%)}
+.rtgHeroCopy{position:relative;z-index:4;width:min(610px,68vw)}
+.rtgEyebrow{font-size:10px;letter-spacing:4px;font-weight:1000;color:#e51d2a;margin-bottom:16px}
+.rtgTitle{font-size:clamp(56px,8vw,116px);line-height:.79;letter-spacing:-7px;font-weight:1000;text-transform:uppercase;text-shadow:0 20px 60px #000}
+.rtgTitle span{color:#fff}
+.rtgTagline{margin:25px 0 23px;color:#8e98a3;font-size:11px;font-weight:1000;letter-spacing:3px}
+.rtgButtons{display:grid;grid-template-columns:1.25fr 1fr;gap:9px;width:min(610px,100%)}
+.rtgButtons button{font-family:inherit;text-align:left;border-radius:3px;cursor:pointer;color:#fff;margin:0}
+.rtgBigBtn{grid-row:span 2;min-height:142px;border:0;background:linear-gradient(135deg,#e51d2a,#a50f18);padding:20px;box-shadow:0 20px 55px #0009;transition:.16s transform,.16s filter}
+.rtgBigBtn:hover{transform:translateY(-4px);filter:brightness(1.12)}
+.rtgBigBtn strong{display:block;font-size:40px;letter-spacing:-2px}.rtgButtons small{display:block;color:#ffffff9c;font-size:9px;font-weight:900;letter-spacing:1px;margin-top:7px}
+.rtgLineBtn{min-height:66px;padding:14px 17px;background:#0d1116dd;border:1px solid #ffffff16;transition:.16s transform,.16s background,.16s border}
+.rtgLineBtn:hover{transform:translateX(5px);background:#171d24;border-color:#ffffff42}
+.rtgLineBtn strong{display:block;font-size:15px;letter-spacing:.5px}.rtgLineBtn small{margin-top:5px}
+.rtgPlayerArt{position:absolute;right:2%;top:5%;bottom:0;width:52%;pointer-events:none}
+.rtgPlayerGlow{position:absolute;width:72%;height:58%;right:3%;top:25%;border-radius:50%;background:#e51d2a24;filter:blur(65px)}
+.rtgSilhouette{position:absolute;right:7%;bottom:-5%;width:57%;height:91%;opacity:.9;
+background:
+radial-gradient(ellipse at 50% 13%,#b8bec7 0 7%,transparent 7.5%),
+radial-gradient(ellipse at 50% 32%,#1e242c 0 15%,transparent 15.5%),
+linear-gradient(72deg,transparent 43%,#222933 44% 54%,transparent 55%),
+linear-gradient(-72deg,transparent 43%,#161c24 44% 54%,transparent 55%);
+filter:drop-shadow(0 30px 40px #000)}
+.rtgStatCard{position:absolute;right:5%;top:18%;padding:12px 16px;background:#070a0de8;border:1px solid #ffffff18;backdrop-filter:blur(10px);display:grid;gap:3px}
+.rtgStatCard b{font-size:24px;color:#e51d2a}.rtgStatCard span{font-size:9px;font-weight:1000;letter-spacing:2px}.rtgStatCard i{font-size:8px;color:#66717c;font-style:normal;letter-spacing:1px}
+.rtgSetup{position:relative;z-index:10;margin:0 clamp(18px,5vw,80px) 16px;padding:13px 15px;background:#080c11ed;border:1px solid #ffffff18;box-shadow:0 14px 35px #0008}
+.setupHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:9px;letter-spacing:2px;font-weight:1000;color:#77818c}.setupHead b{color:#e51d2a}
+.setupModes{display:flex;gap:6px;margin-bottom:9px}.rtgMode{background:#11171d!important;border:1px solid #ffffff18!important;color:#aab3bd!important;border-radius:2px!important;padding:9px 13px!important;font-size:10px!important;margin:0!important;font-weight:1000!important}.rtgMode.active,.rtgMode:hover{background:#e51d2a!important;border-color:#e51d2a!important;color:#fff!important}
+.setupChoices{display:grid;grid-template-columns:1fr 32px 1fr 1fr 1fr;gap:7px;align-items:end}.setupChoices label{font-size:8px;color:#66717c;font-weight:1000;letter-spacing:1px}.setupChoices select{display:block;width:100%;margin-top:4px;background:#0c1116;color:#fff;border:1px solid #ffffff18;border-radius:2px;padding:8px;font-size:10px;font-weight:800}.swapBtn{height:34px;padding:0!important;background:#141a20!important;color:#fff!important;border:1px solid #ffffff18!important;border-radius:2px!important;margin:0!important}
+.setupHint{margin-top:7px;color:#58636e;font-size:8px;letter-spacing:.6px}.rtgFooter{height:38px;padding:0 clamp(18px,5vw,80px);display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ffffff0d;color:#48515b;font-size:8px;font-weight:1000;letter-spacing:1.5px}
+@media(max-width:850px){.rtgHero{min-height:auto;padding:35px 20px 18px}.rtgPlayerArt{opacity:.25;width:100%;right:-10%;}.rtgHeroCopy{width:100%}.rtgTitle{font-size:clamp(52px,15vw,90px)}.rtgSetup{margin:0 12px 12px}.setupChoices{grid-template-columns:1fr 1fr}.swapBtn{display:none}.rtgFooter{height:auto;min-height:36px;gap:8px;flex-wrap:wrap;padding:8px 14px}.rtgTopbar{padding:0 15px}.rtgSeason{display:none}}
+@media(max-width:520px){.rtgButtons{grid-template-columns:1fr}.rtgBigBtn{grid-row:auto;min-height:88px}.rtgSetup{margin-bottom:5px}.setupModes{overflow:auto}.rtgMode{white-space:nowrap}.setupChoices{grid-template-columns:1fr}.rtgHero{padding-top:25px}.rtgTagline{margin:16px 0}.rtgTitle{letter-spacing:-4px}}
 </style></head>
 <body>
 
@@ -138,28 +183,48 @@ linear-gradient(90deg,#ffffff09 1px,transparent 1px);background-size:60px 60px;t
     <div class="introMeta"><b>ROAD TO THE LEAGUE</b><br>CAREER MODE • SEASON 01<br>BUILD YOUR TAPE • EARN YOUR SPOT</div>
   </div>
   <button class="introSkip" id="introSkip">SKIP INTRO</button>
-</div><div id="menu"><div class="card">
-<div class="menuMusic" id="menuMusic"><i class="mmDot"></i><div class="mmText"><div class="mmNow">MAIN MENU MUSIC • SHUFFLE</div><div class="mmSong" id="musicSong">Remember the Time — Michael Jackson</div><div class="mmDate" id="musicDate">1992</div></div><button id="musicShuffle">SHUFFLE</button></div>
-<div class="menuTop"><i class="menuDot"></i> ROAD TO THE LEAGUE <span style="color:#68727d">/</span> FOOTBALL</div>
-<div class="menuLeft">
-<div class="menuLogo">ROAD TO<br><span>THE LEAGUE</span></div>
-<div class="menuSubtitle">EVERY SNAP MATTERS. BUILD YOUR NAME. EARN YOUR SPOT.</div>
-<div class="menuActions">
-<button type="button" class="menuBtn primary" id="play"><span class="big">PLAY NOW</span><small>JUMP STRAIGHT INTO THE GAME</small></button>
-<button type="button" class="menuBtn" id="careerBtn"><span class="big">ROAD TO GLORY</span><small>BUILD YOUR CAREER • EARN REP</small></button>
-<button type="button" class="menuBtn" id="teamMenuBtn"><span class="big">TEAM SELECT</span><small>CHOOSE YOUR MATCHUP</small></button>
+</div><div id="menu">
+<div class="rtgHome">
+  <div class="rtgTopbar">
+    <div class="rtgBrand"><span class="liveDot"></span> ROAD TO THE LEAGUE</div>
+    <div class="rtgSeason">CAREER MODE <b>•</b> SEASON 01</div>
+  </div>
+  <div class="rtgHero">
+    <div class="rtgHeroShade"></div>
+    <div class="rtgHeroCopy">
+      <div class="rtgEyebrow">YOUR STORY STARTS TONIGHT</div>
+      <div class="rtgTitle">ROAD TO<br><span>THE LEAGUE</span></div>
+      <div class="rtgTagline">START UNKNOWN. EARN YOUR NAME.</div>
+      <div class="rtgButtons">
+        <button type="button" class="rtgBigBtn" id="play"><strong>PLAY</strong><small>START YOUR JOURNEY</small></button>
+        <button type="button" class="rtgLineBtn" id="careerBtn"><strong>ROAD TO GLORY</strong><small>BUILD YOUR PLAYER • EARN REP</small></button>
+        <button type="button" class="rtgLineBtn" id="teamMenuBtn"><strong>TEAM SELECT</strong><small>CHOOSE HOME & AWAY</small></button>
+      </div>
+    </div>
+    <div class="rtgPlayerArt">
+      <div class="rtgPlayerGlow"></div><div class="rtgSilhouette"></div>
+      <div class="rtgStatCard"><b>01</b><span>BUILD THE TAPE</span><i>EVERY SNAP MATTERS</i></div>
+    </div>
+  </div>
+  <div class="rtgSetup">
+    <div class="setupHead"><span>GAME SETUP</span><b id="setupStatus">SELECT A LEVEL</b></div>
+    <div class="setupModes">
+      <button type="button" class="rtgMode" id="nflMode">NFL</button>
+      <button type="button" class="rtgMode" id="collegeMode">COLLEGE</button>
+      <button type="button" class="rtgMode" id="hsMode">HIGH SCHOOL</button>
+    </div>
+    <div class="setupChoices">
+      <label>HOME <select id="homeTeam"></select></label>
+      <button type="button" class="swapBtn" id="swapTeams">⇄</button>
+      <label>AWAY <select id="awayTeam"></select></label>
+      <label>TIME <select id="gameTime"><option value="day">1:00 PM • DAY</option><option value="late">4:25 PM • LATE</option><option value="night">8:20 PM • NIGHT</option><option value="lateNight">10:00 PM • NIGHT</option></select></label>
+      <label>WEATHER <select id="weather"><option value="clear">CLEAR</option><option value="rain">RAIN</option><option value="snow">SNOW</option><option value="wind">WIND</option></select></label>
+    </div>
+    <div class="setupHint" id="menuStatus">Choose NFL, College, or High School. Home and Away teams will update automatically.</div>
+  </div>
+  <div class="rtgFooter"><span>PC • CONSOLE • MOBILE</span><span>BUILD • COMPETE • EARN YOUR SPOT</span><span>ROAD TO THE LEAGUE © 2026</span></div>
 </div>
-<div class="menuSection">GAME SETUP</div>
-<div class="setupPanel">
-<div class="setupTitle">TEAM TYPE</div>
-<div class="gameMode"><button class="alt" id="nflMode">NFL</button><button class="alt" id="collegeMode">COLLEGE</button><button class="alt" id="hsMode">HIGH SCHOOL</button></div>
-<div class="setupGrid"><label>HOME TEAM<select id="homeTeam"></select></label><label>AWAY TEAM<select id="awayTeam"></select></label><label>GAME TIME<select id="gameTime"><option value="day">1:00 PM • DAY</option><option value="late">4:25 PM • LATE DAY</option><option value="night">8:20 PM • NIGHT</option><option value="lateNight">10:00 PM • NIGHT</option></select></label><label>WEATHER<select id="weather"><option value="clear">CLEAR</option><option value="rain">RAIN</option><option value="snow">SNOW</option><option value="wind">WINDY</option></select></label></div>
-<div class="menuStatus" id="menuStatus">LOADING FOOTBALL EXPERIENCE...</div>
-</div>
-</div>
-<div class="menuHero"><div class="menuGlow"></div><div class="menuPlayer"></div></div>
-</div></div>
-<div id="teamSelectOverlay">
+</div><div id="teamSelectOverlay">
 <div class="tsTop"><div class="tsTitle">TEAM <span>SELECT</span></div><div class="tsHint">SELECT YOUR HOME & AWAY TEAMS</div><button id="tsClose" class="tsBack">BACK</button></div>
 <div class="tsBody">
 <div class="tsModes"><button type="button" class="tsMode active" data-type="NFL">NFL</button><button type="button" class="tsMode" data-type="COLLEGE">COLLEGE</button><button type="button" class="tsMode" data-type="HIGH SCHOOL">HIGH SCHOOL • TX + GA</button></div>
@@ -513,4 +578,28 @@ readGamepad=function(){
 let last=performance.now();setStance(qb,'QB');setStance(wr,'WR');setStance(wr2,'WR');setStance(wr3,'WR');setStance(te,'WR');setStance(rb,'RB');teammates.filter(p=>p.userData.stance==='3POINT').forEach(p=>setStance(p,'3POINT'));teammates.filter(p=>p.userData.stance==='DEFENSIVE').forEach(p=>setStance(p,'DEFENSIVE'));
 function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(document.querySelector('#menu').style.display==='none'){readGamepad();clock=Math.max(0,clock-dt);snapUpdate(dt);updatePlayer(dt);routes(dt);aiQuarterback(dt);defense(dt);pass(dt);updateThrowMeter(dt);updateCatchAction(dt);cam(dt);hud()}else{camera.position.lerp(new THREE.Vector3(-45,16,32),.02);camera.lookAt(-15,1,0)}renderer.render(scene,camera);requestAnimationFrame(loop)}applyGameSettings();reset();requestAnimationFrame(loop);
 </script>
-</body></html>
+<script id="rtgSetupFix">
+(function(){
+  const setup={
+    NFL:()=>typeof chooseLeague==='function'&&chooseLeague('NFL'),
+    COLLEGE:()=>typeof chooseLeague==='function'&&chooseLeague('COLLEGE'),
+    HIGH_SCHOOL:()=>typeof chooseLeague==='function'&&chooseLeague('HIGH SCHOOL')
+  };
+  function wire(id,type){
+    const el=document.getElementById(id); if(!el)return;
+    el.onclick=null;
+    el.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();setup[type]();},true);
+  }
+  wire('nflMode','NFL');wire('collegeMode','COLLEGE');wire('hsMode','HIGH_SCHOOL');
+  const swap=document.getElementById('swapTeams');
+  if(swap)swap.addEventListener('click',function(){
+    const h=document.getElementById('homeTeam'),a=document.getElementById('awayTeam');
+    const t=h.value;h.value=a.value;a.value=t;homeTeam=h.value;awayTeam=a.value;
+  },true);
+  window.addEventListener('load',function(){
+    if(typeof chooseLeague==='function')chooseLeague('NFL');
+    const st=document.getElementById('setupStatus');
+    if(st)st.textContent='NFL • READY';
+  });
+})();
+</script></body></html>

@@ -192,9 +192,11 @@ const highSchoolTeams=[...new Set(texasTeams.concat(georgiaTeams))];
 let teamPool=nflTeams,teamType='NFL';
 function populateTeams(list){teamPool=list;for(const id of ['homeTeam','awayTeam']){const el=document.getElementById(id);el.innerHTML='';list.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;el.appendChild(o)});}}
 populateTeams(nflTeams);menuStatus.textContent=humanTemplate?'3D PLAYERS READY • SELECT YOUR TEAMS':'TEAM SELECT READY • 3D PLAYER MODEL FAILED TO LOAD';
-document.getElementById('nflMode').onclick=()=>{teamType='NFL';populateTeams(nflTeams);toast('NFL TEAMS');};
-document.getElementById('collegeMode').onclick=()=>{teamType='COLLEGE';populateTeams(collegeTeams);toast('COLLEGE TEAMS');};
-document.getElementById('hsMode').onclick=()=>{teamType='HIGH SCHOOL';populateTeams(highSchoolTeams);toast('TEXAS + GEORGIA HIGH SCHOOL TEAMS');};
+function chooseLeague(type){tsType=type;teamType=type;const list=type==='NFL'?nflTeams:type==='COLLEGE'?collegeTeams:highSchoolTeams;populateTeams(list);document.querySelectorAll('.tsMode').forEach(x=>x.classList.toggle('active',x.dataset.type===type));teamOverlay.classList.add('open');tsSide='home';renderTeamGrids();renderTeamCard();toast(type==='HIGH SCHOOL'?'TEXAS + GEORGIA HIGH SCHOOL TEAMS':type+' TEAMS')}
+document.getElementById('nflMode').onclick=()=>chooseLeague('NFL');
+document.getElementById('collegeMode').onclick=()=>chooseLeague('COLLEGE');
+document.getElementById('hsMode').onclick=()=>chooseLeague('HIGH SCHOOL');
+document.getElementById('teamMenuBtn').onclick=()=>chooseLeague(teamType||'NFL');
 document.getElementById('homeTeam').value='Buffalo Bills';document.getElementById('awayTeam').value='Kansas City Chiefs';
 const NFL_UNIFORMS={
 'Arizona Cardinals':[0x97233f,0xffc62f],'Atlanta Falcons':[0xa71930,0x000000],'Baltimore Ravens':[0x241773,0x9e7c0c],
@@ -309,7 +311,7 @@ function initials(n){return teamAbbr(n)}
 function renderTeamCard(){document.querySelector('#tsHomeName').textContent=homeTeam;document.querySelector('#tsAwayName').textContent=awayTeam;document.querySelector('#tsHomeLogo').textContent=initials(homeTeam);document.querySelector('#tsAwayLogo').textContent=initials(awayTeam);document.querySelector('#tsHomeCard').classList.toggle('selected',tsSide==='home');document.querySelector('#tsAwayCard').classList.toggle('selected',tsSide==='away')}
 function renderTeamGrids(){const list=tsType==='NFL'?nflTeams:tsType==='COLLEGE'?collegeTeams:highSchoolTeams;const hg=document.querySelector('#tsHomeGrid'),ag=document.querySelector('#tsAwayGrid');hg.innerHTML='';ag.innerHTML='';for(const name of list){for(const [grid,side] of [[hg,'home'],[ag,'away']]){const b=document.createElement('button');b.className='tsTeam';b.innerHTML='<span class="tsMini">'+initials(name)+'</span><span>'+name+'</span>';b.classList.toggle('selected',(side==='home'?homeTeam:awayTeam)===name);b.onclick=()=>{if(side==='home')homeTeam=name;else awayTeam=name;tsSide=side;document.getElementById('homeTeam').value=homeTeam;document.getElementById('awayTeam').value=awayTeam;renderTeamCard();renderTeamGrids()};grid.appendChild(b)}}}
 function openTeamSelect(){teamOverlay.classList.add('open');tsType=teamType;tsSide='home';document.querySelectorAll('.tsMode').forEach(b=>b.classList.toggle('active',b.dataset.type===tsType));renderTeamGrids();renderTeamCard()}
-document.querySelectorAll('.tsMode').forEach(b=>b.onclick=()=>{tsType=b.dataset.type;teamType=tsType;populateTeams(tsType==='NFL'?nflTeams:tsType==='COLLEGE'?collegeTeams:highSchoolTeams);document.querySelectorAll('.tsMode').forEach(x=>x.classList.toggle('active',x===b));renderTeamGrids()});
+document.querySelectorAll('.tsMode').forEach(b=>b.onclick=()=>chooseLeague(b.dataset.type));
 document.querySelector('#tsHomeCard').onclick=()=>{tsSide='home';renderTeamCard()};document.querySelector('#tsAwayCard').onclick=()=>{tsSide='away';renderTeamCard()};
 document.querySelector('#tsClose').onclick=document.querySelector('#tsCancel').onclick=()=>teamOverlay.classList.remove('open');
 document.querySelector('#tsPlay').onclick=()=>{document.getElementById('homeTeam').value=homeTeam;document.getElementById('awayTeam').value=awayTeam;applyGameSettings();updateTeamBadge();teamOverlay.classList.remove('open');document.querySelector('#menu').style.display='none';reset();toast(homeTeam+' VS '+awayTeam)};

@@ -577,54 +577,53 @@ readGamepad=function(){
 
 let last=performance.now();setStance(qb,'QB');setStance(wr,'WR');setStance(wr2,'WR');setStance(wr3,'WR');setStance(te,'WR');setStance(rb,'RB');teammates.filter(p=>p.userData.stance==='3POINT').forEach(p=>setStance(p,'3POINT'));teammates.filter(p=>p.userData.stance==='DEFENSIVE').forEach(p=>setStance(p,'DEFENSIVE'));
 function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(document.querySelector('#menu').style.display==='none'){readGamepad();clock=Math.max(0,clock-dt);snapUpdate(dt);updatePlayer(dt);routes(dt);aiQuarterback(dt);defense(dt);pass(dt);updateThrowMeter(dt);updateCatchAction(dt);cam(dt);hud()}else{camera.position.lerp(new THREE.Vector3(-45,16,32),.02);camera.lookAt(-15,1,0)}renderer.render(scene,camera);requestAnimationFrame(loop)}applyGameSettings();reset();requestAnimationFrame(loop);
-</script>
-<script id="rtgSetupFix">
+
+/* FINAL TEAM SELECT WIRING — kept INSIDE the Three.js module so it can access the team arrays/functions */
 (function(){
-  function lists(type){
-    type=String(type||'NFL').toUpperCase();
-    if(type==='COLLEGE')return {type:'COLLEGE',list:window.collegeTeams||[]};
-    if(type==='HIGH SCHOOL')return {type:'HIGH SCHOOL',list:window.highSchoolTeams||[]};
-    return {type:'NFL',list:window.nflTeams||[]};
-  }
-  function show(type){
-    try{
-      const x=lists(type); if(!x.list.length)throw new Error('team list is empty');
-      window.teamType=x.type;
-      window.homeTeam=x.list.includes(window.homeTeam)?window.homeTeam:x.list[0];
-      window.awayTeam=x.list.includes(window.awayTeam)&&window.awayTeam!==window.homeTeam?window.awayTeam:(x.list[1]||x.list[0]);
-      ['homeTeam','awayTeam'].forEach(function(id,idx){
-        const s=document.getElementById(id); if(!s)return;
-        s.innerHTML='';
-        x.list.forEach(function(n){const o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o);});
-        s.value=idx===0?window.homeTeam:window.awayTeam;
-      });
-      const overlay=document.getElementById('teamSelectOverlay');
-      if(!overlay)throw new Error('team selector missing');
-      overlay.classList.add('open'); overlay.style.display='block';
-      document.querySelectorAll('.tsMode').forEach(b=>b.classList.toggle('active',b.dataset.type===x.type));
-      ['tsHomeGrid','tsAwayGrid'].forEach(function(id,idx){
-        const g=document.getElementById(id); if(!g)return; g.innerHTML='';
-        x.list.forEach(function(n){
-          const b=document.createElement('button'); b.type='button'; b.className='tsTeam';
-          b.innerHTML='<span class="tsMini">'+n.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase()+'</span><span>'+n+'</span>';
-          if((idx===0?window.homeTeam:window.awayTeam)===n)b.classList.add('selected');
-          b.onclick=function(e){e.preventDefault();e.stopPropagation();if(idx===0)window.homeTeam=n;else window.awayTeam=n;show(x.type);};
-          g.appendChild(b);
-        });
-      });
-      const hn=document.getElementById('tsHomeName'),an=document.getElementById('tsAwayName');
-      if(hn)hn.textContent=window.homeTeam;if(an)an.textContent=window.awayTeam;
-      const hl=document.getElementById('tsHomeLogo'),al=document.getElementById('tsAwayLogo');
-      if(hl)hl.textContent=window.homeTeam.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase();
-      if(al)al.textContent=window.awayTeam.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase();
-      const st=document.getElementById('setupStatus');if(st)st.textContent=x.type+' • '+x.list.length+' TEAMS READY';
-    }catch(err){console.error(err);const st=document.getElementById('setupStatus');if(st)st.textContent='TEAM SELECT ERROR';}
-  }
-  document.addEventListener('DOMContentLoaded',function(){
-    [['nflMode','NFL'],['collegeMode','COLLEGE'],['hsMode','HIGH SCHOOL']].forEach(function(p){
-      const b=document.getElementById(p[0]);if(b)b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();show(p[1]);},true);
+  function wire(){
+    const map={nflMode:'NFL',collegeMode:'COLLEGE',hsMode:'HIGH SCHOOL'};
+    Object.keys(map).forEach(function(id){
+      const b=document.getElementById(id);
+      if(!b)return;
+      b.type='button';
+      b.onclick=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        chooseLeague(map[id]);
+      };
     });
-    const tb=document.getElementById('teamMenuBtn');if(tb)tb.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();show(window.teamType||'NFL');},true);
+    const teamBtn=document.getElementById('teamMenuBtn');
+    if(teamBtn){
+      teamBtn.type='button';
+      teamBtn.onclick=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        chooseLeague(teamType||'NFL');
+      };
+    }
+    document.querySelectorAll('.tsMode').forEach(function(b){
+      b.type='button';
+      b.onclick=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        chooseLeague(b.dataset.type);
+      };
+    });
+    const swap=document.getElementById('swapTeams');
+    if(swap)swap.onclick=function(e){
+      e.preventDefault();e.stopPropagation();
+      const h=document.getElementById('homeTeam'),a=document.getElementById('awayTeam');
+      if(h&&a){
+        const t=h.value;h.value=a.value;a.value=t;
+        homeTeam=h.value;awayTeam=a.value;
+      }
+    };
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);
+  else wire();
+})();
+</script>
+teamType||'NFL');},true);
     document.querySelectorAll('.tsMode').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();show(b.dataset.type);},true);});
     const close=function(e){e.preventDefault();e.stopPropagation();const o=document.getElementById('teamSelectOverlay');if(o){o.classList.remove('open');o.style.display='none';}};
     const a=document.getElementById('tsClose'),b=document.getElementById('tsCancel');if(a)a.addEventListener('click',close,true);if(b)b.addEventListener('click',close,true);

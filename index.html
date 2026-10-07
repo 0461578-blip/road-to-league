@@ -237,7 +237,66 @@ filter:drop-shadow(0 30px 40px #000)}
 <div class="catchAction" id="catchAction">
   <button id="jumpCatchBtn">JUMP CATCH</button>
   <button id="diveCatchBtn">DIVE CATCH</button>
-</div><div id="mobileControls"><div id="stick" class="touchBtn"><div id="stickKnob"></div></div><button id="btnA" class="touchBtn">A</button><button id="btnB" class="touchBtn smallBtn">B</button><button id="btnX" class="touchBtn smallBtn">X</button><button id="btnY" class="touchBtn smallBtn">Y</button><button id="btnLB" class="touchBtn">LB</button><button id="btnRB" class="touchBtn">RB</button><button id="btnMenu" class="touchBtn">☰</button><div id="mobileHint">LEFT STICK MOVE • A CATCH • X CALL • Y SWITCH • RB THROW • LB SNAP</div></div><script type="module">
+</div><div id="mobileControls"><div id="stick" class="touchBtn"><div id="stickKnob"></div></div><button id="btnA" class="touchBtn">A</button><button id="btnB" class="touchBtn smallBtn">B</button><button id="btnX" class="touchBtn smallBtn">X</button><button id="btnY" class="touchBtn smallBtn">Y</button><button id="btnLB" class="touchBtn">LB</button><button id="btnRB" class="touchBtn">RB</button><button id="btnMenu" class="touchBtn">☰</button><div id="mobileHint">LEFT STICK MOVE • A CATCH • X CALL • Y SWITCH • RB THROW • LB SNAP</div></div>
+<style id="rtgBuildStyles">
+#rtgBuild{position:fixed;inset:0;z-index:180;display:none;background:radial-gradient(circle at 70% 35%,#26394f,#080b10 55%,#030405);color:#fff;overflow:auto}
+#rtgBuild.open{display:block}
+.rtgBuildShell{width:min(1180px,94vw);min-height:100%;margin:auto;padding:30px 0 50px}
+.rtgBuildTop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff18;padding:10px 0 20px}
+.rtgBuildKicker{font-size:11px;letter-spacing:3px;color:#ff9b45;font-weight:1000}
+.rtgBuildTitle{font-size:clamp(34px,5vw,62px);font-weight:1000;letter-spacing:-3px;margin:6px 0}
+.rtgBuildProgress{display:flex;gap:6px;margin:22px 0}.rtgBuildProgress i{height:4px;flex:1;background:#ffffff18}.rtgBuildProgress i.active{background:#ff7200}
+.rtgBuildCard{background:#090e14e8;border:1px solid #ffffff18;border-radius:5px;padding:26px;box-shadow:0 25px 80px #0009}
+.rtgBuildStep{display:none}.rtgBuildStep.active{display:block}
+.rtgBuildQuestion{font-size:26px;font-weight:1000;margin-bottom:7px}.rtgBuildSub{font-size:11px;color:#8c98a5;font-weight:800;letter-spacing:1px;margin-bottom:22px}
+.rtgChoices{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rtgChoice{margin:0!important;text-align:left;background:#111820!important;color:#fff!important;border:1px solid #ffffff16!important;border-radius:4px!important;padding:18px!important;min-height:100px}
+.rtgChoice:hover,.rtgChoice.selected{background:linear-gradient(135deg,#ff7200,#d74e00)!important;border-color:#ffb05a!important;transform:translateY(-2px)}
+.rtgChoice strong{display:block;font-size:18px}.rtgChoice small{display:block;margin-top:8px;color:#aeb7c1;font-size:10px;line-height:1.4}.rtgChoice.selected small,.rtgChoice:hover small{color:#fff}
+.rtgForm{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.rtgForm label{font-size:10px;color:#818d99;font-weight:1000;letter-spacing:1px}.rtgForm input,.rtgForm select{display:block;width:100%;margin-top:6px;background:#070b10;color:#fff;border:1px solid #ffffff18;border-radius:3px;padding:13px;font-weight:800}
+.rtgBuildFooter{display:flex;justify-content:space-between;margin-top:22px;gap:10px}.rtgBuildFooter button{margin:0!important;border-radius:3px!important}.rtgNext{background:#ff7200!important;color:#fff!important}.rtgBack{background:#151a20!important;color:#fff!important}
+.rtgSummary{display:grid;grid-template-columns:180px 1fr;gap:24px}.rtgAvatar{min-height:220px;background:linear-gradient(145deg,#172333,#080b10);border:1px solid #ffffff18;display:flex;align-items:center;justify-content:center;font-size:62px;font-weight:1000;color:#ff7200}
+.rtgSummary h3{font-size:28px;margin:0 0 12px}.rtgSummary p{color:#9aa5b0}.rtgTags{display:flex;flex-wrap:wrap;gap:7px}.rtgTag{background:#151c25;border:1px solid #ffffff15;padding:8px 10px;font-size:10px;font-weight:1000;border-radius:3px}
+@media(max-width:760px){.rtgBuildShell{padding:18px 0 35px}.rtgChoices{grid-template-columns:1fr 1fr}.rtgForm{grid-template-columns:1fr}.rtgSummary{grid-template-columns:1fr}.rtgAvatar{min-height:120px}.rtgBuildCard{padding:18px}}
+</style>
+<div id="rtgBuild" aria-hidden="true">
+  <div class="rtgBuildShell">
+    <div class="rtgBuildTop"><div><div class="rtgBuildKicker">ROAD TO GLORY • PLAYER CREATOR</div><div class="rtgBuildTitle">CREATE YOUR BUILD</div></div><button id="rtgBuildClose" class="rtgBack">EXIT</button></div>
+    <div class="rtgBuildProgress"><i id="rtgProg0"></i><i id="rtgProg1"></i><i id="rtgProg2"></i><i id="rtgProg3"></i><i id="rtgProg4"></i><i id="rtgProg5"></i></div>
+    <div class="rtgBuildCard">
+      <div class="rtgBuildStep active" data-step="0"><div class="rtgBuildQuestion">What kind of prospect are you?</div><div class="rtgBuildSub">Your starting rating changes your early expectations and skill points.</div><div class="rtgChoices">
+        <button class="rtgChoice" data-group="star" data-value="5 STAR"><strong>ELITE</strong><small>5-STAR • Highest expectations</small></button>
+        <button class="rtgChoice" data-group="star" data-value="4 STAR"><strong>BLUE CHIP</strong><small>4-STAR • High-level recruit</small></button>
+        <button class="rtgChoice" data-group="star" data-value="3 STAR"><strong>CONTRIBUTOR</strong><small>3-STAR • Prove yourself</small></button>
+        <button class="rtgChoice" data-group="star" data-value="2 STAR"><strong>UNDERDOG</strong><small>2-STAR • Earn everything</small></button>
+      </div></div>
+      <div class="rtgBuildStep" data-step="1"><div class="rtgBuildQuestion">Pick your position</div><div class="rtgBuildSub">Your position determines the available archetypes and gameplay role.</div><div class="rtgChoices">
+        <button class="rtgChoice" data-group="position" data-value="QB"><strong>QB</strong><small>Quarterback • command the offense</small></button>
+        <button class="rtgChoice" data-group="position" data-value="HB"><strong>HB</strong><small>Halfback • run, cut and break tackles</small></button>
+        <button class="rtgChoice" data-group="position" data-value="WR"><strong>WR</strong><small>Wide Receiver • routes and catches</small></button>
+        <button class="rtgChoice" data-group="position" data-value="MIKE"><strong>MIKE</strong><small>Middle Linebacker • read and attack</small></button>
+        <button class="rtgChoice" data-group="position" data-value="CB"><strong>CB</strong><small>Cornerback • cover and make plays</small></button>
+      </div></div>
+      <div class="rtgBuildStep" data-step="2"><div class="rtgBuildQuestion">Choose your archetype</div><div class="rtgBuildSub">Your archetype shapes your strengths, abilities and recruiting fit.</div><div class="rtgChoices" id="rtgArchetypes"></div></div>
+      <div class="rtgBuildStep" data-step="3"><div class="rtgBuildQuestion">Make the player yours</div><div class="rtgBuildSub">Set your identity, hometown and high school before Friday night.</div><div class="rtgForm">
+        <label>PLAYER NAME<input id="rtgName" maxlength="24" placeholder="Your name"></label>
+        <label>HOMETOWN<input id="rtgHometown" maxlength="30" placeholder="Jonesboro, GA"></label>
+        <label>HIGH SCHOOL<input id="rtgSchool" maxlength="35" placeholder="Your High School"></label>
+        <label>JERSEY NUMBER<input id="rtgNumber" type="number" min="0" max="99" value="1"></label>
+        <label>BODY TYPE<select id="rtgBody"><option>LEAN</option><option>ATHLETIC</option><option>POWER</option></select></label>
+        <label>PLAY STYLE<select id="rtgStyle"><option>EXPLOSIVE</option><option>SMOOTH</option><option>PHYSICAL</option><option>TECHNICAL</option></select></label>
+      </div></div>
+      <div class="rtgBuildStep" data-step="4"><div class="rtgBuildQuestion">Choose your starting story</div><div class="rtgBuildSub">Your high-school journey is where you build your tape and earn college interest.</div><div class="rtgChoices">
+        <button class="rtgChoice" data-group="story" data-value="NATIONAL PROSPECT"><strong>NATIONAL PROSPECT</strong><small>Big spotlight from Week 1.</small></button>
+        <button class="rtgChoice" data-group="story" data-value="LOCAL STAR"><strong>LOCAL STAR</strong><small>Build your name close to home.</small></button>
+        <button class="rtgChoice" data-group="story" data-value="SLEEPER"><strong>SLEEPER</strong><small>Start overlooked and climb.</small></button>
+        <button class="rtgChoice" data-group="story" data-value="LATE BLOOMER"><strong>LATE BLOOMER</strong><small>Earn attention through production.</small></button>
+      </div></div>
+      <div class="rtgBuildStep" data-step="5"><div class="rtgBuildQuestion">Your player is ready</div><div class="rtgBuildSub">Review your build, then start your high-school Road to Glory.</div><div class="rtgSummary"><div class="rtgAvatar" id="rtgAvatar">QB</div><div><h3 id="rtgSummaryName">YOUR PLAYER</h3><p id="rtgSummaryText"></p><div class="rtgTags" id="rtgTags"></div></div></div></div>
+      <div class="rtgBuildFooter"><button id="rtgBuildPrev" class="rtgBack">BACK</button><button id="rtgBuildNext" class="rtgNext">CONTINUE →</button></div>
+    </div>
+  </div>
+</div><script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 import { SkeletonUtils } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/utils/SkeletonUtils.js';
@@ -680,4 +739,53 @@ function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(document.
     toast(homeTeam+' VS '+awayTeam);
   };
 })();
+
+/* ROAD TO GLORY BUILD CREATOR */
+const rtgBuild=document.getElementById('rtgBuild');
+const rtgBuildState={star:'',position:'',archetype:'',name:'',hometown:'',school:'',number:'1',body:'ATHLETIC',style:'EXPLOSIVE',story:''};
+let rtgBuildStep=0;
+const rtgArch={
+ QB:['POCKET PASSER','DUAL THREAT','PURE RUNNER','FIELD GENERAL'],
+ HB:['EAST/WEST PLAYMAKER','ELUSIVE BRUISER','POWER BACK','THREE-DOWN BACK'],
+ WR:['DEEP THREAT','ROUTE ARTIST','PHYSICAL RECEIVER','SLOT PLAYMAKER'],
+ MIKE:['RUN STOPPER','FIELD GENERAL','PASS RUSHER','COVER MIKE'],
+ CB:['MAN COVER','ZONE HAWK','BALL HAWK','PRESS SPECIALIST']
+};
+function rtgOpenBuild(){rtgBuildStep=0;rtgBuild.classList.add('open');rtgBuild.setAttribute('aria-hidden','false');rtgBuildRender()}
+function rtgCloseBuild(){rtgBuild.classList.remove('open');rtgBuild.setAttribute('aria-hidden','true')}
+function rtgRenderArchetypes(){
+ const box=document.getElementById('rtgArchetypes');box.innerHTML='';
+ (rtgArch[rtgBuildState.position]||[]).forEach(a=>{const b=document.createElement('button');b.className='rtgChoice'+(rtgBuildState.archetype===a?' selected':'');b.dataset.group='archetype';b.dataset.value=a;b.innerHTML='<strong>'+a+'</strong><small>Unique strengths, skill caps and ability focus.</small>';box.appendChild(b)});
+}
+function rtgRenderSummary(){
+ const n=rtgBuildState.name||'YOUR PLAYER';document.getElementById('rtgSummaryName').textContent=n.toUpperCase();
+ document.getElementById('rtgAvatar').textContent=rtgBuildState.position||'QB';
+ document.getElementById('rtgSummaryText').textContent=(rtgBuildState.star||'PROSPECT')+' • '+(rtgBuildState.archetype||'BUILD')+' • '+(rtgBuildState.school||'HIGH SCHOOL')+' • '+(rtgBuildState.story||'YOUR STORY');
+ const tags=[rtgBuildState.star,rtgBuildState.position,rtgBuildState.archetype,rtgBuildState.body,rtgBuildState.style,rtgBuildState.number?'#'+rtgBuildState.number:''].filter(Boolean);
+ document.getElementById('rtgTags').innerHTML=tags.map(x=>'<span class="rtgTag">'+x+'</span>').join('');
+}
+function rtgBuildRender(){
+ document.querySelectorAll('#rtgBuild .rtgBuildStep').forEach((x,i)=>x.classList.toggle('active',i===rtgBuildStep));
+ document.querySelectorAll('#rtgBuild .rtgBuildProgress i').forEach((x,i)=>x.classList.toggle('active',i<=rtgBuildStep));
+ document.getElementById('rtgBuildPrev').style.visibility=rtgBuildStep===0?'hidden':'visible';
+ document.getElementById('rtgBuildNext').textContent=rtgBuildStep===5?'START ROAD TO GLORY →':'CONTINUE →';
+ rtgRenderArchetypes();rtgRenderSummary();
+}
+document.querySelectorAll('#rtgBuild .rtgChoice').forEach(b=>b.addEventListener('click',()=>{rtgBuildState[b.dataset.group]=b.dataset.value;document.querySelectorAll('#rtgBuild [data-group="'+b.dataset.group+'"]').forEach(x=>x.classList.toggle('selected',x===b));if(b.dataset.group==='position'){rtgBuildState.archetype='';rtgRenderArchetypes()} }));
+document.getElementById('rtgBuild').addEventListener('click',e=>{const b=e.target.closest('.rtgChoice');if(!b)return;rtgBuildState[b.dataset.group]=b.dataset.value;document.querySelectorAll('#rtgBuild [data-group="'+b.dataset.group+'"]').forEach(x=>x.classList.toggle('selected',x===b));if(b.dataset.group==='position'){rtgBuildState.archetype='';rtgRenderArchetypes()}});
+['rtgName','rtgHometown','rtgSchool','rtgNumber','rtgBody','rtgStyle'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{rtgBuildState[{rtgName:'name',rtgHometown:'hometown',rtgSchool:'school',rtgNumber:'number',rtgBody:'body',rtgStyle:'style'}[id]]=document.getElementById(id).value}));
+document.getElementById('rtgBuildNext').onclick=()=>{
+ const required=[rtgBuildState.star,rtgBuildState.position,rtgBuildState.archetype,rtgBuildState.story];
+ if(rtgBuildStep<5 && !required[rtgBuildStep]){toast('CHOOSE AN OPTION TO CONTINUE');return}
+ if(rtgBuildStep<5){rtgBuildStep++;rtgBuildRender();return}
+ rtgBuildState.name=rtgBuildState.name||'Road Player';rtgBuildState.school=rtgBuildState.school||'My High School';
+ localStorage.setItem('roadToLeagueBuild',JSON.stringify(rtgBuildState));
+ role=rtgBuildState.position==='WR'?'WR':rtgBuildState.position==='HB'?'RB':rtgBuildState.position==='QB'?'QB':rtgBuildState.position;
+ if(role==='WR')setStance(user,'WR'); else if(role==='RB')setStance(user,'RB'); else setStance(user,'QB');
+ rtgCloseBuild();document.getElementById('menu').style.display='none';reset();toast('ROAD TO GLORY • '+rtgBuildState.name.toUpperCase()+' • BUILD YOUR TAPE');
+};
+document.getElementById('rtgBuildPrev').onclick=()=>{if(rtgBuildStep>0){rtgBuildStep--;rtgBuildRender()}};
+document.getElementById('rtgBuildClose').onclick=rtgCloseBuild;
+document.getElementById('careerBtn').onclick=e=>{e.preventDefault();rtgOpenBuild()};
+rtgBuildRender();
 </script></body></html>

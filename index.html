@@ -99,12 +99,33 @@
     <div class="buildHead"><h1>ROAD TO GLORY • BUILD</h1><button id="buildClose" class="close">×</button></div>
     <div class="progress"><i class="active"></i><i></i><i></i><i></i><i></i><i></i></div>
     <div id="buildSteps">
-      <div class="buildStep active"><div class="stepTitle">01 • WHAT KIND OF PROSPECT ARE YOU?</div><div class="choices" data-group="star"><button class="choice" data-v="5-STAR"><strong>5-STAR</strong><small>National attention from day one.</small></button><button class="choice" data-v="4-STAR"><strong>4-STAR</strong><small>High-level prospect with something to prove.</small></button><button class="choice" data-v="3-STAR"><strong>3-STAR</strong><small>Climb the rankings one rep at a time.</small></button></div></div>
-      <div class="buildStep"><div class="stepTitle">02 • CHOOSE YOUR POSITION</div><div class="choices" data-group="position"><button class="choice" data-v="QB"><strong>QB</strong><small>Read defenses and throw the rock.</small></button><button class="choice" data-v="WR"><strong>WR</strong><small>Routes, timing, jump catches and dives.</small></button><button class="choice" data-v="HB"><strong>HB</strong><small>Run, hurdle, truck and hit the hole.</small></button><button class="choice" data-v="CB"><strong>CB</strong><small>Cover, break on the ball and make plays.</small></button><button class="choice" data-v="LB"><strong>LB</strong><small>Read, hit and stop the run.</small></button></div></div>
-      <div class="buildStep"><div class="stepTitle">03 • PICK YOUR ARCHETYPE</div><div id="archChoices" class="choices"></div></div>
-      <div class="buildStep"><div class="stepTitle">04 • YOUR PLAYER</div><div class="fields"><div class="field"><label>NAME</label><input id="pName" placeholder="Road Player"></div><div class="field"><label>HOMETOWN</label><input id="pTown" placeholder="Jonesboro"></div><div class="field"><label>HIGH SCHOOL</label><input id="pSchool" placeholder="My High School"></div><div class="field"><label>JERSEY #</label><input id="pNumber" type="number" min="0" max="99" value="1"></div><div class="field"><label>BODY TYPE</label><select id="pBody"><option>ATHLETIC</option><option>POWER</option><option>LONG</option></select></div><div class="field"><label>PLAY STYLE</label><select id="pStyle"><option>EXPLOSIVE</option><option>TECHNICAL</option><option>PHYSICAL</option></select></div></div></div>
-      <div class="buildStep"><div class="stepTitle">05 • WRITE YOUR STORY</div><div class="choices" data-group="story"><button class="choice" data-v="UNDERDOG"><strong>THE UNDERDOG</strong><small>Turn doubters into fuel.</small></button><button class="choice" data-v="HOME TOWN HERO"><strong>HOME TOWN HERO</strong><small>Carry your city with you.</small></button><button class="choice" data-v="NEXT UP"><strong>NEXT UP</strong><small>Everyone already knows your name.</small></button></div></div>
-      <div class="buildStep"><div class="stepTitle">06 • READY?</div><div class="summary"><div id="sumName" class="summaryName">YOUR PLAYER</div><div id="sumText" class="status"></div><div id="sumTags" class="tags"></div></div></div>
+      <div class="buildStep active"><div class="stepTitle">01 • CREATE YOUR PLAYER</div>
+        <div class="fields">
+          <div class="field"><label>FIRST + LAST NAME</label><input id="pName" placeholder="Enter your player name" autocomplete="off"></div>
+          <div class="field"><label>HOMETOWN</label><input id="pTown" placeholder="Enter your hometown" autocomplete="off"></div>
+          <div class="field"><label>HIGH SCHOOL</label><input id="pSchool" placeholder="Enter your high school" autocomplete="off"></div>
+          <div class="field"><label>JERSEY #</label><input id="pNumber" type="number" min="0" max="99" value="1"></div>
+        </div>
+      </div>
+      <div class="buildStep"><div class="stepTitle">02 • CHOOSE YOUR POSITION</div>
+        <div class="choices" data-group="position">
+          <button class="choice" data-v="QB"><strong>QUARTERBACK • QB</strong><small>Throw, scramble and lead the offense.</small></button>
+          <button class="choice" data-v="RB"><strong>RUNNING BACK • RB</strong><small>Run, hurdle, truck and make plays.</small></button>
+          <button class="choice" data-v="WR"><strong>WIDE RECEIVER • WR</strong><small>Run routes, separate and make catches.</small></button>
+          <button class="choice" data-v="CB"><strong>CORNERBACK • CB</strong><small>Cover receivers and make interceptions.</small></button>
+          <button class="choice" data-v="LB"><strong>LINEBACKER • LB</strong><small>Stop the run and attack the offense.</small></button>
+        </div>
+      </div>
+      <div class="buildStep"><div class="stepTitle">03 • CHOOSE YOUR PLAYER STYLE</div>
+        <div class="fields">
+          <div class="field"><label>BODY TYPE</label><select id="pBody"><option>ATHLETIC</option><option>POWER</option><option>LONG</option></select></div>
+          <div class="field"><label>PLAY STYLE</label><select id="pStyle"><option>EXPLOSIVE</option><option>TECHNICAL</option><option>PHYSICAL</option></select></div>
+        </div>
+        <div class="choices" data-group="star"><button class="choice" data-v="5-STAR"><strong>5-STAR PROSPECT</strong><small>Elite recruit with major attention.</small></button><button class="choice" data-v="4-STAR"><strong>4-STAR PROSPECT</strong><small>High-level recruit with something to prove.</small></button><button class="choice" data-v="3-STAR"><strong>3-STAR PROSPECT</strong><small>Build your name from the ground up.</small></button></div>
+      </div>
+      <div class="buildStep"><div class="stepTitle">04 • PICK YOUR ARCHETYPE</div><div id="archChoices" class="choices"></div></div>
+      <div class="buildStep"><div class="stepTitle">05 • YOUR STORY</div><div class="choices" data-group="story"><button class="choice" data-v="UNDERDOG"><strong>THE UNDERDOG</strong><small>Turn doubters into fuel.</small></button><button class="choice" data-v="HOME TOWN HERO"><strong>HOME TOWN HERO</strong><small>Carry your city with you.</small></button><button class="choice" data-v="NEXT UP"><strong>NEXT UP</strong><small>Everyone already knows your name.</small></button></div></div>
+      <div class="buildStep"><div class="stepTitle">06 • READY TO START?</div><div class="summary"><div id="sumName" class="summaryName">YOUR PLAYER</div><div id="sumText" class="status"></div><div id="sumTags" class="tags"></div></div></div>
     </div>
     <div class="buildFoot"><button id="buildPrev">← BACK</button><button id="buildNext" class="next">CONTINUE →</button></div>
   </div>
@@ -165,7 +186,14 @@ function renderBuild(){
 document.querySelectorAll('.choices[data-group]').forEach(box=>box.addEventListener("click",e=>{const b=e.target.closest(".choice");if(!b)return;buildState[box.dataset.group]=b.dataset.v;renderBuild()}));
 ["pName","pTown","pSchool","pNumber","pBody","pStyle"].forEach(id=>$(id).oninput=()=>{const map={pName:"name",pTown:"town",pSchool:"school",pNumber:"number",pBody:"body",pStyle:"style"};buildState[map[id]]=$(id).value});
 $("buildPrev").onclick=()=>{if(buildStep>0){buildStep--;renderBuild()}};$("buildClose").onclick=()=>$("build").style.display="none";
-$("buildNext").onclick=()=>{if(buildStep<5){if((buildStep===0&&!buildState.star)||(buildStep===1&&!buildState.position)||(buildStep===2&&!buildState.arch)||(buildStep===4&&!buildState.story)){toast("CHOOSE AN OPTION TO CONTINUE");return}buildStep++;renderBuild()}else{player={...buildState};position=buildState.position==="HB"?"RB":buildState.position;localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";startGame();toast("ROAD TO GLORY • "+(player.name||"ROAD PLAYER").toUpperCase())}};
+$("buildNext").onclick=()=>{if(buildStep<5){
+  if(buildStep===0&&!buildState.name.trim()){toast("ENTER YOUR PLAYER NAME");return}
+  if(buildStep===1&&!buildState.position){toast("CHOOSE YOUR POSITION");return}
+  if(buildStep===2&&!buildState.star){toast("CHOOSE YOUR STAR RATING");return}
+  if(buildStep===3&&!buildState.arch){toast("CHOOSE YOUR ARCHETYPE");return}
+  if(buildStep===4&&!buildState.story){toast("CHOOSE YOUR STORY");return}
+  buildStep++;renderBuild()
+}else{player={...buildState};position=buildState.position==="RB"?"HB":buildState.position;localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";startGame();toast("ROAD TO GLORY • "+(player.name||"ROAD PLAYER").toUpperCase())}};
 $("careerBtn").onclick=()=>openBuild();renderBuild();
 
 let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,action="";let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;

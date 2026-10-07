@@ -171,18 +171,20 @@ $("careerBtn").onclick=()=>openBuild();renderBuild();
 let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,action="";let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;
 function makePlayer(x,z,jersey,team,scale=1){
  const g=new THREE.Group();
- const jerseyMat=new THREE.MeshStandardMaterial({color:team==="home"?0x9b1020:0x174a9a,roughness:.62,metalness:.05});
+ const homeColor=team==="home"?0x9b1020:0x174a9a;
+ const jerseyMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.62,metalness:.05});
  const pantsMat=new THREE.MeshStandardMaterial({color:team==="home"?0x20242a:0xf3f3f3,roughness:.7});
  const skinMat=new THREE.MeshStandardMaterial({color:0x8a5a3c,roughness:.9});
  const shoeMat=new THREE.MeshStandardMaterial({color:0x111318,roughness:.65});
- const helmetMat=new THREE.MeshStandardMaterial({color:team==="home"?0x9b1020:0x174a9a,roughness:.45,metalness:.12});
+ const helmetMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.45,metalness:.12});
+ const darkMat=new THREE.MeshStandardMaterial({color:0x171a1e,roughness:.5,metalness:.1});
  const whiteMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.6});
  const add=(geo,mat,p,s,r)=>{const m=new THREE.Mesh(geo,mat);m.position.set(...p);if(r)m.rotation.set(...r);m.scale.setScalar(s||1);g.add(m);return m};
  const torso=add(new THREE.CapsuleGeometry(.52,.72,10,18),jerseyMat,[0,1.42,0],1);
  torso.scale.set(.94,1.18,.64);
  // Neck + shoulder pads give the silhouette a more natural football-player shape.
  add(new THREE.CylinderGeometry(.16,.19,.25,14),skinMat,[0,1.98,0],1);
- const shoulder=add(new THREE.CapsuleGeometry(.64,.2,8,16),darkMat,[0,1.76,0],1);
+ const shoulder=add(new THREE.CapsuleGeometry(.64,.2,8,16),jerseyMat,[0,1.76,0],1);
  shoulder.scale.set(1.18,.72,.78);
  shoulder.material=jerseyMat;
  // Jersey sleeves.
@@ -315,7 +317,15 @@ function makeScene(){
  window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
  animate();
 }
-function startGame(){gameStarted=true;$("menu").style.display="none";$("hud").style.display="block";$("score").style.display="block";$("actions").style.display="flex";if(!scene)makeScene();$("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist}
+function startGame(){
+  gameStarted=true;
+  $("menu").style.display="none";
+  $("hud").style.display="block";
+  $("score").style.display="block";
+  $("actions").style.display="flex";
+  try{if(!scene)makeScene();$("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist}
+  catch(err){gameStarted=false;$("menu").style.display="block";$("hud").style.display="none";$("score").style.display="none";$("actions").style.display="none";console.error(err);toast("GAME LOAD ERROR — RETURNING TO MENU");}
+}
 function resetPlay(){ballLive=false;ball.visible=false;action="";controlled.position.x=-10;controlled.position.z=-4;injured=false;$("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist}
 function jump(){if(!gameStarted||position!=="WR")return;action="JUMP";controlled.position.y=1.2;toast("JUMP CATCH")}
 function dive(){if(!gameStarted||position!=="WR")return;action="DIVE";controlled.rotation.z=-.7;toast("DIVE CATCH")}

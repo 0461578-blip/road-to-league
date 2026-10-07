@@ -156,7 +156,16 @@ function logoUrl(name){
  const nfl={ARZ:"ARI",ATL:"ATL",BLT:"BAL",BUF:"BUF",CAR:"CAR",CHI:"CHI",CIN:"CIN",CLV:"CLE",DAL:"DAL",DEN:"DEN",DET:"DET",GB:"GB",HST:"HOU",IND:"IND",JAX:"JAX",KC:"KC",LV:"LV",LAC:"LAC",LAR:"LAR",MIA:"MIA",MIN:"MIN",NE:"NE",NO:"NO",NYG:"NYG",NYJ:"NYJ",PHI:"PHI",PIT:"PIT",SF:"SF",SEA:"SEA",TB:"TB",TEN:"TEN",WAS:"WSH"};
  const code=nfl[abbr(name)];
  if(league==="NFL"&&code) return "https://a.espncdn.com/i/teamlogos/nfl/500/"+code.toLowerCase()+".png";
- return "";
+ if(league==="COLLEGE") return "https://a.espncdn.com/i/teamlogos/ncaa/500/"+collegeLogoCode(name)+".png";
+ return schoolLogo(name);
+}
+function collegeLogoCode(name){
+ const codes={"Alabama":"333","Georgia":"61","Ohio State":"194","Michigan":"130","Texas":"251","Texas A&M":"245","LSU":"99","Florida":"57","Florida State":"52","Clemson":"228","Auburn":"2","Tennessee":"2633","Oklahoma":"201","USC":"30","Notre Dame":"87","Penn State":"213","Oregon":"2483","Miami":"2390","Ole Miss":"145","Mississippi State":"344","Arkansas":"8","Kentucky":"96","South Carolina":"2579","North Carolina":"153","NC State":"152","Duke":"150","Virginia Tech":"259","Virginia":"258","Georgia Tech":"59","UCF":"2116","TCU":"2628","Baylor":"239","SMU":"256","Houston":"248","Texas Tech":"2641","West Virginia":"277","Florida":"57"};
+ return codes[name]||"61";
+}
+function schoolLogo(name){
+ const map={"MD Roberts SOTA":"school","North Clayton":"school","Jonesboro":"school","Morrow":"school","Lovejoy":"school","Stockbridge":"school","Eagles Landing":"school","Griffin":"school","Whitewater":"school","Carrollton":"school","Buford":"school","Westlake":"school","Colquitt County":"school","Lowndes":"school","Valdosta":"school","Camden County":"school","North Gwinnett":"school","Mill Creek":"school","Grayson":"school","Archer":"school","Kennesaw Mountain":"school","East Coweta":"school"};
+ return map[name]||"school";
 }
 function logoHTML(name,large=false){
  const url=logoUrl(name);

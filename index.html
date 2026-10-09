@@ -311,15 +311,32 @@ function posePlayer(p,role,phase="pre"){
  }
 }
 function animateHumanMotion(dt){
- if(!snapState)return;
+ // Procedural prototype animation. Photorealistic players require licensed rigged GLB assets and authored motion clips.
  for(const p of players){
    if(!p.userData||!p.userData.joints)continue;
-   const j=p.userData.joints;p.userData.animTime=(p.userData.animTime||0)+dt;
-   if(p.userData.route||p.userData.role==="DL"||p.userData.role==="CB"){
-     const s=Math.sin(p.userData.animTime*10)*.24;
-     j.armL.rotation.x=s;j.armR.rotation.x=-s;j.foreL.rotation.x=-.15-s*.35;j.foreR.rotation.x=-.15+s*.35;
-     j.thighL.rotation.x=s*.55;j.thighR.rotation.x=-s*.55;
-     j.shinL.rotation.x=-.16-s*.3;j.shinR.rotation.x=-.16+s*.3;
+   const j=p.userData.joints;
+   p.userData.animTime=(p.userData.animTime||0)+dt;
+   const t=p.userData.animTime;
+   const moving=!!(snapState&&(p.userData.route||p.userData.role==="DL"||p.userData.role==="CB"||p===controlled));
+   if(moving){
+     const phase=t*11+(Number(p.userData.jersey)||0)*.65;
+     const stride=Math.sin(phase),opposite=Math.sin(phase+Math.PI);
+     j.armL.rotation.x=stride*.52;j.armR.rotation.x=opposite*.52;
+     j.armL.rotation.z=.08+Math.max(0,-stride)*.10;j.armR.rotation.z=-.08-Math.max(0,-opposite)*.10;
+     j.foreL.rotation.x=-.48-Math.max(0,stride)*.45;j.foreR.rotation.x=-.48-Math.max(0,opposite)*.45;
+     j.thighL.rotation.x=.10+stride*.72;j.thighR.rotation.x=.10+opposite*.72;
+     j.shinL.rotation.x=-Math.max(0,opposite)*.78;j.shinR.rotation.x=-Math.max(0,stride)*.78;
+     j.torso.rotation.x=-.10-Math.abs(stride)*.045;
+     j.head.rotation.x=Math.sin(t*4)*.035;
+     j.head.rotation.y=Math.sin(t*2.7+(Number(p.userData.jersey)||0))*.055;
+     j.helmet.rotation.z=Math.sin(t*11)*.018;
+     p.position.y=Math.max(0,Math.abs(Math.sin(phase*2))*.045);
+   }else{
+     const idle=Math.sin(t*2.2+(Number(p.userData.jersey)||0))*.018;
+     j.head.rotation.x=idle;
+     j.head.rotation.y=Math.sin(t*1.25+(Number(p.userData.jersey)||0)*.4)*.025;
+     j.helmet.rotation.z=Math.sin(t*2.2)*.008;
+     p.position.y=0;
    }
  }
 }
@@ -506,6 +523,7 @@ function animate(){
  const dt=Math.min(clock3?clock3.getDelta():.016,.05);if(!clock3)clock3=new THREE.Clock();
  if(!gameStarted){camera.position.lerp(new THREE.Vector3(0,12,24),.02);camera.lookAt(0,0,0);renderer.render(scene,camera);return}
  moveControlled(dt);
+ animateHumanMotion(dt);
  if(gameStarted&&snapState){
    updateRoutes(dt);
    const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="48");

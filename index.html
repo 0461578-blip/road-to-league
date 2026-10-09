@@ -494,7 +494,7 @@ function snapBall(){
  scrimmageX=-25;updateFirstDownMarkers();
  ball.position.copy(snapper.position).add(new THREE.Vector3(-.2,1.05,0));ball.visible=true;ballLive=false;
  qb.userData.snapTimer=.55;qb.userData.snapFrom=snapper.position.clone();
- wr.userData.route={kind:"go",start:wr.position.clone(),phase:0};wr2.userData.route={kind:"post",start:wr2.position.clone(),phase:0};slot.userData.route={kind:"slant",start:slot.position.clone(),phase:0};rb.userData.route={kind:"check",start:rb.position.clone(),phase:0};
+ const routes=selectedPlay==="SLANTS"?["slant","slant","slant","check"]:selectedPlay==="MESH"?["cross","cross","slant","check"]:selectedPlay==="HB ISO"?["go","post","slant","iso"]:selectedPlay==="HB SWEEP"?["go","post","slant","sweep"]:selectedPlay==="PA CROSSERS"?["post","cross","cross","check"]:["go","post","slant","check"];wr.userData.route={kind:routes[0],start:wr.position.clone(),phase:0};wr2.userData.route={kind:routes[1],start:wr2.position.clone(),phase:0};slot.userData.route={kind:routes[2],start:slot.position.clone(),phase:0};rb.userData.route={kind:routes[3],start:rb.position.clone(),phase:0};
  [wr,wr2,slot,rb].forEach(p=>{if(p){posePlayer(p,p.userData.role,"run")}});
  players.filter(p=>["OL","DL","LB"].includes(p.userData.role)).forEach(p=>{p.userData.engage=0;posePlayer(p,p.userData.role,"run")});
  if(!controlled||!players.includes(controlled))controlled=position==="WR"?wr:position==="RB"||position==="HB"?rb:position==="QB"?qb:qb;
@@ -512,10 +512,11 @@ function updateRoutes(dt){
  if(!snapState)return;routeClock+=dt;
  const run=(p,fn)=>{if(!p||!p.userData.route)return;const q=p.userData.route;q.phase=Math.min(1,q.phase+dt*.55);const v=fn(q.start,q.phase);const old=p.position.clone();p.position.lerp(v,.32);p.rotation.y=Math.atan2(v.z-old.z,v.x-old.x);};
  const wr=players.find(p=>p.userData.jersey==="1"),wr2=players.find(p=>p.userData.jersey==="2"),slot=players.find(p=>p.userData.jersey==="3"),rb=players.find(p=>p.userData.jersey==="22");
- if(position!=="WR")run(wr,(s,t)=>new THREE.Vector3(s.x+24*t,s.y,s.z));
- if(position!=="WR")run(wr2,(s,t)=>{const u=Math.min(1,t*1.25);return new THREE.Vector3(s.x+18*u,s.y,s.z-10*Math.sin(Math.min(1,t*1.15)*Math.PI/2))});
- if(position!=="WR")run(slot,(s,t)=>{const u=Math.min(1,t*1.15);return new THREE.Vector3(s.x+13*u,s.y,s.z+9*u)});
- if(position!=="RB"&&position!=="HB")run(rb,(s,t)=>new THREE.Vector3(s.x+9*t,s.y,s.z-6*t));
+ const routeMove=(p,s,t)=>{const kind=p.userData.route?.kind;const u=Math.min(1,t*1.25);if(kind==="slant")return new THREE.Vector3(s.x+16*u,s.y,s.z+(s.z<0?9:-9)*u);if(kind==="cross")return new THREE.Vector3(s.x+18*u,s.y,s.z+(s.z<0?18:-18)*u);if(kind==="post")return new THREE.Vector3(s.x+18*u,s.y,s.z+(s.z<0?7:-7)*u);if(kind==="iso")return new THREE.Vector3(s.x+10*u,s.y,s.z);if(kind==="sweep")return new THREE.Vector3(s.x+12*u,s.y,s.z-10*u);if(kind==="check")return new THREE.Vector3(s.x+9*u,s.y,s.z-6*u);return new THREE.Vector3(s.x+24*t,s.y,s.z)};
+ if(controlled!==wr)run(wr,(s,t)=>routeMove(wr,s,t));
+ if(controlled!==wr2)run(wr2,(s,t)=>routeMove(wr2,s,t));
+ if(controlled!==slot)run(slot,(s,t)=>routeMove(slot,s,t));
+ if(controlled!==rb)run(rb,(s,t)=>routeMove(rb,s,t));
  // Simple defensive reaction: defenders step forward at the snap and drift toward their matchup.
  players.filter(p=>["DL","LB","CB","S"].includes(p.userData.role)).forEach((p,i)=>{
    p.userData.engage=(p.userData.engage||0)+dt;
@@ -561,7 +562,7 @@ function animate(){
  if(ballLive&&["WR","RB","HB"].includes(position)&&!catchMeterActive){catchMeterActive=true;catchMeterValue=0;catchMeterDir=1;$("catchMeter").style.display="block"}
  if(catchMeterActive){catchMeterValue+=.045*catchMeterDir;if(catchMeterValue>=1||catchMeterValue<=0)catchMeterDir*=-1;$("catchMarker").style.left=(catchMeterValue*100)+"%"}
  if(ballLive){ball.position.add(ballVel);ball.rotation.z+=.12;ball.rotation.x+=.08;ballVel.y-=.006;if(ball.position.y<.4){ballLive=false;ball.visible=false;catchMeterActive=false;$("catchMeter").style.display="none";toast("INCOMPLETE")}}
- if(snapState&&!ballLive&&controlled&&String(controlled.userData.jersey)==="12"&&controlled.userData.hasBall){ball.visible=true;ball.position.copy(controlled.position).add(new THREE.Vector3(.55,1.15,.35));ball.rotation.z=.25}
+ if(snapState&&!ballLive){const qbCarrier=playerByJersey("12");if(qbCarrier&&qbCarrier.userData.hasBall){ball.visible=true;ball.position.copy(qbCarrier.position).add(new THREE.Vector3(.55,1.15,.35));ball.rotation.z=.25}}
  if(action==="JUMP"){controlled.position.y=Math.max(0,controlled.position.y-.025);if(controlled.position.y===0)action=""}
  if(action==="DIVE"){controlled.position.x+=.12;controlled.position.y=Math.max(0,controlled.position.y-.035);if(controlled.position.y===0){controlled.rotation.z=0;action=""}}
  const camTarget=new THREE.Vector3(controlled.position.x,1.25,controlled.position.z);

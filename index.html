@@ -537,7 +537,7 @@ function snapBall(){if(!gameStarted||snapState)return;playMode="SCRIMMAGE";
  const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="62");
  const rb=players.find(p=>p.userData.jersey==="22"),wr=players.find(p=>p.userData.jersey==="1"),wr2=players.find(p=>p.userData.jersey==="2"),slot=players.find(p=>p.userData.jersey==="3");
  if(!qb||!snapper)return;
- scrimmageX=-25;updateFirstDownMarkers();
+  scrimmageX=selectedPlay==="2-POINT TRY"?43:-25;updateFirstDownMarkers();
  ball.position.copy(snapper.position).add(new THREE.Vector3(-.2,1.05,0));ball.visible=true;ballLive=false;
  qb.userData.snapTimer=.55;qb.userData.snapFrom=snapper.position.clone();
  const routes=selectedPlay==="SLANTS"?["slant","slant","slant","check"]:selectedPlay==="MESH"?["cross","cross","slant","check"]:selectedPlay==="HB ISO"?["go","post","slant","iso"]:selectedPlay==="HB SWEEP"?["go","post","slant","sweep"]:selectedPlay==="PA CROSSERS"?["post","cross","cross","check"]:["go","post","slant","check"];wr.userData.route={kind:routes[0],start:wr.position.clone(),phase:0};wr2.userData.route={kind:routes[1],start:wr2.position.clone(),phase:0};slot.userData.route={kind:routes[2],start:slot.position.clone(),phase:0};rb.userData.route={kind:routes[3],start:rb.position.clone(),phase:0};

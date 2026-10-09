@@ -276,6 +276,9 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  const padMat=new THREE.MeshStandardMaterial({color:team==="home"?0x650c18:0x12315b,roughness:.52});
  const darkMat=new THREE.MeshStandardMaterial({color:0x11151a,roughness:.32});
  const whiteMat=new THREE.MeshStandardMaterial({color:0xf5f5f5,roughness:.45});
+ const trimMat=new THREE.MeshStandardMaterial({color:team==="home"?0xe6d5d7:0xd9e5f6,roughness:.38,metalness:.08});
+ const gloveMat=new THREE.MeshStandardMaterial({color:team==="home"?0x262126:0x18212c,roughness:.5});
+ const cleatAccent=new THREE.MeshStandardMaterial({color:team==="home"?0xb8b8bd:0xe8e8ec,roughness:.4});
  const add=(parent,geo,mat,p,r=[0,0,0],sc=[1,1,1])=>{const m=new THREE.Mesh(geo,mat);m.position.set(...p);m.rotation.set(...r);m.scale.set(...sc);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m};
  const limb=(parent,a,b,radius,mat)=>{const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);const m=new THREE.Mesh(new THREE.CapsuleGeometry(radius,Math.max(.05,d.length()),8,12),mat);m.position.copy(A.clone().add(B).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;m.receiveShadow=true;parent.add(m);return m};
 
@@ -285,6 +288,13 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  add(torso,new THREE.SphereGeometry(.34,20,16),pantsMat,[0,-.60,0],[0,0,0],[1.12,.66,.78]);
  add(torso,new THREE.CapsuleGeometry(.58,.13,10,18),padMat,[0,.25,0],[0,0,0],[1.28,.56,.80]);
  add(torso,new THREE.BoxGeometry(.18,.58,.06),whiteMat,[0,.02,-.41]);
+ // Layered shoulder shells, jersey piping and a waist belt give the uniform more depth.
+ add(torso,new THREE.SphereGeometry(.30,18,12),jerseyMat,[-.43,.20,0],[0,0,-.25],[.72,.55,.92]);
+ add(torso,new THREE.SphereGeometry(.30,18,12),jerseyMat,[.43,.20,0],[0,0,.25],[.72,.55,.92]);
+ add(torso,new THREE.BoxGeometry(.76,.045,.025),trimMat,[0,-.35,-.30]);
+ add(torso,new THREE.BoxGeometry(.78,.045,.025),trimMat,[0,-.35,.30]);
+ add(torso,new THREE.BoxGeometry(.67,.055,.055),darkMat,[0,-.48,-.30]);
+ add(torso,new THREE.BoxGeometry(.67,.055,.055),darkMat,[0,-.48,.30]);
 
  const hipL=new THREE.Group(),hipR=new THREE.Group();hipL.position.set(-.22,.82,0);hipR.position.set(.22,.82,0);body.add(hipL,hipR);
  const thighL=new THREE.Group(),thighR=new THREE.Group();thighL.position.y=-.08;thighR.position.y=-.08;hipL.add(thighL);hipR.add(thighR);
@@ -293,6 +303,8 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  add(shinL,new THREE.CapsuleGeometry(.105,.52,10,14),skinMat,[0,-.27,0]);add(shinR,new THREE.CapsuleGeometry(.105,.52,10,14),skinMat,[0,-.27,0]);
  add(shinL,new THREE.CylinderGeometry(.12,.13,.18,12),whiteMat,[0,-.57,0]);add(shinR,new THREE.CylinderGeometry(.12,.13,.18,12),whiteMat,[0,-.57,0]);
  add(shinL,new THREE.BoxGeometry(.32,.18,.66),shoeMat,[0,-.68,-.10]);add(shinR,new THREE.BoxGeometry(.32,.18,.66),shoeMat,[0,-.68,-.10]);
+ add(shinL,new THREE.BoxGeometry(.34,.035,.67),cleatAccent,[0,-.77,-.10]);add(shinR,new THREE.BoxGeometry(.34,.035,.67),cleatAccent,[0,-.77,-.10]);
+ for(let stud=0;stud<4;stud++){add(shinL,new THREE.ConeGeometry(.035,.075,6),darkMat,[-.10+stud*.065,-.81,-.30]);add(shinR,new THREE.ConeGeometry(.035,.075,6),darkMat,[-.10+stud*.065,-.81,-.30]);}
 
  const neck=new THREE.Group();neck.position.y=2.13;body.add(neck);add(neck,new THREE.CylinderGeometry(.12,.15,.22,14),skinMat,[0,0,0]);
  const head=new THREE.Group();head.position.y=2.48;body.add(head);
@@ -312,6 +324,12 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  for(const sx of [-.22,.22]) add(helmet,new THREE.BoxGeometry(.035,.27,.035),darkMat,[sx,-.08,-.39]);
  add(helmet,new THREE.BoxGeometry(.035,.18,.32),darkMat,[-.27,-.02,-.10],[0,.25,0]);add(helmet,new THREE.BoxGeometry(.035,.18,.32),darkMat,[.27,-.02,-.10],[0,-.25,0]);
  add(helmet,new THREE.BoxGeometry(.18,.04,.05),whiteMat,[0,-.32,-.22]);
+ // Rounded visor and a tubular cage read more like modern football helmet equipment.
+ const visorMat=new THREE.MeshStandardMaterial({color:0x263846,roughness:.18,metalness:.22,transparent:true,opacity:.48});
+ add(helmet,new THREE.SphereGeometry(.235,20,14,0,Math.PI,Math.PI*.34,Math.PI*.28),visorMat,[0,-.015,-.30],[0,0,0],[1,.78,.26]);
+ const cageBar=(a,b,r=.018)=>{const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),8),whiteMat);m.position.copy(A.clone().add(B).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;helmet.add(m)};
+ cageBar([-.24,-.06,-.39],[.24,-.06,-.39],.018);cageBar([-.27,-.16,-.38],[.27,-.16,-.38],.018);cageBar([-.23,-.25,-.34],[.23,-.25,-.34],.016);cageBar([-.22,-.06,-.39],[-.18,-.27,-.34],.018);cageBar([.22,-.06,-.39],[.18,-.27,-.34],.018);cageBar([0,-.06,-.40],[0,-.28,-.34],.016);
+ add(helmet,new THREE.BoxGeometry(.32,.035,.045),darkMat,[0,-.32,-.27]);
 
  const armL=new THREE.Group(),armR=new THREE.Group();armL.position.set(-.57,1.76,0);armR.position.set(.57,1.76,0);body.add(armL,armR);
  const foreL=new THREE.Group(),foreR=new THREE.Group();foreL.position.y=-.48;foreR.position.y=-.48;armL.add(foreL);armR.add(foreR);
@@ -320,10 +338,11 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  add(armL,new THREE.TorusGeometry(.132,.018,8,16),whiteMat,[0,-.34,0],[Math.PI/2,0,0]);add(armR,new THREE.TorusGeometry(.132,.018,8,16),whiteMat,[0,-.34,0],[Math.PI/2,0,0]);
  add(foreL,new THREE.CapsuleGeometry(.095,.36,10,14),skinMat,[0,-.22,-.01]);add(foreR,new THREE.CapsuleGeometry(.095,.36,10,14),skinMat,[0,-.22,-.01]);
  const handL=new THREE.Group(),handR=new THREE.Group();handL.position.set(0,-.45,-.02);handR.position.set(0,-.45,-.02);foreL.add(handL);foreR.add(handR);
- add(handL,new THREE.SphereGeometry(.105,14,12),darkMat,[0,0,0],[0,0,0],[.8,1,.65]);add(handR,new THREE.SphereGeometry(.105,14,12),darkMat,[0,0,0],[0,0,0],[.8,1,.65]);
+ add(handL,new THREE.SphereGeometry(.105,14,12),gloveMat,[0,0,0],[0,0,0],[.8,1,.65]);add(handR,new THREE.SphereGeometry(.105,14,12),gloveMat,[0,0,0],[0,0,0],[.8,1,.65]);
+ add(handL,new THREE.BoxGeometry(.09,.025,.12),trimMat,[0,-.045,-.015]);add(handR,new THREE.BoxGeometry(.09,.025,.12),trimMat,[0,-.045,-.015]);
  for(let f=0;f<4;f++){const a=(f-1.5)*.035;add(handL,new THREE.CapsuleGeometry(.018,.10,6,8),skinMat,[a,-.065,-.035]);add(handR,new THREE.CapsuleGeometry(.018,.10,6,8),skinMat,[a,-.065,-.035]);}
 
- if(jersey){const cv=document.createElement("canvas");cv.width=256;cv.height=256;const ctx=cv.getContext("2d");ctx.clearRect(0,0,256,256);ctx.fillStyle="#fff";ctx.font="900 145px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(jersey),128,138);const tex=new THREE.CanvasTexture(cv);add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true}),[0,.02,-.44]);}
+ if(jersey){const cv=document.createElement("canvas");cv.width=256;cv.height=256;const ctx=cv.getContext("2d");ctx.clearRect(0,0,256,256);ctx.fillStyle="#fff";ctx.font="900 145px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(jersey),128,138);const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),[0,.02,-.44]);add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),[0,.02,.44],[0,Math.PI,0]);}
 
  g.userData={jersey,team,speed:0,route:null,role,animTime:Math.random()*6,bodyFallback:body,joints:{torso,hipL,hipR,thighL,thighR,shinL,shinR,armL,armR,foreL,foreR,head,helmet}};
  g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);players.push(g);

@@ -30,7 +30,7 @@
 @media(max-width:900px){.music{top:10px;right:10px;left:10px;justify-content:space-between}.musicSong{max-width:130px}.musicPlayer{top:66px;right:10px;width:min(260px,calc(100vw - 20px))}.left{padding-top:160px}.menuWrap{grid-template-columns:minmax(0,1fr)}.hero{right:-8%;width:65%;height:56%;opacity:.5}.menuWrap:after{width:100%}.logo{letter-spacing:-4px}.menuWrap{display:block}.left{padding:80px 20px 35px}.hero{opacity:.22;width:100%;right:-20%}.actions{grid-template-columns:1fr 1fr}.btn.primary{grid-row:auto;min-height:105px}.setup{margin-bottom:25px}.music{left:15px;right:15px;top:55px}.musicSong{font-size:10px}.pickers{grid-template-columns:1fr}.teamGrid{max-height:30vh}.introCard{grid-template-columns:1fr;padding:30px;min-height:620px}.introRight{display:none}.introBottom{left:30px;right:30px}.fields{grid-template-columns:1fr}.touch{display:block}}
 @media(max-width:560px){.logo{font-size:50px;letter-spacing:-4px}.actions{grid-template-columns:1fr}.btn.primary{grid-row:auto}.teamBody{padding:18px 12px 35px}.matchup{grid-template-columns:1fr 40px 1fr;gap:5px}.side{min-height:135px;padding:12px}.logoCircle{width:50px;height:50px}.teamGrid{grid-template-columns:1fr 1fr}.teamItem{font-size:8px}.introTitle{font-size:45px}.buildCard{padding:20px}}
 
-.fieldLabel{position:fixed;z-index:31;left:50%;top:12px;transform:translateX(-50%);background:#07100de8;border:1px solid #ffffff22;border-radius:5px;padding:8px 12px;font-size:10px;font-weight:1000;letter-spacing:1px}
+.presnap{max-width:min(760px,96vw);background:linear-gradient(135deg,#070b12f7,#151c27f7);border:1px solid #ffffff32;box-shadow:0 14px 50px #000b;backdrop-filter:blur(10px)}.presnap .playButtons{display:flex;flex-wrap:wrap;gap:6px}.presnap button{font-weight:1000;letter-spacing:.5px;border:1px solid #ffffff30;border-radius:4px;padding:9px 11px;background:#151f2b;color:#fff}.presnap button:hover{background:#74172b;color:#fff}.fieldLabel{position:fixed;z-index:31;left:50%;top:12px;transform:translateX(-50%);background:#07100de8;border:1px solid #ffffff22;border-radius:5px;padding:8px 12px;font-size:10px;font-weight:1000;letter-spacing:1px}
 #footballControls{position:fixed;z-index:39;left:12px;bottom:88px;display:none;max-width:min(460px,94vw);padding:10px;background:#07101af2;border:1px solid #ffffff2a;border-radius:8px;box-shadow:0 10px 35px #0009}
 #footballControls .controlTitle{font-size:9px;font-weight:1000;letter-spacing:1.5px;color:#c7cbd2;margin-bottom:7px}
 #footballControls .controlRow{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0}
@@ -144,7 +144,7 @@
 
 <div id="hud"></div><div id="fieldLabel" class="fieldLabel">SUNDAY NIGHT • LIVE FROM THE STADIUM</div>
 <div id="routeLegend" class="routeLegend"><b>ROUTES</b><br>1 WR • GO &nbsp; 2 WR • POST<br>3 SLOT • SLANT &nbsp; RB • CHECK</div>
-<div id="presnap" class="presnap"><div class="presnapTitle">PRE-SNAP</div><div class="playButtons"><button id="snapBtn" style="background:#74172b;color:#111">SNAP BALL</button><button data-play="HB ISO">HB ISO</button><button data-play="PA CROSSERS">PA CROSSERS</button><button data-play="SLANTS">SLANTS</button><button data-play="4 VERTICALS">4 VERTICALS</button></div><div id="playName">SELECT A PLAY</div><div id="huddle">HUDDLE • CALL THE PLAY • BREAK</div></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam">BUF</div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam">MIA</div></div><div id="clock" class="clock">1Q • 10:00</div></div>
+<div id="presnap" class="presnap"><div class="presnapTitle">PRE-SNAP</div><div class="playButtons"><button id="snapBtn" style="background:#74172b;color:#fff">SNAP BALL</button><button data-play="HB ISO">HB ISO</button><button data-play="PA CROSSERS">PA CROSSERS</button><button data-play="SLANTS">SLANTS</button><button data-play="4 VERTICALS">4 VERTICALS</button><button data-play="MESH">MESH</button><button data-play="HB SWEEP">HB SWEEP</button><button onclick="startKickoff()">KICKOFF</button><button onclick="startFieldGoal()">FIELD GOAL</button><label style="font-size:10px;color:#fff;display:flex;align-items:center;gap:5px">FIELD <select id="fieldStyleSelect" onchange="changeField(this.value)" style="background:#151f2b;color:#fff;padding:6px;border:1px solid #ffffff33"><option>PRO</option><option>COLLEGE</option><option>NIGHT</option><option>RETRO</option></select></label></div><div id="playName">SELECT A PLAY</div><div id="huddle">HUDDLE • CALL THE PLAY • BREAK</div></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam">BUF</div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam">MIA</div></div><div id="clock" class="clock">1Q • 10:00</div></div>
 <div id="throw" class="throw"><div class="throwTitle">QB PASSING • CENTER = PERFECT RELEASE</div><div class="meter"><i class="r"></i><i class="y"></i><i class="g"></i><i class="y"></i><i class="r"></i></div><div id="throwMarker" class="marker"></div></div><div id="catchMeter" class="catchMeter"><div class="catchTitle">WR CATCH TIMING • PRESS C / TAP CATCH</div><div class="meter"><i class="r"></i><i class="y"></i><i class="g"></i><i class="y"></i><i class="r"></i></div><div id="catchMarker" class="marker"></div></div>
 <div id="actions" class="actionBar"><button id="jumpBtn">JUMP CATCH</button><button id="diveBtn">DIVE</button><button id="truckBtn">TRUCK</button><button id="hitBtn">HIT STICK</button><button id="cyclePlayerBtn">SWITCH PLAYER</button><button id="callBallBtn">CALL FOR BALL</button></div>
 <div id="firstDownLegend"><span class="blue">BLUE — LINE OF SCRIMMAGE</span><br><span class="yellow">YELLOW — FIRST DOWN</span></div>
@@ -236,7 +236,7 @@ $("buildNext").onclick=()=>{if(buildStep<5){
 }else{player={...buildState};position=buildState.position==="RB"?"HB":buildState.position;localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";startGame();toast("ROAD TO GLORY • "+(player.name||"ROAD PLAYER").toUpperCase())}};
 $("careerBtn").onclick=()=>openBuild();renderBuild();
 
-let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,snapState=false,playClock=25,routeClock=0,action="",throwMeterActive=false,throwMeterValue=0,throwMeterDir=1,catchMeterActive=false,catchMeterValue=0,catchMeterDir=1;let passTarget=null,passQuality="YELLOW",passGravity=17,passFlightTime=.8,selectedPassType="TOUCH",ballCarrier=null,playResolved=false,tackleLock=0;let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;let selectedTarget="1",selectedPlay="4 VERTICALS",scrimmageX=-25,lineOfScrimmageMarker=null,firstDownMarker=null;
+let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,snapState=false,playClock=25,routeClock=0,action="",throwMeterActive=false,throwMeterValue=0,throwMeterDir=1,catchMeterActive=false,catchMeterValue=0,catchMeterDir=1;let playMode="SCRIMMAGE",fieldStyle="PRO",fieldStripes=[];let passTarget=null,passQuality="YELLOW",passGravity=17,passFlightTime=.8,selectedPassType="TOUCH",ballCarrier=null,playResolved=false,tackleLock=0;let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;let selectedTarget="1",selectedPlay="4 VERTICALS",scrimmageX=-25,lineOfScrimmageMarker=null,firstDownMarker=null;
 // High-detail CC0 football-player GLB; procedural players remain as a fallback if loading fails.
 let realisticFootballTemplate=null, realisticFootballLoadStarted=false;
 async function loadRealisticFootballModel(){
@@ -335,7 +335,7 @@ function posePlayer(p,role,phase="pre"){
  const j=p&&p.userData&&p.userData.joints;if(!j)return;
  [j.hipL,j.hipR,j.thighL,j.thighR,j.shinL,j.shinR,j.armL,j.armR,j.foreL,j.foreR].forEach(x=>{x.rotation.x=0;x.rotation.z=0});
  if(phase==="pre"){
-   if(role==="OL"||role==="DL"||role==="LS"){
+   if(role==="OL"||role==="C"||role==="DL"||role==="LS"){
      j.torso.rotation.x=-.30;j.hipL.rotation.z=.045;j.hipR.rotation.z=-.045;j.thighL.rotation.x=.46;j.thighR.rotation.x=.46;j.shinL.rotation.x=-.58;j.shinR.rotation.x=-.58;j.armL.rotation.z=.34;j.armR.rotation.z=-.34;j.foreL.rotation.x=-.58;j.foreR.rotation.x=-.58;
    }else if(role==="WR"){
      j.torso.rotation.x=-.10;j.thighL.rotation.x=.16;j.thighR.rotation.x=.16;j.shinL.rotation.x=-.19;j.shinR.rotation.x=-.19;j.armL.rotation.z=.13;j.armR.rotation.z=-.13;
@@ -363,6 +363,7 @@ function animateHumanMotion(dt){
      j.shinL.rotation.x=-.25;j.shinR.rotation.x=-.25;continue;
    }
    const moving=!!(snapState&&(p.userData.route||p.userData.role==="DL"||p.userData.role==="CB"||p===controlled));
+   if(ballLive&&p===controlled&&["WR","RB","HB"].includes(position)){j.armL.rotation.x=-.9;j.armR.rotation.x=-.9;j.armL.rotation.z=.32;j.armR.rotation.z=-.32;}
    if(moving){
      const phase=t*11+(Number(p.userData.jersey)||0)*.65;
      const stride=Math.sin(phase),opposite=Math.sin(phase+Math.PI);
@@ -402,8 +403,7 @@ function makeScene(){
  turf.rotation.x=-Math.PI/2;turf.receiveShadow=true;scene.add(turf);field=turf;
  // Subtle mowing stripes make the field read like a broadcast stadium surface.
  for(let i=0;i<12;i++){
-   const stripe=new THREE.Mesh(new THREE.PlaneGeometry(10,53),new THREE.MeshStandardMaterial({color:i%2?0x196f39:0x176b35,roughness:.94}));
-   stripe.rotation.x=-Math.PI/2;stripe.position.set(-50+i*10,.012,0);stripe.receiveShadow=true;scene.add(stripe);
+   const stripe=new THREE.Mesh(new THREE.PlaneGeometry(10,53),new THREE.MeshStandardMaterial({color:i%2?0x196f39:0x176b35,roughness:.94}));stripe.rotation.x=-Math.PI/2;stripe.position.set(-50+i*10,.012,0);stripe.receiveShadow=true;stripe.userData.fieldStripe=true;fieldStripes.push(stripe);scene.add(stripe);
  }
 
  function line(w,d,x,z,thick=.045){
@@ -463,8 +463,7 @@ function makeScene(){
  }
  for(const x of [-58,58]){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.22,.3,30,10),new THREE.MeshStandardMaterial({color:0x2d3339}));pole.position.set(x,15,0);scene.add(pole);const lamp=new THREE.PointLight(0xffffff,2.5,100);lamp.position.set(x,29,0);scene.add(lamp)}
 
- ball=new THREE.Mesh(new THREE.SphereGeometry(.23,18,12),new THREE.MeshStandardMaterial({color:0x6b351e,roughness:.8}));
- ball.scale.set(.75,.75,1.45);ball.visible=false;scene.add(ball);
+ ball=new THREE.Group();const footballLeather=new THREE.MeshStandardMaterial({color:0x6b351e,roughness:.84});const footballBody=new THREE.Mesh(new THREE.SphereGeometry(.24,28,20),footballLeather);footballBody.scale.set(.72,.72,1.48);footballBody.castShadow=true;ball.add(footballBody);const footballLaceMat=new THREE.MeshStandardMaterial({color:0xf4ead5,roughness:.7});const footballLace=new THREE.Mesh(new THREE.BoxGeometry(.025,.014,.20),footballLaceMat);footballLace.position.set(0,.166,0);ball.add(footballLace);for(let k=-2;k<=2;k++){const lace=new THREE.Mesh(new THREE.BoxGeometry(.105,.014,.018),footballLaceMat);lace.position.set(0,.17,k*.038);ball.add(lace)}for(const side of [-1,1]){const stripe=new THREE.Mesh(new THREE.TorusGeometry(.115,.009,6,18),footballLaceMat);stripe.rotation.x=Math.PI/2;stripe.position.set(0,.03,side*.235);ball.add(stripe)}ball.visible=false;scene.add(ball);
 
  players.length=0;
  const qb=makePlayer(-34,-3,"12","home",1.28,"QB");
@@ -475,7 +474,7 @@ function makeScene(){
  // Long snapper sits directly behind the interior OL on punt/field-goal looks.
  const snapper=makePlayer(-31,0,"48","home",1.28,"LS");
  // Five-man OL in a real pre-snap protection shell.
- [-6,-3,0,3,6].forEach((z,i)=>makePlayer(-29,z,String(60+i),"home",1.30,"OL"));
+ [-6,-3,0,3,6].forEach((z,i)=>makePlayer(-25,z,String(60+i),"home",1.30,i===2?"C":"OL"));
  // Defense: four down linemen, three linebackers, two corners and two safeties.
  [-6,-2,2,6].forEach((z,i)=>makePlayer(-21,z,String(90+i),"away",1.30,"DL"));
  [-8,0,8].forEach((z,i)=>makePlayer(-17,z,String(50+i),"away",1.26,"LB"));
@@ -506,18 +505,20 @@ function takeControl(jersey){
  $("hud").textContent="CONTROL: "+(position==="QB"?"QB":position==="RB"?"RUNNING BACK":"WR "+(String(jersey)==="3"?"SLOT":jersey))+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist;
  toast("YOU CONTROL "+(position==="QB"?"THE QB":position==="RB"?"THE RUNNING BACK":"WR "+jersey));
 }
-function choosePlay(name){selectedPlay=name;document.querySelectorAll("[data-playbook],#presnap [data-play]").forEach(b=>b.classList.toggle("selected",(b.dataset.playbook||b.dataset.play)===name));$("playName").textContent=name;$("huddle").textContent="HUDDLE • "+name+" • BREAK";toast("PLAYBOOK: "+name)}
+function choosePlay(name){selectedPlay=name;playMode="SCRIMMAGE";document.querySelectorAll("[data-playbook],#presnap [data-play]").forEach(b=>b.classList.toggle("selected",(b.dataset.playbook||b.dataset.play)===name));$("playName").textContent=name;$("huddle").textContent="HUDDLE • "+name+" • BREAK";toast("PLAYBOOK: "+name)}
+function changeField(style){fieldStyle=style;const palettes={PRO:[0x176b35,0x1d743d],COLLEGE:[0x1b6330,0x24743a],NIGHT:[0x103c28,0x174d32],RETRO:[0x34733c,0x3c8044]};const c=palettes[style]||palettes.PRO;if(field&&field.material)field.material.color.setHex(c[0]);fieldStripes.forEach((m,i)=>m.material.color.setHex(i%2?c[1]:c[0]));$("fieldLabel").textContent=style+" FIELD • 100-YARD GRIDIRON";toast("FIELD STYLE: "+style)}
+function startKickoff(){if(!gameStarted)return;playMode="KICKOFF";snapState=true;ballLive=true;playResolved=false;ball.visible=true;ball.position.set(-35,1.2,0);ballVel.set(28,12,0);controlled=players.find(p=>p.userData.team==="home"&&p.userData.role==="WR")||controlled;$("presnap").style.display="none";$("routeLegend").style.display="none";toast("KICKOFF • TRACK THE BALL")}
+function startFieldGoal(){if(!gameStarted)return;playMode="FIELDGOAL";snapState=true;ballLive=true;playResolved=false;ball.visible=true;ball.position.set(-31,1.5,0);ballVel.set(28,14,0);$("presnap").style.display="none";$("routeLegend").style.display="none";toast("FIELD GOAL • AIM THROUGH THE UPRIGHTS")}
+
 function setFormation(){
- const spots={QB:[-34,-3],RB:[-30,4],WR:[-23,-14],WR2:[-23,14],SLOT:[-26,-8],LS:[-31,0]};
- for(const p of players){
-   p.userData.route=null;p.position.y=0;p.rotation.z=0;posePlayer(p,p.userData.role,"pre");
- }
- const byJ={12:spots.QB,22:spots.RB,1:spots.WR,2:spots.WR2,3:spots.SLOT,48:spots.LS};
- for(const p of players){const j=String(p.userData.jersey);if(byJ[j]){p.position.x=byJ[j][0];p.position.z=byJ[j][1]}}
+ const spots={12:[-31,-3],22:[-29,4],1:[-25,-22],2:[-25,22],3:[-25,-12],48:[-28,0]};
+ for(const p of players){p.userData.route=null;p.userData.hasBall=false;p.userData.tacklePose=0;p.position.y=0;p.rotation.z=0;posePlayer(p,p.userData.role,"pre");const j=String(p.userData.jersey),role=p.userData.role;let x=-25,z=0;
+ if(p.userData.team==="home"){if(spots[j])[x,z]=spots[j];else if(role==="OL"){x=-25.25;z=(Number(j)-62)*1.35}else if(role==="C"){x=-25;z=0}}
+ else{if(role==="DL"){x=-22.9;z=([-6,-2,2,6][Number(j)-90]??0)}else if(role==="LB"){x=-19.5;z=([-9,0,9][Number(j)-100]??0)}else if(role==="CB"){x=-22;z=Number(j)%2?-20:20}else if(role==="S"){x=-15;z=Number(j)%2?-12:12}}
+ p.position.set(x,0,z);p.rotation.y=-Math.PI/2;}
  scrimmageX=-25;updateFirstDownMarkers();
 }
-function resetPlay(){
- ballLive=false;snapState=false;routeClock=0;playClock=25;ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData){p.userData.hasBall=false;p.userData.tacklePose=0}});
+function resetPlay(){ballLive=false;snapState=false;playMode="SCRIMMAGE";routeClock=0;playClock=25;ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData){p.userData.hasBall=false;p.userData.tacklePose=0}});
  $("presnap").style.display="block";$("routeLegend").style.display="block";$("footballControls").style.display="block";$("firstDownLegend").style.display="block";ball.visible=false;action="";
  throwMeterActive=false;catchMeterActive=false;passTarget=null;ballVel.set(0,0,0);
  $("throw").style.display="none";$("catchMeter").style.display="none";
@@ -528,11 +529,10 @@ function resetPlay(){
  injured=false;
  $("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist+" • PRE-SNAP";
 }
-function snapBall(){
- if(!gameStarted||snapState)return;
+function snapBall(){if(!gameStarted||snapState)return;playMode="SCRIMMAGE";
  ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData)p.userData.hasBall=false});
  snapState=true;routeClock=0;playClock=0;$("presnap").style.display="none";$("routeLegend").style.display="none";
- const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="48");
+ const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="62");
  const rb=players.find(p=>p.userData.jersey==="22"),wr=players.find(p=>p.userData.jersey==="1"),wr2=players.find(p=>p.userData.jersey==="2"),slot=players.find(p=>p.userData.jersey==="3");
  if(!qb||!snapper)return;
  scrimmageX=-25;updateFirstDownMarkers();
@@ -566,7 +566,7 @@ window.addEventListener("keydown",e=>{if(e.code==="Space"){e.preventDefault();po
 const keys={};window.addEventListener("keydown",e=>keys[e.code]=true);window.addEventListener("keyup",e=>keys[e.code]=false);
 function updateRoutes(dt){
  if(!snapState)return;routeClock+=dt;
- const run=(p,fn)=>{if(!p||!p.userData.route)return;const q=p.userData.route;q.phase=Math.min(1,q.phase+dt*.55);const v=fn(q.start,q.phase);const old=p.position.clone();p.position.lerp(v,.32);p.rotation.y=Math.atan2(v.z-old.z,v.x-old.x);};
+ const run=(p,fn)=>{if(!p||!p.userData.route)return;const q=p.userData.route;q.phase=Math.min(1,q.phase+dt*.55);const v=fn(q.start,q.phase);const old=p.position.clone();p.position.lerp(v,.32);p.rotation.y=Math.atan2(v.z-old.z,v.x-old.x)-Math.PI/2;};
  const wr=players.find(p=>p.userData.jersey==="1"),wr2=players.find(p=>p.userData.jersey==="2"),slot=players.find(p=>p.userData.jersey==="3"),rb=players.find(p=>p.userData.jersey==="22");
  const routeMove=(p,s,t)=>{const kind=p.userData.route?.kind;const u=Math.min(1,t*1.25);if(kind==="slant")return new THREE.Vector3(s.x+16*u,s.y,s.z+(s.z<0?9:-9)*u);if(kind==="cross")return new THREE.Vector3(s.x+18*u,s.y,s.z+(s.z<0?18:-18)*u);if(kind==="post")return new THREE.Vector3(s.x+18*u,s.y,s.z+(s.z<0?7:-7)*u);if(kind==="iso")return new THREE.Vector3(s.x+10*u,s.y,s.z);if(kind==="sweep")return new THREE.Vector3(s.x+12*u,s.y,s.z-10*u);if(kind==="check")return new THREE.Vector3(s.x+9*u,s.y,s.z-6*u);return new THREE.Vector3(s.x+24*t,s.y,s.z)};
  if(controlled!==wr)run(wr,(s,t)=>routeMove(wr,s,t));
@@ -588,12 +588,12 @@ function moveControlled(dt){
  if(keys.KeyA||keys.ArrowLeft)dz-=1;if(keys.KeyD||keys.ArrowRight)dz+=1;
  const len=Math.hypot(dx,dz)||1;
  const speed=(keys.ShiftLeft||keys.ShiftRight)?.15:.075;
- if(dx||dz){controlled.position.x+=dx/len*speed*60*dt;controlled.position.z+=dz/len*speed*60*dt;controlled.rotation.y=Math.atan2(dz,dx);controlled.rotation.x=-.03}
+ if(dx||dz){controlled.position.x+=dx/len*speed*60*dt;controlled.position.z+=dz/len*speed*60*dt;controlled.rotation.y=Math.atan2(dz,dx)-Math.PI/2;controlled.rotation.x=-.03}
  controlled.position.x=Math.max(-53,Math.min(53,controlled.position.x));controlled.position.z=Math.max(-24,Math.min(24,controlled.position.z));
 }
 function throwBall(){
  if(!gameStarted||!snapState||ballLive||String(controlled?.userData?.jersey)!=="12")return;
- if(!throwMeterActive){throwMeterActive=true;throwMeterValue=0;throwMeterDir=1;$("throw").style.display="block";toast("RELEASE WHEN THE MARKER HITS THE CENTER");return}
+ if(!throwMeterActive){playMode="PASS";throwMeterActive=true;throwMeterValue=0;throwMeterDir=1;$("throw").style.display="block";toast("RELEASE WHEN THE MARKER HITS THE CENTER");return}
  const precision=1-Math.min(1,Math.abs(throwMeterValue-.5)*2);
  passQuality=precision>.78?"GREEN":precision>.38?"YELLOW":"RED";
  throwMeterActive=false;$("throw").style.display="none";
@@ -621,8 +621,7 @@ function throwBall(){
  toast("PASS "+selectedPassType+" TO "+(selectedTarget==="22"?"RB":selectedTarget==="3"?"SLOT":"WR "+selectedTarget)+" • "+passQuality);
 }
 function finishCatch(receiver){
- if(!ballLive||!receiver)return;
- ballLive=false;ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";
+ if(!ballLive||!receiver||playMode!=="PASS")return;ballLive=false;playMode="RUN";ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";
  if(passQuality==="RED"){ball.visible=false;down=Math.min(4,down+1);toast("INCOMPLETE • OFF-TARGET PASS");playResolved=true;setTimeout(resetPlay,850);return}
  ballCarrier=receiver;receiver.userData.hasBall=true;receiver.userData.route=null;ball.visible=true;
  controlled=receiver;position=String(receiver.userData.jersey)==="22"?"RB":"WR";
@@ -642,7 +641,7 @@ function updateDefensePursuit(dt){
  const defense=players.filter(p=>p.userData.team==="away"&&["DL","LB","CB","S"].includes(p.userData.role));
  defense.forEach(d=>{
   const delta=carrier.position.clone().sub(d.position);delta.y=0;const distance=delta.length();
-  if(distance>1.4){delta.normalize();const speed=(d.userData.role==="CB"||d.userData.role==="S")?5.8:4.9;d.position.addScaledVector(delta,Math.min(distance-1.15,speed*dt));d.rotation.y=Math.atan2(delta.z,delta.x);d.userData.pursuit=true;posePlayer(d,d.userData.role,"run")}
+  if(distance>1.4){delta.normalize();const speed=(d.userData.role==="CB"||d.userData.role==="S")?5.8:4.9;d.position.addScaledVector(delta,Math.min(distance-1.15,speed*dt));d.rotation.y=Math.atan2(delta.z,delta.x)-Math.PI/2;d.userData.pursuit=true;posePlayer(d,d.userData.role,"run")}
  });
 }
 function resolveTackle(){
@@ -673,7 +672,7 @@ function animate(){
  animateHumanMotion(dt);
  if(gameStarted&&snapState){
    updateRoutes(dt);
-   const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="48");
+   const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="62");
    if(qb&&qb.userData.snapTimer>0){
      qb.userData.snapTimer-=dt;
      const t=1-Math.max(0,qb.userData.snapTimer)/.55;
@@ -687,9 +686,8 @@ function animate(){
  if(throwMeterActive){throwMeterValue+=.95*dt*throwMeterDir;if(throwMeterValue>=1||throwMeterValue<=0){throwMeterValue=Math.max(0,Math.min(1,throwMeterValue));throwMeterDir*=-1;}$("throwMarker").style.left=(throwMeterValue*100)+"%"}
  if(ballLive&&["WR","RB","HB"].includes(position)&&!catchMeterActive){catchMeterActive=true;catchMeterValue=0;catchMeterDir=1;$("catchMeter").style.display="block"}
  if(catchMeterActive){catchMeterValue+=1.15*dt*catchMeterDir;if(catchMeterValue>=1||catchMeterValue<=0){catchMeterValue=Math.max(0,Math.min(1,catchMeterValue));catchMeterDir*=-1;}$("catchMarker").style.left=(catchMeterValue*100)+"%"}
- if(ballLive){
-  ball.position.addScaledVector(ballVel,dt);ball.rotation.z+=dt*8;ball.rotation.x+=dt*6;ballVel.y-=passGravity*dt;
-  const candidates=players.filter(p=>p.userData.team!=="away"&&["WR","RB","HB"].includes(p.userData.role)&&p.position.distanceTo(ball.position)<2.55).sort((a,b)=>a.position.distanceTo(ball.position)-b.position.distanceTo(ball.position));
+ if(ballLive){ball.position.addScaledVector(ballVel,dt);ball.rotation.z+=dt*8;ball.rotation.x+=dt*6;ballVel.y-=passGravity*dt;if(playMode==="KICKOFF"&&ball.position.y<=.25){ball.position.y=.25;ballLive=false;ball.visible=false;playResolved=true;toast("KICKOFF COMPLETE • RESETTING FORMATION");setTimeout(resetPlay,1100)}if(playMode==="FIELDGOAL"&&(ball.position.x>=55||ball.position.y<=.25)){ballLive=false;ball.visible=false;playResolved=true;if(ball.position.x>=55&&ball.position.y>9.5&&Math.abs(ball.position.z)<2.5){homeScore+=3;toast("FIELD GOAL GOOD • +3 POINTS")}else{down=Math.min(4,down+1);toast("FIELD GOAL NO GOOD • DEFENSE TAKES OVER")}setTimeout(resetPlay,1200)}
+  const candidates=playMode==="PASS"?players.filter(p=>p.userData.team==="home"&&["WR","RB","HB"].includes(p.userData.role)&&p.position.distanceTo(ball.position)<2.55).sort((a,b)=>a.position.distanceTo(ball.position)-b.position.distanceTo(ball.position)):[];
   const receiver=candidates.find(p=>p===passTarget)||candidates[0];
   if(receiver&&ball.position.y>.25&&ball.position.y<3.4){
     if(receiver===passTarget&&passQuality!=="RED")finishCatch(receiver);

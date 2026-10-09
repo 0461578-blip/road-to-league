@@ -611,8 +611,9 @@ function updateDefensePursuit(dt){
  });
 }
 function resolveTackle(){
- if(!snapState||playResolved||!ballCarrier||tackleLock>0)return;
- const carrier=ballCarrier;if(!carrier.userData.hasBall)return;
+ if(!snapState||playResolved||tackleLock>0)return;
+ const carrier=ballCarrier||players.find(p=>p.userData.team==="home"&&p.userData.hasBall);
+ if(!carrier||!carrier.userData.hasBall)return;
  const defenders=players.filter(p=>p.userData.team==="away"&&["DL","LB","CB","S"].includes(p.userData.role));
  let tackler=null,best=999;for(const d of defenders){const d0=d.position.distanceTo(carrier.position);if(d0<best){best=d0;tackler=d}}
  if(!tackler||best>1.42)return;

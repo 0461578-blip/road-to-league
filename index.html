@@ -237,6 +237,33 @@ $("buildNext").onclick=()=>{if(buildStep<5){
 $("careerBtn").onclick=()=>openBuild();renderBuild();
 
 let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,snapState=false,playClock=25,routeClock=0,action="",throwMeterActive=false,throwMeterValue=0,throwMeterDir=1,catchMeterActive=false,catchMeterValue=0,catchMeterDir=1;let passTarget=null,passQuality="YELLOW",passGravity=17,passFlightTime=.8,selectedPassType="TOUCH",ballCarrier=null,playResolved=false,tackleLock=0;let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;let selectedTarget="1",selectedPlay="4 VERTICALS",scrimmageX=-25,lineOfScrimmageMarker=null,firstDownMarker=null;
+// High-detail CC0 football-player GLB; procedural players remain as a fallback if loading fails.
+let realisticFootballTemplate=null, realisticFootballLoadStarted=false;
+async function loadRealisticFootballModel(){
+ if(realisticFootballLoadStarted)return;realisticFootballLoadStarted=true;
+ try{
+  const {GLTFLoader}=await import("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js");
+  new GLTFLoader().load("https://www.innerscene.com/api/library/american-football-player-ready-3d-person-team-sports-aad6f516/download",gltf=>{
+   const source=gltf.scene;source.updateMatrixWorld(true);
+   const bounds=new THREE.Box3().setFromObject(source),size=bounds.getSize(new THREE.Vector3());
+   if(!Number.isFinite(size.y)||size.y<.5){console.warn("Football model dimensions invalid");return;}
+   const factor=3.0/size.y;source.scale.setScalar(factor);source.position.y=-bounds.min.y*factor;
+   realisticFootballTemplate=source;for(const p of players)attachRealisticFootballModel(p);
+  },undefined,err=>console.warn("Detailed football model unavailable; keeping fallback players.",err));
+ }catch(err){console.warn("Detailed football model unavailable; keeping fallback players.",err);}
+}
+function attachRealisticFootballModel(player){
+ if(!realisticFootballTemplate||!player||player.userData.realisticMesh)return;
+ const model=realisticFootballTemplate.clone(true);
+ model.traverse(node=>{
+  if(!node.isMesh)return;node.castShadow=true;node.receiveShadow=true;
+  const recolor=mat=>{const m=mat.clone();if(m.color){const c=m.color;if(c.b>c.r*1.18&&c.b>c.g*.98)m.color.setHex(player.userData.team==="home"?0x9b1020:0x174a9a);}return m;};
+  node.material=Array.isArray(node.material)?node.material.map(recolor):recolor(node.material);
+ });
+ player.add(model);player.userData.realisticMesh=model;
+ if(player.userData.bodyFallback)player.userData.bodyFallback.visible=false;
+ if(player.userData.joints&&player.userData.joints.torso.parent)player.userData.joints.torso.parent.visible=false;
+}
 function makePlayer(x,z,jersey,team,scale=1,role=""){
  const g=new THREE.Group(),body=new THREE.Group();g.add(body);
  const homeColor=team==="home"?0x9b1020:0x174a9a;
@@ -298,8 +325,9 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
 
  if(jersey){const cv=document.createElement("canvas");cv.width=256;cv.height=256;const ctx=cv.getContext("2d");ctx.clearRect(0,0,256,256);ctx.fillStyle="#fff";ctx.font="900 145px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(jersey),128,138);const tex=new THREE.CanvasTexture(cv);add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true}),[0,.02,-.44]);}
 
- g.userData={jersey,team,speed:0,route:null,role,animTime:Math.random()*6,joints:{torso,hipL,hipR,thighL,thighR,shinL,shinR,armL,armR,foreL,foreR,head,helmet}};
+ g.userData={jersey,team,speed:0,route:null,role,animTime:Math.random()*6,bodyFallback:body,joints:{torso,hipL,hipR,thighL,thighR,shinL,shinR,armL,armR,foreL,foreR,head,helmet}};
  g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);players.push(g);
+ if(realisticFootballTemplate)attachRealisticFootballModel(g);
  posePlayer(g,role,"pre");
  return g;
 }
@@ -691,6 +719,7 @@ function animate(){
 function formatTime(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 $("howBtn").onclick=()=>toast("SPACE = JUMP/THROW • V = DIVE • X = TRUCK • Y = HIT • C = CATCH");
 renderTeams();
+loadRealisticFootballModel();
 </script>
 </body>
 </html>

@@ -289,6 +289,8 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  const armL=new THREE.Group(),armR=new THREE.Group();armL.position.set(-.57,1.76,0);armR.position.set(.57,1.76,0);body.add(armL,armR);
  const foreL=new THREE.Group(),foreR=new THREE.Group();foreL.position.y=-.48;foreR.position.y=-.48;armL.add(foreL);armR.add(foreR);
  add(armL,new THREE.CapsuleGeometry(.135,.30,10,14),jerseyMat,[0,-.18,0]);add(armR,new THREE.CapsuleGeometry(.135,.30,10,14),jerseyMat,[0,-.18,0]);
+ // Uniform sleeve piping adds extra kit detail.
+ add(armL,new THREE.TorusGeometry(.132,.018,8,16),whiteMat,[0,-.34,0],[Math.PI/2,0,0]);add(armR,new THREE.TorusGeometry(.132,.018,8,16),whiteMat,[0,-.34,0],[Math.PI/2,0,0]);
  add(foreL,new THREE.CapsuleGeometry(.095,.36,10,14),skinMat,[0,-.22,-.01]);add(foreR,new THREE.CapsuleGeometry(.095,.36,10,14),skinMat,[0,-.22,-.01]);
  const handL=new THREE.Group(),handR=new THREE.Group();handL.position.set(0,-.45,-.02);handR.position.set(0,-.45,-.02);foreL.add(handL);foreR.add(handR);
  add(handL,new THREE.SphereGeometry(.105,14,12),darkMat,[0,0,0],[0,0,0],[.8,1,.65]);add(handR,new THREE.SphereGeometry(.105,14,12),darkMat,[0,0,0],[0,0,0],[.8,1,.65]);
@@ -327,6 +329,11 @@ function animateHumanMotion(dt){
    const j=p.userData.joints;
    p.userData.animTime=(p.userData.animTime||0)+dt;
    const t=p.userData.animTime;
+   if(p.userData.tacklePose>0){
+     p.userData.tacklePose=Math.max(0,p.userData.tacklePose-dt);
+     j.torso.rotation.x=-.72;j.armL.rotation.z=.95;j.armR.rotation.z=-.95;j.thighL.rotation.x=.85;j.thighR.rotation.x=.85;
+     j.shinL.rotation.x=-.25;j.shinR.rotation.x=-.25;continue;
+   }
    const moving=!!(snapState&&(p.userData.route||p.userData.role==="DL"||p.userData.role==="CB"||p===controlled));
    if(moving){
      const phase=t*11+(Number(p.userData.jersey)||0)*.65;
@@ -482,7 +489,7 @@ function setFormation(){
  scrimmageX=-25;updateFirstDownMarkers();
 }
 function resetPlay(){
- ballLive=false;snapState=false;routeClock=0;playClock=25;ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData)p.userData.hasBall=false});
+ ballLive=false;snapState=false;routeClock=0;playClock=25;ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData){p.userData.hasBall=false;p.userData.tacklePose=0}});
  $("presnap").style.display="block";$("routeLegend").style.display="block";$("footballControls").style.display="block";$("firstDownLegend").style.display="block";ball.visible=false;action="";
  throwMeterActive=false;catchMeterActive=false;passTarget=null;ballVel.set(0,0,0);
  $("throw").style.display="none";$("catchMeter").style.display="none";
@@ -621,7 +628,7 @@ function resolveTackle(){
  if(breakTackle){carrier.position.x+=.9;action="";tackleLock=.55;toast("TRUCK • BROKE THE TACKLE");return}
  playResolved=true;tackleLock=1.1;carrier.userData.hasBall=false;ballCarrier=null;ball.visible=false;ballVel.set(0,0,0);
  const awayFrom=carrier.position.clone().sub(tackler.position);awayFrom.y=0;if(awayFrom.lengthSq()<.001)awayFrom.set(1,0,0);awayFrom.normalize();
- carrier.position.addScaledVector(awayFrom,.65);carrier.position.y=.12;carrier.rotation.z=awayFrom.z>=0?-.85:.85;
+ carrier.position.addScaledVector(awayFrom,.65);carrier.position.y=.12;carrier.rotation.z=awayFrom.z>=0?-.85:.85;carrier.userData.tacklePose=1.05;
  tackler.position.addScaledVector(awayFrom,-.12);tackler.rotation.z=awayFrom.z>=0?.25:-.25;
  const j=carrier.userData.joints;if(j){j.torso.rotation.x=-.65;j.armL.rotation.z=.9;j.armR.rotation.z=-.9;j.thighL.rotation.x=.8;j.thighR.rotation.x=.8}
  const gain=Math.max(0,Math.round(carrier.position.x-scrimmageX));dist=Math.max(1,dist-gain);down=Math.min(4,down+1);

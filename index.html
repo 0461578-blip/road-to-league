@@ -477,6 +477,8 @@ function animateHumanMotion(dt){
    j.head.rotation.y=Math.sin(t*1.25+jersey*.3)*.035+Math.sin(phase*.5)*.018*running;
    j.helmet.rotation.z=Math.sin(phase)*.012*running+Math.sin(t*1.8)*.006;
    p.position.y=Math.max(0,Math.abs(Math.sin(phase*2))*(sprinting?.065:.038)*running);
+   // Preserve the actual pre-snap football stance at idle; do not let the idle animation straighten everyone up.
+   if(running<.06&&!snapState){posePlayer(p,ud.role||"","pre");p.position.y=0;}
 
    // Receiver tracks the incoming ball and presents both hands instead of keeping a generic running pose.
    const receiving=catchMeterActive&&p===controlled;

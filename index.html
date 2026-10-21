@@ -123,6 +123,94 @@
 #menu .music{background:#080b11ef;border:1px solid #ffffff26;border-radius:5px;box-shadow:0 14px 45px #000b}
 #menu .music button{background:linear-gradient(135deg,#a51e43,#4a1022);border-radius:3px}
 @media(max-width:760px){#menu .menuWrap{grid-template-columns:1fr;background:radial-gradient(ellipse at 72% 82%,#78163375,transparent 48%),linear-gradient(150deg,#05070b,#11121a)}#menu .left{padding:95px 18px 245px}#menu .hero{width:90%;height:43%;right:-15%;opacity:.75}#menu .kicker{font-size:8px;letter-spacing:1.6px}#menu .kicker:after{font-size:7px;padding:5px}#menu .logo{font-size:clamp(50px,12vw,78px);letter-spacing:-.055em}#menu .setup{padding:11px}#menu .league{padding:9px 10px;font-size:10px}#menu .actions{gap:7px}#menu .btn{padding:13px 12px}#menu .btn.primary{min-height:100px}}
+
+/* Season 27 broadcast-inspired presentation overhaul */
+:root{--orange:#e85a32;--bg:#05070a;--panel:#10151d;--muted:#9aa6b5}
+body{background:#05070a}
+.screen.dark{background:radial-gradient(ellipse at 76% 40%,#8b203b50 0%,transparent 39%),radial-gradient(ellipse at 18% 78%,#e85a3219 0%,transparent 34%),linear-gradient(120deg,#030406 0%,#10141b 50%,#171a20 100%)}
+.menuWrap{grid-template-columns:minmax(340px,43%) 1fr;min-height:100%;background:linear-gradient(90deg,#050609eF 0%,#080a0dbb 48%,#05070a33 100%)}
+.menuWrap:before{background:repeating-linear-gradient(115deg,transparent 0 58px,#ffffff06 59px 60px),linear-gradient(90deg,#0009,transparent 75%)}
+.menuWrap:after{width:70%;background:linear-gradient(90deg,#05070a00,#ffffff04),radial-gradient(ellipse at 58% 48%,#a92b4030,transparent 55%)}
+.left{padding:clamp(26px,4.5vw,72px);max-width:790px}
+.kicker{font-size:11px;letter-spacing:3.5px;color:#e6e9ee;text-transform:uppercase}
+.dot{background:#ed5736;box-shadow:0 0 20px #ed573688}
+.logo{font-size:clamp(54px,7.4vw,108px);font-weight:1000;line-height:.79;letter-spacing:-.075em;text-shadow:0 7px 40px #000}
+.logo span{color:#f05b3b;text-shadow:0 0 34px #ed57362b}
+.tag{max-width:500px;font-size:clamp(10px,1.1vw,13px);line-height:1.9;letter-spacing:.13em;color:#c5ccd5}
+.actions{gap:9px;margin-top:27px;max-width:440px}
+.btn{position:relative;min-height:61px;text-align:left;padding:13px 18px 13px 21px;border:1px solid #ffffff21;border-left:3px solid #4c5664;border-radius:2px;background:linear-gradient(100deg,#151b24ed,#0c1017d9);color:#f5f7fa;box-shadow:0 8px 20px #0003;transition:transform .16s,border-color .16s,background .16s}
+.btn:hover{transform:translateX(5px);border-color:#ed5736;border-left-color:#ed5736;background:linear-gradient(100deg,#3a1b20,#111721)}
+.btn.primary{border-left-color:#f05b3b;background:linear-gradient(100deg,#7b1c31,#17151a 85%);border-color:#a63848}
+.btn .big,.btn b{font-size:clamp(13px,1.2vw,16px);letter-spacing:.09em;font-weight:1000}
+.btn small{font-size:9px;letter-spacing:.13em;color:#aab3bf;margin-top:5px}
+.setup{max-width:440px;margin-top:20px;padding:13px 15px;background:#080b10c9;border:1px solid #ffffff18}
+.setupTitle{font-size:9px;letter-spacing:.12em;color:#b6bfcb;line-height:1.7}
+.leagueRow{gap:6px;margin-top:10px}
+.league{border-radius:2px;background:#161d27;border:1px solid #ffffff20;color:#cbd3dd;font-weight:900;letter-spacing:.08em}
+.league.active,.league:hover{background:#9c263b;border-color:#ed5736;color:white}
+.status{font-size:10px;letter-spacing:.14em;color:#f1a18c;margin-top:9px}
+.music{z-index:15;background:#070a10e8;border:1px solid #ffffff1c;border-radius:2px;backdrop-filter:blur(16px);box-shadow:0 10px 30px #0007}
+.music button{border-radius:2px;background:#151b24;border:1px solid #ffffff25;color:#eef2f7;font-weight:900;letter-spacing:.08em;font-size:9px}
+.music button:hover{background:#8d2338;border-color:#ed5736}
+.musicSong{font-weight:900;letter-spacing:.03em}
+.musicDate{color:#9ca8b7;letter-spacing:.13em}
+.hero{filter:saturate(1.18) contrast(1.08)}
+.heroGlow{background:radial-gradient(ellipse at 55% 43%,#e94d3530,transparent 58%)}
+.heroPlayer{filter:drop-shadow(0 8px 40px #000) drop-shadow(0 0 25px #9e273b30)}
+.overlay{background:#030508f5;backdrop-filter:blur(14px)}
+#teamOverlay{padding:clamp(12px,2.3vw,30px);overflow:auto}
+#teamOverlay .topbar{max-width:1500px;margin:0 auto 16px;border-bottom:1px solid #ffffff24;padding-bottom:15px}
+#teamOverlay .title{font-size:clamp(25px,4vw,48px);font-weight:1000;letter-spacing:-.05em}
+#teamOverlay .title span{color:#ef593a}
+#teamOverlay .hint{font-size:10px;letter-spacing:.13em;color:#a8b2c0}
+#teamOverlay .teamBody{max-width:1500px;margin:auto;background:linear-gradient(140deg,#131a24f5,#080b11f8);border:1px solid #ffffff1b;padding:clamp(12px,2vw,24px);box-shadow:0 24px 90px #0009}
+#teamOverlay .teamModes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+#teamOverlay .teamMode{border:1px solid #ffffff24;background:#111720;color:#b9c3cf;border-radius:2px;font-weight:1000;font-size:11px;letter-spacing:.1em;padding:12px 18px}
+#teamOverlay .teamMode.active,#teamOverlay .teamMode:hover{background:#8e2338;color:#fff;border-color:#ed593a}
+#teamOverlay .matchup{background:linear-gradient(90deg,#711d31 0%,#151a23 48%,#17233a 100%);border:1px solid #ffffff26;padding:20px;margin-bottom:20px;box-shadow:inset 0 0 45px #0005}
+#teamOverlay .side{min-height:115px;transition:background .15s,border .15s}
+#teamOverlay .side.selected{background:#ffffff0c;border:1px solid #f05b3b;box-shadow:0 0 22px #f05b3b1c}
+#teamOverlay .logoCircle{border-radius:2px;background:#080b11;border:2px solid #ffffff35;font-weight:1000;box-shadow:0 7px 18px #0008}
+#teamOverlay .sideName{font-weight:1000;letter-spacing:-.02em}
+#teamOverlay .vs{font-weight:1000;font-style:italic;color:#f05b3b}
+#teamOverlay .vs span{color:#d4dbe4}
+#teamOverlay .pickers{gap:16px}
+#teamOverlay .picker{background:#090d13;border:1px solid #ffffff18;padding:14px}
+#teamOverlay .picker h3{font-size:11px;letter-spacing:.15em;color:#e5eaf0;border-bottom:1px solid #ffffff19;padding-bottom:10px}
+#teamOverlay .teamGrid{gap:8px}
+#teamOverlay .teamCard{border-radius:2px;background:linear-gradient(145deg,#1b2430,#10151d);border:1px solid #ffffff1a;transition:transform .12s,border .12s}
+#teamOverlay .teamCard:hover{transform:translateY(-2px);border-color:#f05b3b;background:#2a1a21}
+#teamOverlay .teamCard.selected{border-color:#f05b3b;box-shadow:inset 0 0 0 1px #f05b3b44}
+#teamOverlay .teamFooter{position:sticky;bottom:0;background:#080b10f0;border-top:1px solid #ffffff1c;padding:13px;margin:14px -1px -1px;backdrop-filter:blur(12px)}
+#teamOverlay .start{border-radius:2px;background:linear-gradient(100deg,#b62c43,#722035);border:1px solid #f05b3b;font-weight:1000;letter-spacing:.1em;padding:15px 25px;box-shadow:0 7px 25px #9c263b33}
+#teamOverlay .back,#intro .skip{border-radius:2px;background:#121821;border:1px solid #ffffff24;color:#e7edf4;font-weight:900;letter-spacing:.1em}
+#intro .introCard,#build .buildCard{border-radius:2px;border:1px solid #ffffff25;background:linear-gradient(140deg,#151c26f8,#080b11fa);box-shadow:0 30px 100px #000b}
+#intro .introTitle{font-weight:1000;letter-spacing:-.055em}
+#intro .introTitle span{color:#f05b3b}
+#intro .journey>div.active{background:#842238;border-color:#f05b3b}
+#build .buildHead{border-bottom:1px solid #ffffff1e}
+#build .buildHead h1{letter-spacing:-.04em}
+#build .field input,#build .field select{border-radius:2px;background:#090d13;border:1px solid #ffffff28;color:white}
+#build .choice{border-radius:2px;background:#101720;border:1px solid #ffffff20}
+#build .choice.selected,#build .choice:hover{border-color:#f05b3b;background:#351821}
+#hud{font-weight:900;letter-spacing:.05em;text-shadow:0 2px 7px #000}
+#fieldLabel{background:#080c12dd;border:1px solid #ffffff25;border-left:3px solid #ed5736;letter-spacing:.13em}
+#score{background:#080b10f2;border:1px solid #ffffff2a;border-top:3px solid #ed5736;box-shadow:0 12px 32px #0008;backdrop-filter:blur(10px)}
+.scoreTop{letter-spacing:.17em;color:#f2a18e}
+.scoreNum{font-weight:1000;letter-spacing:-.05em}
+.scoreLogo{border-radius:2px;background:#1b2430;border:1px solid #ffffff25}
+#presnap,.presnap{background:linear-gradient(145deg,#111821f7,#070a10f5);border:1px solid #ffffff26;border-top:3px solid #ed5736;box-shadow:0 18px 55px #0009;backdrop-filter:blur(14px)}
+.maddenHeader{background:#080b10;border-bottom:1px solid #ffffff20;letter-spacing:.12em}
+.playButtons button{border-radius:2px;background:linear-gradient(140deg,#1b2531,#10151c);border:1px solid #ffffff20;transition:transform .12s,border .12s}
+.playButtons button:hover,.playButtons button.active{border-color:#f05b3b;background:linear-gradient(140deg,#51202c,#17151b);transform:translateY(-2px)}
+.playButtons button b{color:#f0785d}
+#snapBar{background:#080b10ee;border:1px solid #ffffff24}
+#snapBtn{background:#8c2338;border:1px solid #ed593a;border-radius:2px;font-weight:1000}
+#actions button,.actionBar button{border-radius:2px;background:#101720eF;border:1px solid #ffffff24;color:#f3f5f8;font-weight:1000;letter-spacing:.03em;box-shadow:0 5px 14px #0005}
+#actions button:hover,.actionBar button:hover{background:#8c2338;border-color:#ed593a}
+.meter{box-shadow:0 5px 18px #0008}
+@media(max-width:800px){.menuWrap{grid-template-columns:1fr}.left{padding:85px 22px 28px;justify-content:flex-start}.hero{position:absolute;inset:0 0 0 25%;opacity:.45;pointer-events:none}.logo{font-size:clamp(48px,15vw,82px)}.tag{max-width:390px}.actions,.setup{max-width:100%}.btn{min-height:54px}.music{max-width:calc(100vw - 18px);flex-wrap:wrap;gap:6px}.musicPlayer{max-width:calc(100vw - 18px)}#teamOverlay .matchup{gap:6px;padding:10px}#teamOverlay .pickers{grid-template-columns:1fr}#teamOverlay .teamFooter{display:flex;gap:8px}#teamOverlay .start{flex:1}#teamOverlay .teamModes button{flex:1}#teamOverlay .hint{display:none}}
+@media(max-height:700px){.left{padding-top:65px;padding-bottom:16px}.logo{font-size:clamp(46px,6vw,76px)}.tag{margin-top:10px}.actions{margin-top:14px;gap:6px}.btn{min-height:48px}.setup{margin-top:12px;padding:9px 12px}}
 </style>
 </head>
 <body>

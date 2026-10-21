@@ -349,8 +349,12 @@ function attachRealisticFootballModel(player){
   const recolor=mat=>{const m=mat.clone();if(m.color){const c=m.color;if(c.b>c.r*1.18&&c.b>c.g*.98)m.color.setHex(teamPalette(player.userData.team==="home"?home:away,player.userData.team).primary);}return m;};
   node.material=Array.isArray(node.material)?node.material.map(recolor):recolor(node.material);
  });
- player.add(model);player.userData.realisticMesh=model;model.visible=false;
- // Keep the poseable, higher-resolution articulated player visible; the downloaded static mesh is only a fallback reference.
+ const rigRoot=player.children.find(child=>child.isGroup)||player;
+ rigRoot.add(model);player.userData.realisticMesh=model;model.visible=true;
+ // Use the detailed textured human as the visible character. The source GLB is static (not skinned), so gameplay movement follows the player root but limb-by-limb animation still needs a rigged football asset.
+ // Hide the procedural body parts so they do not overlap the detailed human mesh.
+ player.traverse(node=>{if(node.isMesh&&node!==model&&!model.getObjectById(node.id))node.visible=false;});
+
 }
 function makePlayer(x,z,jersey,team,scale=1,role=""){
  const g=new THREE.Group(),body=new THREE.Group();g.add(body);

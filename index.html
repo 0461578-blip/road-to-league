@@ -217,8 +217,8 @@ const $=id=>document.getElementById(id), abbr=n=>n.replace(/\([^)]*\)/g,"").spli
 function toast(t){$("toast").textContent=t;$("toast").style.display="block";clearTimeout(window._toast);window._toast=setTimeout(()=>$("toast").style.display="none",1800)}
 function teamPalette(name,side="home"){
  const key=(name||"").toLowerCase();
- const palettes=[[/bills|buffalo/,[0x00338d,0xc60c30,0xffffff]],[/dolphins|miami/,[0x008e97,0xfc4c02,0xffffff]],[/falcons|atlanta/,[0xa71930,0x000000,0xffffff]],[/panthers|carolina/,[0x0085ca,0x101820,0xffffff]],[/bears|chicago/,[0x0b162a,0xc83803,0xffffff]],[/bengals|cincinnati/,[0xfb4f14,0x000000,0xffffff]],[/cowboys|dallas/,[0x003594,0x869397,0xffffff]],[/broncos|denver/,[0xfb4f14,0x002244,0xffffff]],[/lions|detroit/,[0x0076b6,0xb0b7bc,0xffffff]],[/packers|green bay/,[0x203731,0xffb612,0xffffff]],[/texans|houston/,[0x03202f,0xa71930,0xffffff]],[/chiefs|kansas city/,[0xe31837,0xffb81c,0xffffff]],[/raiders|las vegas/,[0x000000,0xa5acaf,0xffffff]],[/giants|new york giants/,[0x0b2265,0xa71930,0xffffff]],[/jets|new york jets/,[0x125740,0xffffff,0x000000]],[/eagles|philadelphia/,[0x004c54,0xa5acaf,0xffffff]],[/steelers|pittsburgh/,[0xffb612,0x101820,0xffffff]],[/49ers|san francisco/,[0xaa0000,0xb3995d,0xffffff]],[/seahawks|seattle/,[0x002244,0x69be28,0xffffff]],[/georgia bulldogs|georgia/,[0xba0c2f,0x000000,0xffffff]],[/alabama/,[0x9e1b32,0xffffff,0x000000]],[/auburn/,[0x0c2340,0xe87722,0xffffff]],[/clemson/,[0xf56600,0x522d80,0xffffff]],[/ohio state/,[0xbb0000,0x666666,0xffffff]],[/texas/,[0xbf5700,0xffffff,0x333f48]],[/michigan/,[0xffcb05,0x00274c,0xffffff]],[/oregon/,[0x154733,0xfce000,0xffffff]]];
- const found=palettes.find(([re])=>re.test(key));let h=0;for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))>>>0;const base=found?found[1]:[0x3a1830+(h%0x170000),0x242b37,0xf4f4f4];return side==="home"?{primary:base[0],secondary:base[1],number:base[2]}:{primary:base[1],secondary:base[0],number:base[2]};
+ const palettes=[[/baltimore ravens|ravens/,[0x241773,0x9e7c0c,0xffffff]],[/cardinals|arizona/,[0x97233f,0x000000,0xffffff]],[/bills|buffalo/,[0x00338d,0xc60c30,0xffffff]],[/dolphins|miami/,[0x008e97,0xfc4c02,0xffffff]],[/falcons|atlanta/,[0xa71930,0x000000,0xffffff]],[/panthers|carolina/,[0x0085ca,0x101820,0xffffff]],[/bears|chicago/,[0x0b162a,0xc83803,0xffffff]],[/bengals|cincinnati/,[0xfb4f14,0x000000,0xffffff]],[/browns|cleveland/,[0x311d00,0xff3c00,0xffffff]],[/cowboys|dallas/,[0x003594,0x869397,0xffffff]],[/broncos|denver/,[0xfb4f14,0x002244,0xffffff]],[/lions|detroit/,[0x0076b6,0xb0b7bc,0xffffff]],[/packers|green bay/,[0x203731,0xffb612,0xffffff]],[/texans|houston/,[0x03202f,0xa71930,0xffffff]],[/chiefs|kansas city/,[0xe31837,0xffb81c,0xffffff]],[/raiders|las vegas/,[0x000000,0xa5acaf,0xffffff]],[/giants|new york giants/,[0x0b2265,0xa71930,0xffffff]],[/jets|new york jets/,[0x125740,0xffffff,0x000000]],[/eagles|philadelphia/,[0x004c54,0xa5acaf,0xffffff]],[/steelers|pittsburgh/,[0xffb612,0x101820,0xffffff]],[/49ers|san francisco/,[0xaa0000,0xb3995d,0xffffff]],[/seahawks|seattle/,[0x002244,0x69be28,0xffffff]],[/georgia bulldogs|georgia/,[0xba0c2f,0x000000,0xffffff]],[/alabama/,[0x9e1b32,0xffffff,0x000000]],[/auburn/,[0x0c2340,0xe87722,0xffffff]],[/clemson/,[0xf56600,0x522d80,0xffffff]],[/ohio state/,[0xbb0000,0x666666,0xffffff]],[/texas/,[0xbf5700,0xffffff,0x333f48]],[/michigan/,[0xffcb05,0x00274c,0xffffff]],[/oregon/,[0x154733,0xfce000,0xffffff]]];
+ const found=palettes.find(([re])=>re.test(key));let h=0;for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))>>>0;const base=found?found[1]:[0x3a1830+(h%0x170000),0x242b37,0xf4f4f4];return side==="home"?{primary:base[0],secondary:base[1],number:base[2]}:{primary:0xf4f4f4,secondary:base[0],number:base[0]};
 }
 function logoUrl(name){
  const n=(name||"").trim();
@@ -315,29 +315,28 @@ function attachRealisticFootballModel(player){
  const model=realisticFootballTemplate.clone(true);
  model.traverse(node=>{
   if(!node.isMesh)return;node.castShadow=true;node.receiveShadow=true;
-  const recolor=mat=>{const m=mat.clone();if(m.color){const c=m.color;if(c.b>c.r*1.18&&c.b>c.g*.98)m.color.setHex(player.userData.team==="home"?0x9b1020:0x174a9a);}return m;};
+  const recolor=mat=>{const m=mat.clone();if(m.color){const c=m.color;if(c.b>c.r*1.18&&c.b>c.g*.98)m.color.setHex(teamPalette(player.userData.team==="home"?home:away,player.userData.team).primary);}return m;};
   node.material=Array.isArray(node.material)?node.material.map(recolor):recolor(node.material);
  });
- player.add(model);player.userData.realisticMesh=model;
- if(player.userData.bodyFallback)player.userData.bodyFallback.visible=false;
- if(player.userData.joints&&player.userData.joints.torso.parent)player.userData.joints.torso.parent.visible=false;
+ player.add(model);player.userData.realisticMesh=model;model.visible=false;
+ // Keep the poseable, higher-resolution articulated player visible; the downloaded static mesh is only a fallback reference.
 }
 function makePlayer(x,z,jersey,team,scale=1,role=""){
  const g=new THREE.Group(),body=new THREE.Group();g.add(body);
  const palette=teamPalette(team==="home"?home:away,team);
  const homeColor=palette.primary;
  const jerseyMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.42});
- const pantsMat=new THREE.MeshStandardMaterial({color:team==="home"?0x20242a:0xf1f1f1,roughness:.7});
+ const pantsMat=new THREE.MeshStandardMaterial({color:team==="home"?0x20242a:0xf4f4f4,roughness:.62});
  const skinTones=[0x5b3827,0x75452f,0x955c3b,0xb97852,0xd49a73,0xe2b08b];
  const skinMat=new THREE.MeshStandardMaterial({color:skinTones[Math.abs(Number(jersey)||1)%skinTones.length],roughness:.82});
  const shoeMat=new THREE.MeshStandardMaterial({color:0x101216,roughness:.35});
  const helmetMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.22,metalness:.08});
- const padMat=new THREE.MeshStandardMaterial({color:team==="home"?0x650c18:0x12315b,roughness:.52});
+ const padMat=new THREE.MeshStandardMaterial({color:palette.secondary,roughness:.48});
  const darkMat=new THREE.MeshStandardMaterial({color:0x11151a,roughness:.32});
  const whiteMat=new THREE.MeshStandardMaterial({color:0xf5f5f5,roughness:.45});
- const trimMat=new THREE.MeshStandardMaterial({color:team==="home"?0xe6d5d7:0xd9e5f6,roughness:.38,metalness:.08});
- const gloveMat=new THREE.MeshStandardMaterial({color:team==="home"?0x262126:0x18212c,roughness:.5});
- const cleatAccent=new THREE.MeshStandardMaterial({color:team==="home"?0xb8b8bd:0xe8e8ec,roughness:.4});
+ const trimMat=new THREE.MeshStandardMaterial({color:palette.secondary,roughness:.38,metalness:.08});
+ const gloveMat=new THREE.MeshStandardMaterial({color:palette.secondary,roughness:.5});
+ const cleatAccent=new THREE.MeshStandardMaterial({color:palette.secondary,roughness:.4});
  const add=(parent,geo,mat,p,r=[0,0,0],sc=[1,1,1])=>{const m=new THREE.Mesh(geo,mat);m.position.set(...p);m.rotation.set(...r);m.scale.set(...sc);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m};
  const limb=(parent,a,b,radius,mat)=>{const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);const m=new THREE.Mesh(new THREE.CapsuleGeometry(radius,Math.max(.05,d.length()),8,12),mat);m.position.copy(A.clone().add(B).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());m.castShadow=true;m.receiveShadow=true;parent.add(m);return m};
 
@@ -414,9 +413,9 @@ function posePlayer(p,role,phase="pre"){
  [j.hipL,j.hipR,j.thighL,j.thighR,j.shinL,j.shinR,j.armL,j.armR,j.foreL,j.foreR].forEach(x=>{x.rotation.x=0;x.rotation.z=0});
  if(phase==="pre"){
    if(role==="OL"||role==="C"||role==="DL"||role==="LS"){
-     j.torso.rotation.x=-.30;j.hipL.rotation.z=.045;j.hipR.rotation.z=-.045;j.thighL.rotation.x=.46;j.thighR.rotation.x=.46;j.shinL.rotation.x=-.58;j.shinR.rotation.x=-.58;j.armL.rotation.z=.34;j.armR.rotation.z=-.34;j.foreL.rotation.x=-.58;j.foreR.rotation.x=-.58;
+     j.torso.rotation.x=-.42;j.hipL.rotation.z=.07;j.hipR.rotation.z=-.07;j.thighL.rotation.x=.58;j.thighR.rotation.x=.58;j.shinL.rotation.x=-.72;j.shinR.rotation.x=-.72;j.armL.rotation.z=.42;j.armR.rotation.z=-.42;j.foreL.rotation.x=-.78;j.foreR.rotation.x=-.78;
    }else if(role==="WR"||role==="CB"||role==="S"){
-     j.torso.rotation.x=-.13;j.thighL.rotation.x=.24;j.thighR.rotation.x=.24;j.shinL.rotation.x=-.30;j.shinR.rotation.x=-.30;j.armL.rotation.z=.20;j.armR.rotation.z=-.20;j.foreL.rotation.x=-.25;j.foreR.rotation.x=-.25;
+     j.torso.rotation.x=-.22;j.hipL.rotation.z=.04;j.hipR.rotation.z=-.04;j.thighL.rotation.x=.31;j.thighR.rotation.x=.31;j.shinL.rotation.x=-.42;j.shinR.rotation.x=-.42;j.armL.rotation.z=.28;j.armR.rotation.z=-.28;j.foreL.rotation.x=-.38;j.foreR.rotation.x=-.38;
    }else if(role==="RB"||role==="HB"){
      j.torso.rotation.x=-.20;j.thighL.rotation.x=.28;j.thighR.rotation.x=.28;j.shinL.rotation.x=-.34;j.shinR.rotation.x=-.34;j.armL.rotation.z=.18;j.armR.rotation.z=-.18;
    }else if(role==="RB"){
@@ -511,10 +510,10 @@ function makeScene(){
  camera=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,1600);
  camera.position.set(0,13,23);
  renderer=new THREE.WebGLRenderer({antialias:true});
- renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+ renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio||1,1.5),2.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;$("app").appendChild(renderer.domElement);
  const hemi=new THREE.HemisphereLight(0xcfe8ff,0x17200f,1.5);scene.add(hemi);
- const sun=new THREE.DirectionalLight(0xffffff,2.4);sun.position.set(-30,50,20);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+ const sun=new THREE.DirectionalLight(0xffffff,2.4);sun.position.set(-30,50,20);sun.castShadow=true;sun.shadow.mapSize.set(3072,3072);sun.shadow.camera.left=-65;sun.shadow.camera.right=65;sun.shadow.camera.top=45;sun.shadow.camera.bottom=-45;sun.shadow.bias=-0.00018;scene.add(sun);
 
  const stadium=new THREE.Mesh(new THREE.BoxGeometry(150,4,95),new THREE.MeshStandardMaterial({color:0x151a20,roughness:.9}));
  stadium.position.y=-2.2;stadium.name="homeStadium";scene.add(stadium);

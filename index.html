@@ -372,42 +372,78 @@ function posePlayer(p,role,phase="pre"){
  }
 }
 function animateHumanMotion(dt){
- // Procedural prototype animation. Photorealistic players require licensed rigged GLB assets and authored motion clips.
+ // Smoother, layered football motion: stride, anticipation, ball security, catch reach and throwing follow-through.
+ // These are procedural animation curves, not captured mocap clips; rigged animation clips can replace them later.
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+ const smooth=(a,b,v)=>{const x=clamp((v-a)/(b-a),0,1);return x*x*(3-2*x);};
+ const mix=(a,b,t)=>a+(b-a)*t;
  for(const p of players){
    if(!p.userData||!p.userData.joints)continue;
-   const j=p.userData.joints;
-   p.userData.animTime=(p.userData.animTime||0)+dt;
-   const t=p.userData.animTime;
-   if(p.userData.tacklePose>0){
-     p.userData.tacklePose=Math.max(0,p.userData.tacklePose-dt);
-     j.torso.rotation.x=-.72;j.armL.rotation.z=.95;j.armR.rotation.z=-.95;j.thighL.rotation.x=.85;j.thighR.rotation.x=.85;
-     j.shinL.rotation.x=-.25;j.shinR.rotation.x=-.25;continue;
+   const j=p.userData.joints,ud=p.userData;
+   ud.animTime=(ud.animTime||0)+dt;
+   const t=ud.animTime,jersey=Number(ud.jersey)||0;
+   const moving=!!(snapState&&((ud.route&&p!==controlled)||ud.role==="DL"||ud.role==="CB"||(p===controlled&&ud.isMoving)));
+   const sprinting=p===controlled&&ud.isSprinting;
+   const phase=t*(sprinting?15.2:moving?10.2:2.0)+jersey*.43;
+   const stride=Math.sin(phase),opposite=Math.sin(phase+Math.PI);
+   const blend=ud.motionBlend=mix(ud.motionBlend||0,moving?1:0,1-Math.exp(-dt*7));
+   const running=blend;
+   if(ud.tacklePose>0){
+     ud.tacklePose=Math.max(0,ud.tacklePose-dt);
+     const fall=smooth(0,.22,.22-ud.tacklePose);
+     j.torso.rotation.x=mix(-.18,-.82,fall);
+     j.torso.rotation.z=mix(0,Math.sin(t*8)*.12,fall);
+     j.armL.rotation.x=mix(stride*.3,-.9,fall);j.armR.rotation.x=mix(opposite*.3,-.9,fall);
+     j.armL.rotation.z=mix(.08,.95,fall);j.armR.rotation.z=mix(-.08,-.95,fall);
+     j.thighL.rotation.x=mix(stride*.45,.9,fall);j.thighR.rotation.x=mix(opposite*.45,.9,fall);
+     j.shinL.rotation.x=mix(0,-.3,fall);j.shinR.rotation.x=mix(0,-.3,fall);
+     p.position.y=Math.max(0,Math.sin(t*10)*.025);continue;
    }
-   const moving=!!(snapState&&((p.userData.route&&p!==controlled)||p.userData.role==="DL"||p.userData.role==="CB"||(p===controlled&&p.userData.isMoving)));
-   if(ballLive&&p===controlled&&["WR","RB","HB"].includes(position)){j.armL.rotation.x=-.9;j.armR.rotation.x=-.9;j.armL.rotation.z=.32;j.armR.rotation.z=-.32;}
-   if(moving){
-     const phase=t*(p===controlled&&p.userData.isSprinting?16:11)+(Number(p.userData.jersey)||0)*.65;
-     const stride=Math.sin(phase),opposite=Math.sin(phase+Math.PI);
-     j.armL.rotation.x=stride*.52;j.armR.rotation.x=opposite*.52;
-     j.armL.rotation.z=.08+Math.max(0,-stride)*.10;j.armR.rotation.z=-.08-Math.max(0,-opposite)*.10;
-     j.foreL.rotation.x=-.48-Math.max(0,stride)*.45;j.foreR.rotation.x=-.48-Math.max(0,opposite)*.45;if(ballLive&&p===controlled&&["WR","RB","HB"].includes(position)){j.armL.rotation.x=-.85;j.armR.rotation.x=-.85;j.armL.rotation.z=.34;j.armR.rotation.z=-.34;j.foreL.rotation.x=-.65;j.foreR.rotation.x=-.65;}
-     j.thighL.rotation.x=.10+stride*.72;j.thighR.rotation.x=.10+opposite*.72;
-     j.shinL.rotation.x=-Math.max(0,opposite)*.78;j.shinR.rotation.x=-Math.max(0,stride)*.78;
-     j.torso.rotation.x=-.10-Math.abs(stride)*.045;
-     j.head.rotation.x=Math.sin(t*4)*.035;
-     j.head.rotation.y=Math.sin(t*2.7+(Number(p.userData.jersey)||0))*.055;
-     j.helmet.rotation.z=Math.sin(t*11)*.018;
-     p.position.y=Math.max(0,Math.abs(Math.sin(phase*2))*.045);
-   }else{
-     const idle=Math.sin(t*2.2+(Number(p.userData.jersey)||0))*.018;
-     j.head.rotation.x=idle;
-     j.head.rotation.y=Math.sin(t*1.25+(Number(p.userData.jersey)||0)*.4)*.025;
-     j.helmet.rotation.z=Math.sin(t*2.2)*.008;
-     p.position.y=0;
+   // Athletic run cycle with a planted-leg phase, knee recovery and opposing shoulder swing.
+   const runArmL=stride*(sprinting?.72:.56),runArmR=opposite*(sprinting?.72:.56);
+   j.armL.rotation.x=mix(Math.sin(t*1.7+jersey)*.025,runArmL,running);
+   j.armR.rotation.x=mix(Math.sin(t*1.7+jersey+1)*.025,runArmR,running);
+   j.armL.rotation.z=mix(.02,.08+Math.max(0,-stride)*.08,running);
+   j.armR.rotation.z=mix(-.02,-.08-Math.max(0,-opposite)*.08,running);
+   j.foreL.rotation.x=mix(-.08,-.38-Math.max(0,stride)*.48,running);
+   j.foreR.rotation.x=mix(-.08,-.38-Math.max(0,opposite)*.48,running);
+   j.thighL.rotation.x=mix(Math.sin(t*1.7+jersey)*.025,.08+stride*(sprinting?.86:.68),running);
+   j.thighR.rotation.x=mix(Math.sin(t*1.7+jersey+1)*.025,.08+opposite*(sprinting?.86:.68),running);
+   j.shinL.rotation.x=mix(0,-Math.max(0,opposite)*(sprinting?1.0:.72),running);
+   j.shinR.rotation.x=mix(0,-Math.max(0,stride)*(sprinting?1.0:.72),running);
+   j.hipL.rotation.z=mix(0,Math.max(0,stride)*.035,running);
+   j.hipR.rotation.z=mix(0,-Math.max(0,opposite)*.035,running);
+   j.torso.rotation.x=mix(-.015,-(sprinting?.17:.105)-Math.abs(stride)*.035,running);
+   j.torso.rotation.z=mix(Math.sin(t*1.4+jersey)*.008,Math.sin(phase)*.045,running);
+   j.head.rotation.x=mix(Math.sin(t*1.8+jersey)*.018,-.025-Math.abs(stride)*.018,running);
+   j.head.rotation.y=Math.sin(t*1.25+jersey*.3)*.035+Math.sin(phase*.5)*.018*running;
+   j.helmet.rotation.z=Math.sin(phase)*.012*running+Math.sin(t*1.8)*.006;
+   p.position.y=Math.max(0,Math.abs(Math.sin(phase*2))*(sprinting?.065:.038)*running);
+
+   // Receiver tracks the incoming ball and presents both hands instead of keeping a generic running pose.
+   const receiving=catchMeterActive&&p===controlled;
+   if(receiving){
+     const reach=Math.sin(t*12)*.035;
+     j.torso.rotation.x=-.12;j.armL.rotation.x=-1.02+reach;j.armR.rotation.x=-1.02-reach;
+     j.armL.rotation.z=.38;j.armR.rotation.z=-.38;
+     j.foreL.rotation.x=-.72;j.foreR.rotation.x=-.72;
+     j.head.rotation.x=-.08;
    }
-   // Keep the ball carrier's forearms wrapped toward the ball instead of letting the run cycle swing through it.
-   if(p.userData.hasBall){j.armR.rotation.x=-.78;j.armR.rotation.z=-.34;j.foreR.rotation.x=-.92;j.armL.rotation.x=-.22;j.armL.rotation.z=.24;j.foreL.rotation.x=-.62;}
-   if(throwMeterActive&&p===controlled&&String(p.userData.jersey)==="12"){j.torso.rotation.x=-.22;j.armR.rotation.x=-1.05;j.armR.rotation.z=-.34;j.foreR.rotation.x=-.9;j.armL.rotation.x=-.65;j.armL.rotation.z=.28;j.foreL.rotation.x=-.65;}
+
+   // Ball-carrier posture protects the ball against the chest with bent elbows.
+   if(ud.hasBall){
+     j.torso.rotation.x=-.12-Math.abs(stride)*.025;
+     j.armR.rotation.x=-.8;j.armR.rotation.z=-.36;j.foreR.rotation.x=-.98;
+     j.armL.rotation.x=-.32;j.armL.rotation.z=.28;j.foreL.rotation.x=-.72;
+   }
+   // QB wind-up and release-ready pose; the meter controls timing elsewhere in the game.
+   if(throwMeterActive&&p===controlled&&String(ud.jersey)==="12"){
+     const windup=.5+Math.sin(t*5)*.025;
+     j.torso.rotation.x=-.2;j.torso.rotation.z=-.16;
+     j.armR.rotation.x=-1.12;j.armR.rotation.z=-.5*windup;j.foreR.rotation.x=-1.05;
+     j.armL.rotation.x=-.55;j.armL.rotation.z=.32;j.foreL.rotation.x=-.55;
+     j.thighL.rotation.x=.18;j.thighR.rotation.x=-.08;
+   }
  }
 }
 function makeScene(){

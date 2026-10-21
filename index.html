@@ -162,6 +162,11 @@ let league="NFL",home="Buffalo Bills",away="Miami Dolphins",pickSide="home",game
 const $=id=>document.getElementById(id), abbr=n=>n.replace(/\([^)]*\)/g,"").split(/\s+/).filter(Boolean).map(x=>x[0]).join("").slice(0,3).toUpperCase();
 
 function toast(t){$("toast").textContent=t;$("toast").style.display="block";clearTimeout(window._toast);window._toast=setTimeout(()=>$("toast").style.display="none",1800)}
+function teamPalette(name,side="home"){
+ const key=(name||"").toLowerCase();
+ const palettes=[[/bills|buffalo/,[0x00338d,0xc60c30,0xffffff]],[/dolphins|miami/,[0x008e97,0xfc4c02,0xffffff]],[/falcons|atlanta/,[0xa71930,0x000000,0xffffff]],[/panthers|carolina/,[0x0085ca,0x101820,0xffffff]],[/bears|chicago/,[0x0b162a,0xc83803,0xffffff]],[/bengals|cincinnati/,[0xfb4f14,0x000000,0xffffff]],[/cowboys|dallas/,[0x003594,0x869397,0xffffff]],[/broncos|denver/,[0xfb4f14,0x002244,0xffffff]],[/lions|detroit/,[0x0076b6,0xb0b7bc,0xffffff]],[/packers|green bay/,[0x203731,0xffb612,0xffffff]],[/texans|houston/,[0x03202f,0xa71930,0xffffff]],[/chiefs|kansas city/,[0xe31837,0xffb81c,0xffffff]],[/raiders|las vegas/,[0x000000,0xa5acaf,0xffffff]],[/giants|new york giants/,[0x0b2265,0xa71930,0xffffff]],[/jets|new york jets/,[0x125740,0xffffff,0x000000]],[/eagles|philadelphia/,[0x004c54,0xa5acaf,0xffffff]],[/steelers|pittsburgh/,[0xffb612,0x101820,0xffffff]],[/49ers|san francisco/,[0xaa0000,0xb3995d,0xffffff]],[/seahawks|seattle/,[0x002244,0x69be28,0xffffff]],[/georgia bulldogs|georgia/,[0xba0c2f,0x000000,0xffffff]],[/alabama/,[0x9e1b32,0xffffff,0x000000]],[/auburn/,[0x0c2340,0xe87722,0xffffff]],[/clemson/,[0xf56600,0x522d80,0xffffff]],[/ohio state/,[0xbb0000,0x666666,0xffffff]],[/texas/,[0xbf5700,0xffffff,0x333f48]],[/michigan/,[0xffcb05,0x00274c,0xffffff]],[/oregon/,[0x154733,0xfce000,0xffffff]]];
+ const found=palettes.find(([re])=>re.test(key));let h=0;for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))>>>0;const base=found?found[1]:[0x3a1830+(h%0x170000),0x242b37,0xf4f4f4];return side==="home"?{primary:base[0],secondary:base[1],number:base[2]}:{primary:base[1],secondary:base[0],number:base[2]};
+}
 function logoUrl(name){
  const n=(name||"").trim();
  const nfl={
@@ -191,7 +196,7 @@ function teamOverall(name){
 function renderTeams(){
  const list=data[league]; $("menuStatus").textContent=league==="HIGH SCHOOL"?"TEXAS + GEORGIA HIGH SCHOOL TEAM LOGOS + TEAMS READY":league+" TEAM LOGOS + TEAMS READY";
  $("homeGrid").innerHTML="";$("awayGrid").innerHTML="";
- list.forEach(n=>{["home","away"].forEach(side=>{const b=document.createElement("button");b.className="teamItem";b.innerHTML='<span class="mini">'+logoHTML(n)+'</span><span><b>'+n+'</b><small style="display:block;color:#8d99a5;margin-top:3px">OVR '+teamOverall(n)+'</small></span>';if((side==="home"?home:away)===n)b.classList.add("selected");b.onclick=()=>{if(side==="home")home=n;else away=n;pickSide=side;renderTeams();renderMatchup()};(side==="home"?$("homeGrid"):$("awayGrid")).appendChild(b)})});
+ list.forEach(n=>{["home","away"].forEach(side=>{const b=document.createElement("button");b.className="teamItem";b.innerHTML='<span class="mini">'+logoHTML(n)+'</span><span><b>'+n+'</b><small style="display:block;color:#8d99a5;margin-top:3px">OVR '+teamOverall(n)+'</small></span>';if((side==="home"?home:away)===n)b.classList.add("selected");b.onclick=()=>{if(side==="home")home=n;else away=n;pickSide=side;renderTeams();renderMatchup();updateHomeFieldBranding()};(side==="home"?$("homeGrid"):$("awayGrid")).appendChild(b)})});
  if(!list.includes(home))home=list[0]; if(!list.includes(away)||away===home)away=list[1]||list[0]; renderMatchup();
 }
 function renderMatchup(){$("homeName").textContent=home;$("awayName").textContent=away;$("homeLogo").innerHTML=logoHTML(home,true);$("awayLogo").innerHTML=logoHTML(away,true);$("homeOverall").innerHTML="OVR <b>"+teamOverall(home)+"</b>";$("awayOverall").innerHTML="OVR <b>"+teamOverall(away)+"</b>";$("homeSide").classList.toggle("selected",pickSide==="home");$("awaySide").classList.toggle("selected",pickSide==="away")}
@@ -266,7 +271,8 @@ function attachRealisticFootballModel(player){
 }
 function makePlayer(x,z,jersey,team,scale=1,role=""){
  const g=new THREE.Group(),body=new THREE.Group();g.add(body);
- const homeColor=team==="home"?0x9b1020:0x174a9a;
+ const palette=teamPalette(team==="home"?home:away,team);
+ const homeColor=palette.primary;
  const jerseyMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.42});
  const pantsMat=new THREE.MeshStandardMaterial({color:team==="home"?0x20242a:0xf1f1f1,roughness:.7});
  const skinTones=[0x5b3827,0x75452f,0x955c3b,0xb97852,0xd49a73,0xe2b08b];
@@ -342,7 +348,7 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  add(handL,new THREE.BoxGeometry(.09,.025,.12),trimMat,[0,-.045,-.015]);add(handR,new THREE.BoxGeometry(.09,.025,.12),trimMat,[0,-.045,-.015]);
  for(let f=0;f<4;f++){const a=(f-1.5)*.035;add(handL,new THREE.CapsuleGeometry(.018,.10,6,8),skinMat,[a,-.065,-.035]);add(handR,new THREE.CapsuleGeometry(.018,.10,6,8),skinMat,[a,-.065,-.035]);}
 
- if(jersey){const cv=document.createElement("canvas");cv.width=256;cv.height=256;const ctx=cv.getContext("2d");ctx.clearRect(0,0,256,256);ctx.fillStyle="#fff";ctx.font="900 145px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(String(jersey),128,138);const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),[0,.02,-.44]);add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),[0,.02,.44],[0,Math.PI,0]);}
+ if(jersey){const cv=document.createElement("canvas");cv.width=256;cv.height=256;const ctx=cv.getContext("2d");ctx.clearRect(0,0,256,256);ctx.fillStyle="#"+palette.number.toString(16).padStart(6,"0");ctx.strokeStyle="#111820";ctx.lineWidth=5;ctx.font="900 145px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.strokeText(String(jersey),128,138);ctx.fillText(String(jersey),128,138);const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),[0,.02,-.44]);add(torso,new THREE.PlaneGeometry(.48,.38),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),[0,.02,.44],[0,Math.PI,0]);}
 
  g.userData={jersey,team,speed:0,route:null,role,animTime:Math.random()*6,bodyFallback:body,joints:{torso,hipL,hipR,thighL,thighR,shinL,shinR,armL,armR,foreL,foreR,head,helmet}};
  g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);players.push(g);
@@ -458,7 +464,8 @@ function makeScene(){
  const sun=new THREE.DirectionalLight(0xffffff,2.4);sun.position.set(-30,50,20);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
 
  const stadium=new THREE.Mesh(new THREE.BoxGeometry(150,4,95),new THREE.MeshStandardMaterial({color:0x151a20,roughness:.9}));
- stadium.position.y=-2.2;scene.add(stadium);
+ stadium.position.y=-2.2;stadium.name="homeStadium";scene.add(stadium);
+ const signCanvas=document.createElement("canvas");signCanvas.width=1024;signCanvas.height=160;const signTex=new THREE.CanvasTexture(signCanvas);signTex.colorSpace=THREE.SRGBColorSpace;const homeSign=new THREE.Mesh(new THREE.PlaneGeometry(36,5.6),new THREE.MeshBasicMaterial({map:signTex,side:THREE.DoubleSide}));homeSign.name="homeFieldSign";homeSign.position.set(0,8,-27);scene.add(homeSign);updateHomeFieldBranding();
  const turf=new THREE.Mesh(new THREE.PlaneGeometry(120,53,24,10),new THREE.MeshStandardMaterial({color:0x176b35,roughness:.92}));
  turf.rotation.x=-Math.PI/2;turf.receiveShadow=true;scene.add(turf);field=turf;
  // Subtle mowing stripes make the field read like a broadcast stadium surface.
@@ -544,14 +551,23 @@ function makeScene(){
  window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
  animate();
 }
-function startGame(){
+function updateHomeFieldBranding(){
+ const pal=teamPalette(home,"home");if(scene){const st=scene.getObjectByName("homeStadium");if(st)st.material.color.setHex(pal.secondary);const sign=scene.getObjectByName("homeFieldSign");if(sign&&sign.material.map){const c=sign.material.map.image,ctx=c.getContext("2d");ctx.fillStyle="#"+pal.primary.toString(16).padStart(6,"0");ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle="#"+pal.number.toString(16).padStart(6,"0");ctx.font="900 66px Arial";ctx.textAlign="center";ctx.fillText(home.toUpperCase()+" • HOME FIELD",512,102);sign.material.map.needsUpdate=true;}}
+}
+function startGame(forceStart=false){
+  if(!forceStart&&!coinTossDone){showCoinToss();return}
   gameStarted=true;
   $("menu").style.display="none";
   $("hud").style.display="block";
   $("score").style.display="block";
   $("actions").style.display="flex";$("footballControls").style.display="block";$("firstDownLegend").style.display="block";
-  try{if(!scene)makeScene();setFormation();$("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist}
+  try{if(!scene)makeScene();updateHomeFieldBranding();setFormation();$("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist}
   catch(err){gameStarted=false;$("menu").style.display="block";$("hud").style.display="none";$("score").style.display="none";$("actions").style.display="none";console.error(err);toast("GAME LOAD ERROR — RETURNING TO MENU");}
+}
+let coinTossDone=false;
+function showCoinToss(){
+ let modal=$("coinTossScene");if(!modal){modal=document.createElement("div");modal.id="coinTossScene";modal.innerHTML=`<style>#coinTossScene{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 35%,#263446f2,#030508 72%);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Arial,sans-serif}#coinTossScene .coinCard{width:min(680px,96vw);border:1px solid #ffffff30;border-radius:22px;background:#090e16ed;box-shadow:0 25px 90px #000b;padding:clamp(20px,4vw,42px);text-align:center}#coinTossScene .refRow{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px auto}#coinTossScene .ref{width:28px;height:72px;border-radius:12px;background:repeating-linear-gradient(90deg,#f5f5f5 0 6px,#111820 6px 12px);position:relative}#coinTossScene .ref:before{content:"";position:absolute;width:25px;height:25px;border-radius:50%;background:#b9825d;top:-24px;left:2px}#coinTossScene .coin{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:radial-gradient(circle at 30% 25%,#fff1a6,#d29a2e 52%,#7b4b0b);color:#3a2400;font-weight:1000;font-size:20px;border:5px ridge #ffdf83;animation:coinFlip .8s ease-in-out infinite alternate}#coinTossScene h2{font-size:clamp(25px,5vw,44px);letter-spacing:.07em;margin:8px 0}#coinTossScene p{color:#b5c0cc;line-height:1.55}#coinTossScene button{border:1px solid #ffffff30;border-radius:10px;padding:13px 18px;background:#182230;color:white;font-weight:900;margin:5px}#coinTossScene button.primary{background:#8b1830;border-color:#e45a77}@keyframes coinFlip{from{transform:rotateY(0)}to{transform:rotateY(540deg)}}@media(prefers-reduced-motion:reduce){#coinTossScene .coin{animation:none}}</style><div class="coinCard"><div style="color:#e6a6b4;font-weight:900;letter-spacing:.2em">PREGAME • OFFICIALS ON THE FIELD</div><h2>THE COIN TOSS</h2><div class="refRow"><span class="ref"></span><div><div class="coin">50¢</div><small style="color:#f3d78a">OFFICIAL GAME COIN</small></div><span class="ref"></span></div><p id="coinTossCopy">The referee meets both captains at midfield. Call the toss, then choose whether to receive or kick off.</p><div id="tossCalls"><button data-toss="HEADS">CALL HEADS</button><button data-toss="TAILS">CALL TAILS</button></div><div id="coinChoice" style="display:none"><button class="primary" data-decision="RECEIVE">RECEIVE THE KICKOFF</button><button data-decision="KICK">KICK OFF</button></div><small style="color:#758292">HOME FIELD • ${home.toUpperCase()} vs ${away.toUpperCase()}</small></div>`;document.body.appendChild(modal);modal.querySelectorAll("[data-toss]").forEach(b=>b.onclick=()=>{const call=b.dataset.toss,flip=Math.random()<.5?"HEADS":"TAILS",won=call===flip;modal.querySelector(".coin").textContent=flip;modal.querySelector(".coin").style.animation="none";$("coinTossCopy").textContent="REFEREE: "+flip+"! "+(won?home+" wins the toss.":away+" wins the toss.")+" The home captain chooses for this prototype.";modal.querySelector("#tossCalls").style.display="none";$("coinChoice").style.display="block";modal.dataset.won=won?"1":"0"});modal.querySelectorAll("[data-decision]").forEach(b=>b.onclick=()=>{coinTossDone=true;modal.remove();startGame(true);if(b.dataset.decision==="KICK")setTimeout(()=>startKickoff(),250);else toast(home+" WILL RECEIVE • OPENING DRIVE")})}
+ modal.style.display="flex";
 }
 function updateFirstDownMarkers(){if(lineOfScrimmageMarker)lineOfScrimmageMarker.position.x=scrimmageX;if(firstDownMarker)firstDownMarker.position.x=scrimmageX+Math.max(1,dist)}
 function playerByJersey(jersey){return players.find(p=>String(p.userData.jersey)===String(jersey)&&p.userData.team!=="away")}
@@ -591,7 +607,7 @@ function resetPlay(){ballLive=false;snapState=false;playMode="SCRIMMAGE";routeCl
  injured=false;
  $("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist+" • PRE-SNAP";
 }
-function snapBall(){if(!gameStarted||snapState)return;playMode="SCRIMMAGE";
+function snapBall(){if(!gameStarted||snapState)return;players.forEach(p=>{if(p.userData)p.userData.aiPassTimer=0});playMode="SCRIMMAGE";
  ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData)p.userData.hasBall=false});
  snapState=true;routeClock=0;playClock=0;$("presnap").style.display="none";$("routeLegend").style.display="none";
  const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="62");
@@ -742,6 +758,7 @@ function animate(){
  if(gameStarted&&snapState){
    updateRoutes(dt);
    const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="62");
+   if(position!=="QB"&&["WR","RB","HB"].includes(position)&&qb&&qb.userData.hasBall&&!ballLive&&!throwMeterActive){qb.userData.aiPassTimer=(qb.userData.aiPassTimer||0)+dt;if(qb.userData.aiPassTimer>1.35){qb.userData.aiPassTimer=-999;selectedTarget=String(controlled?.userData?.jersey||"1");callForBall();}}
    if(qb&&qb.userData.snapTimer>0){
      qb.userData.snapTimer-=dt;
      const t=1-Math.max(0,qb.userData.snapTimer)/.55;

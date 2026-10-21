@@ -286,10 +286,10 @@ function renderTeams(){
 function renderMatchup(){$("homeName").textContent=home;$("awayName").textContent=away;$("homeLogo").innerHTML=logoHTML(home,true);$("awayLogo").innerHTML=logoHTML(away,true);$("homeOverall").innerHTML="OVR <b>"+teamOverall(home)+"</b>";$("awayOverall").innerHTML="OVR <b>"+teamOverall(away)+"</b>";$("homeSide").classList.toggle("selected",pickSide==="home");$("awaySide").classList.toggle("selected",pickSide==="away")}
 function openTeams(l=league){league=l;document.querySelectorAll(".teamMode").forEach(x=>x.classList.toggle("active",x.dataset.league===league));renderTeams();$("teamOverlay").classList.add("open")}
 document.querySelectorAll(".league,.teamMode").forEach(b=>b.onclick=()=>openTeams(b.dataset.league));
-$("teamBtn").onclick=()=>openTeams(league);$("playBtn").onclick=()=>startIntro(false);
+$("teamBtn").onclick=()=>openTeams(league);$("playBtn").onclick=()=>openTeams(league);
 $("teamClose").onclick=$("teamCancel").onclick=()=>$("teamOverlay").classList.remove("open");
 $("homeSide").onclick=()=>{pickSide="home";renderMatchup()};$("awaySide").onclick=()=>{pickSide="away";renderMatchup()};
-$("teamStart").onclick=()=>{ $("teamOverlay").classList.remove("open");startGame() };
+$("teamStart").onclick=()=>{ $("teamOverlay").classList.remove("open");startIntro(false) };
 
 const tracks=[["Let Me Love You","Mario","2004","H64QG4UsrGI"],["Confessions Part II","Usher","2004","5Sy19X0xxrM"],["My Boo","Usher & Alicia Keys","2004","fPgf2meEX1w"],["So Sick","Ne-Yo","2006","IxszlJppRQI"],["Say Goodbye","Chris Brown","2005","GJ26gAc7BtU"],["Umbrella","Rihanna ft. JAY-Z","2007","CvBfHwUxHIk"],["With You","Chris Brown","2007","nmjdaBaZe8Y"],["Remember the Time","Michael Jackson","1992","LeiFF0gvqcc"]];
 let track=0,musicStarted=false;function music(loadTrack=false){const t=tracks[track];$("musicSong").textContent=t[0]+" — "+t[1];$("musicDate").textContent="RELEASED "+t[2]+" • R&B ROTATION";if(loadTrack&&musicStarted){$("musicFrame").src="https://www.youtube-nocookie.com/embed/"+t[3]+"?autoplay=1&controls=1&rel=0&modestbranding=1&playsinline=1";$("musicPlay").textContent="MUSIC ON"}}function startMusic(){musicStarted=true;music(true);$("musicPlay").textContent="MUSIC ON"}function shuffleTrack(){let next=track;while(next===track)next=Math.floor(Math.random()*tracks.length);track=next;music(true)}$("musicPlay").onclick=startMusic;$("musicShuffle").onclick=()=>{if(!musicStarted){startMusic();return}shuffleTrack()};$("musicNext").onclick=()=>{if(!musicStarted){startMusic();return}shuffleTrack()};$("musicPrev").onclick=()=>{track=(track-1+tracks.length)%tracks.length;music(musicStarted)};music();;
@@ -658,7 +658,62 @@ function startGame(forceStart=false){
 }
 let coinTossDone=false;
 function showCoinToss(){
- let modal=$("coinTossScene");if(!modal){modal=document.createElement("div");modal.id="coinTossScene";modal.innerHTML=`<style>#coinTossScene{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 35%,#263446f2,#030508 72%);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Arial,sans-serif}#coinTossScene .coinCard{width:min(680px,96vw);border:1px solid #ffffff30;border-radius:22px;background:#090e16ed;box-shadow:0 25px 90px #000b;padding:clamp(20px,4vw,42px);text-align:center}#coinTossScene .refRow{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px auto}#coinTossScene .ref{width:28px;height:72px;border-radius:12px;background:repeating-linear-gradient(90deg,#f5f5f5 0 6px,#111820 6px 12px);position:relative}#coinTossScene .ref:before{content:"";position:absolute;width:25px;height:25px;border-radius:50%;background:#b9825d;top:-24px;left:2px}#coinTossScene .coin{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:radial-gradient(circle at 30% 25%,#fff1a6,#d29a2e 52%,#7b4b0b);color:#3a2400;font-weight:1000;font-size:20px;border:5px ridge #ffdf83;animation:coinFlip .8s ease-in-out infinite alternate}#coinTossScene h2{font-size:clamp(25px,5vw,44px);letter-spacing:.07em;margin:8px 0}#coinTossScene p{color:#b5c0cc;line-height:1.55}#coinTossScene button{border:1px solid #ffffff30;border-radius:10px;padding:13px 18px;background:#182230;color:white;font-weight:900;margin:5px}#coinTossScene button.primary{background:#8b1830;border-color:#e45a77}@keyframes coinFlip{from{transform:rotateY(0)}to{transform:rotateY(540deg)}}@media(prefers-reduced-motion:reduce){#coinTossScene .coin{animation:none}}</style><div class="coinCard"><div style="color:#e6a6b4;font-weight:900;letter-spacing:.2em">PREGAME • OFFICIALS ON THE FIELD</div><h2>THE COIN TOSS</h2><div class="refRow"><span class="ref"></span><div><div class="coin">50¢</div><small style="color:#f3d78a">OFFICIAL GAME COIN</small></div><span class="ref"></span></div><p id="coinTossCopy">The referee meets both captains at midfield. Call the toss, then choose whether to receive or kick off.</p><div id="tossCalls"><button data-toss="HEADS">CALL HEADS</button><button data-toss="TAILS">CALL TAILS</button></div><div id="coinChoice" style="display:none"><button class="primary" data-decision="RECEIVE">RECEIVE THE KICKOFF</button><button data-decision="KICK">KICK OFF</button></div><small style="color:#758292">HOME FIELD • ${home.toUpperCase()} vs ${away.toUpperCase()}</small></div>`;document.body.appendChild(modal);modal.querySelectorAll("[data-toss]").forEach(b=>b.onclick=()=>{const call=b.dataset.toss,flip=Math.random()<.5?"HEADS":"TAILS",won=call===flip;modal.querySelector(".coin").textContent=flip;modal.querySelector(".coin").style.animation="none";$("coinTossCopy").textContent="REFEREE: "+flip+"! "+(won?home+" wins the toss.":away+" wins the toss.")+" The home captain chooses for this prototype.";modal.querySelector("#tossCalls").style.display="none";$("coinChoice").style.display="block";modal.dataset.won=won?"1":"0"});modal.querySelectorAll("[data-decision]").forEach(b=>b.onclick=()=>{coinTossDone=true;modal.remove();startGame(true);if(b.dataset.decision==="KICK")setTimeout(()=>startKickoff(),250);else toast(home+" WILL RECEIVE • OPENING DRIVE")})}
+ let modal=$("coinTossScene");
+ if(!modal){
+  modal=document.createElement("div");modal.id="coinTossScene";
+  modal.innerHTML=`<style>
+  #coinTossScene{position:fixed;inset:0;z-index:100;background:#03070c;color:white;overflow:hidden;display:flex;align-items:stretch;justify-content:center;font-family:Arial,Helvetica,sans-serif}
+  #coinTossScene *{box-sizing:border-box}
+  #coinTossScene .stadium{position:absolute;inset:0;background:linear-gradient(#050a13 0%,#111a27 45%,#18202a 46%,#07100e 100%);overflow:hidden}
+  #coinTossScene .lights{position:absolute;inset:0;background:radial-gradient(ellipse at 14% 17%,#ffffffd9 0 2px,#ffffff38 4px,transparent 17%),radial-gradient(ellipse at 85% 17%,#ffffffd9 0 2px,#ffffff38 4px,transparent 17%),linear-gradient(180deg,#0008,transparent 48%,#0009)}
+  #coinTossScene .stands{position:absolute;left:-8%;right:-8%;top:13%;height:36%;background:repeating-linear-gradient(0deg,#293646 0 5px,#111a27 6px 12px);transform:perspective(350px) rotateX(-9deg);border-top:4px solid #7c8795;box-shadow:0 20px 40px #0009}
+  #coinTossScene .field{position:absolute;left:-15%;right:-15%;bottom:-30%;height:67%;background:repeating-linear-gradient(90deg,#1b5737 0 70px,#205e3c 71px 140px);transform:perspective(440px) rotateX(42deg);border-top:5px solid #e8e8e8}
+  #coinTossScene .field:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 48px,#ffffffb0 49px 51px,transparent 52px 96px);opacity:.6}
+  #coinTossScene .broadcast{position:absolute;left:clamp(18px,5vw,72px);right:clamp(18px,5vw,72px);top:clamp(16px,4vh,40px);display:flex;justify-content:space-between;align-items:center;gap:12px;text-transform:uppercase;font-size:11px;letter-spacing:.18em;color:#d4dce7;font-weight:900}
+  #coinTossScene .live{background:#b51e37;padding:9px 13px;letter-spacing:.12em;box-shadow:0 4px 22px #b51e3744}
+  #coinTossScene .sceneContent{position:relative;z-index:2;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:86px 20px 28px}
+  #coinTossScene .eyebrow{font-size:clamp(10px,1.5vw,13px);font-weight:900;letter-spacing:.3em;color:#f0c76b;text-transform:uppercase}
+  #coinTossScene h2{font-size:clamp(32px,6vw,76px);font-weight:1000;line-height:.95;letter-spacing:-.045em;text-transform:uppercase;text-shadow:0 5px 35px #000;margin:12px 0 18px}
+  #coinTossScene .matchupBar{display:flex;align-items:center;justify-content:center;gap:clamp(14px,4vw,48px);width:min(850px,100%);margin:4px auto 14px}
+  #coinTossScene .captain{width:clamp(76px,14vw,150px);height:clamp(100px,21vw,205px);position:relative;filter:drop-shadow(0 12px 20px #000b);animation:captainIn .7s ease-out both}
+  #coinTossScene .captain.away{animation-delay:.12s}
+  #coinTossScene .captain .helmet{position:absolute;top:3%;left:25%;width:50%;height:25%;border-radius:45% 45% 30% 30%;background:var(--jersey);border:4px solid #dce3e9;box-shadow:inset -8px -3px 0 #0005}
+  #coinTossScene .captain .helmet:after{content:"";position:absolute;left:15%;right:-14%;bottom:9%;height:23%;border:3px solid #dfe6ec;border-radius:8px;transform:skewY(-8deg)}
+  #coinTossScene .captain .body{position:absolute;top:27%;left:8%;width:84%;height:47%;background:var(--jersey);clip-path:polygon(25% 0,75% 0,100% 18%,86% 100%,14% 100%,0 18%);border:1px solid #fff8}
+  #coinTossScene .captain .body:after{content:attr(data-number);position:absolute;inset:20% 0 auto;font-size:clamp(22px,4vw,44px);font-weight:1000;text-shadow:0 2px 5px #000;letter-spacing:-.05em}
+  #coinTossScene .captain .legs{position:absolute;top:69%;left:20%;width:60%;height:29%;background:linear-gradient(90deg,#161b23 0 42%,transparent 43% 57%,#161b23 58%);border-bottom:8px solid #f0f1f2}
+  #coinTossScene .teamTag{font-size:clamp(11px,1.7vw,16px);font-weight:1000;letter-spacing:.12em;text-transform:uppercase;margin-top:4px;max-width:30vw}
+  #coinTossScene .vs{font-weight:1000;font-size:clamp(18px,3vw,30px);font-style:italic;color:#f0c76b}
+  #coinTossScene .coinStage{height:clamp(66px,10vw,105px);width:clamp(66px,10vw,105px);display:grid;place-items:center;border-radius:50%;border:5px solid #f1cf72;background:radial-gradient(circle at 30% 25%,#fff5bf,#d9a63e 55%,#6c430d);color:#2c2007;font-weight:1000;font-size:clamp(16px,2.5vw,24px);box-shadow:0 0 45px #e2b64d55,inset 0 0 0 4px #fff5;animation:coinFlip .9s ease-in-out infinite}
+  #coinTossScene p{width:min(690px,94vw);font-size:clamp(14px,2vw,18px);line-height:1.5;color:#e0e6ed;text-shadow:0 2px 8px #000;margin:10px auto 14px}
+  #coinTossScene button{border:1px solid #ffffff40;padding:14px 20px;background:#101a26;color:white;font-weight:1000;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:5px;min-width:150px;transition:transform .15s,background .15s}
+  #coinTossScene button:hover{transform:translateY(-2px);background:#28384b}
+  #coinTossScene button.primary{background:#a61935;border-color:#ff637f;box-shadow:0 6px 24px #a619354d}
+  #coinTossScene .choiceRow{margin-top:3px}
+  #coinTossScene .footer{position:absolute;z-index:3;left:clamp(18px,5vw,72px);right:clamp(18px,5vw,72px);bottom:20px;display:flex;justify-content:space-between;gap:12px;font-size:10px;letter-spacing:.15em;color:#c6d0db;text-transform:uppercase}
+  @keyframes coinFlip{0%{transform:rotateY(0) translateY(0)}50%{transform:rotateY(720deg) translateY(-12px)}100%{transform:rotateY(1440deg) translateY(0)}}
+  @keyframes captainIn{from{opacity:0;transform:translateY(28px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @media(max-height:600px){#coinTossScene .captain{height:90px;width:70px}#coinTossScene h2{margin:5px}#coinTossScene .sceneContent{padding-top:52px}#coinTossScene .field{bottom:-48%}}
+  @media(prefers-reduced-motion:reduce){#coinTossScene .coinStage,#coinTossScene .captain{animation:none}}
+  </style>
+  <div class="stadium"><div class="stands"></div><div class="lights"></div><div class="field"></div></div>
+  <div class="broadcast"><span>RTL NETWORK • PREGAME</span><span class="live">LIVE</span></div>
+  <div class="sceneContent"><div class="eyebrow">Opening kickoff • Midfield</div><h2>It's time to<br>flip the coin.</h2>
+   <div class="matchupBar">
+    <div><div class="captain home" style="--jersey:#74172b"><div class="helmet"></div><div class="body" data-number="12"></div><div class="legs"></div></div><div class="teamTag" id="tossHomeName"></div></div>
+    <div class="vs">VS</div>
+    <div><div class="captain away" style="--jersey:#244c91"><div class="helmet"></div><div class="body" data-number="1"></div><div class="legs"></div></div><div class="teamTag" id="tossAwayName"></div></div>
+    <div class="coinStage">50¢</div>
+   </div>
+   <p id="coinTossCopy">Captains meet at midfield. Call heads or tails to decide who controls the opening kickoff.</p>
+   <div id="tossCalls"><button data-toss="HEADS">Call heads</button><button data-toss="TAILS">Call tails</button></div>
+   <div id="coinChoice" class="choiceRow" style="display:none"><button class="primary" data-decision="RECEIVE">Receive kickoff</button><button data-decision="KICK">Kick off</button></div>
+  </div><div class="footer"><span>ROAD TO THE LEAGUE</span><span id="tossMatchup"></span><span>GAME DAY</span></div>`;
+  document.body.appendChild(modal);
+  modal.querySelector("#tossHomeName").textContent=home;modal.querySelector("#tossAwayName").textContent=away;modal.querySelector("#tossMatchup").textContent=home+" vs "+away;
+  modal.querySelectorAll("[data-toss]").forEach(b=>b.onclick=()=>{const call=b.dataset.toss,flip=Math.random()<.5?"HEADS":"TAILS",won=call===flip;modal.querySelector(".coinStage").textContent=flip;modal.querySelector(".coinStage").style.animation="none";$("coinTossCopy").textContent="REFEREE: "+flip+"! "+(won?home:away)+" wins the toss. Choose whether to receive or kick off.";modal.querySelector("#tossCalls").style.display="none";$("coinChoice").style.display="block";modal.dataset.won=won?"1":"0"});
+  modal.querySelectorAll("[data-decision]").forEach(b=>b.onclick=()=>{coinTossDone=true;modal.remove();startGame(true);if(b.dataset.decision==="KICK")setTimeout(()=>startKickoff(),250);else toast(home+" WILL RECEIVE • OPENING DRIVE")});
+ }
  modal.style.display="flex";
 }
 function updateFirstDownMarkers(){if(lineOfScrimmageMarker)lineOfScrimmageMarker.position.x=scrimmageX;if(firstDownMarker)firstDownMarker.position.x=scrimmageX+Math.max(1,dist)}

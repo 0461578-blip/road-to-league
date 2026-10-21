@@ -92,6 +92,37 @@
 #footballControls .controlTitle:has(+.controlRow button[data-control]){margin-top:6px}
 @media(max-width:760px){#menu .menuWrap{grid-template-columns:1fr;min-height:100%}#menu .left{padding:94px 20px 260px;justify-content:flex-start}#menu .hero{width:65%;height:45%;opacity:.75;top:auto;bottom:0}#menu .heroPlayer{width:46vw;height:95%}#menu .logo{font-size:clamp(50px,12vw,78px);letter-spacing:-3px}#menu .actions{grid-template-columns:1fr 1fr}#menu .btn.primary{grid-row:auto;min-height:95px;grid-column:span 2}#menu .music{right:8px;top:8px;gap:5px;padding:7px;max-width:calc(100vw - 16px)}#menu .musicSong{max-width:100px;font-size:10px}#menu .musicDate{display:none}#menu .music button{padding:7px;font-size:8px}.musicPlayer{right:8px;top:60px}.maddenPlayButtons{grid-template-columns:repeat(3,minmax(0,1fr))!important}.maddenPlayButtons button{min-height:58px;padding:7px!important}.presnap{bottom:8px!important;padding:8px!important}.playbookUtility{justify-content:space-between}#snapBar{bottom:8px;padding:8px}#snapBtn{padding:10px!important;font-size:10px!important}}
 
+
+/* ROAD TO THE LEAGUE — refreshed cinematic broadcast menu */
+#menu.screen.dark{background:#05070b;isolation:isolate}
+#menu .menuWrap{grid-template-columns:minmax(440px,48%) 1fr;min-height:100%;background:radial-gradient(ellipse at 75% 45%,#7a1839a8 0%,#24101f80 22%,transparent 53%),linear-gradient(110deg,#05070b 0%,#090c12 52%,#17121a 100%)}
+#menu .menuWrap:before{background:repeating-linear-gradient(105deg,transparent 0 54px,#ffffff08 55px 56px),linear-gradient(90deg,#030408 0%,#030408a8 40%,transparent 100%)}
+#menu .menuWrap:after{width:66%;background:radial-gradient(ellipse at 68% 50%,#b61f4a45 0%,transparent 42%),linear-gradient(90deg,transparent,#ffffff08)}
+#menu .left{padding:clamp(34px,5vw,76px);padding-top:100px}
+#menu .kicker{display:flex;align-items:center;gap:10px;color:#f0b7c5;letter-spacing:3.4px;font-size:10px}
+#menu .kicker:after{content:"PRESEASON • 2026";margin-left:4px;padding:6px 9px;border:1px solid #ffffff2b;border-radius:3px;color:#d5d7df;font-size:8px;letter-spacing:1.4px}
+#menu .logo{font-size:clamp(64px,8.8vw,124px);line-height:.78;letter-spacing:-.075em;margin:28px 0 24px;text-shadow:0 10px 55px #000,0 0 42px #a21e443d}
+#menu .logo span{background:linear-gradient(180deg,#fff 0%,#f1dce2 43%,#e43e69 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#menu .tag{max-width:510px;font-size:11px;line-height:1.9;letter-spacing:1.65px;color:#bac2ce}
+#menu .actions{max-width:640px;gap:10px;margin-top:25px}
+#menu .btn{border-radius:5px;background:linear-gradient(140deg,#151b25,#0a0d13);border:1px solid #ffffff20;padding:17px 18px;box-shadow:inset 0 1px #ffffff0a;transition:transform .18s,border-color .18s,filter .18s}
+#menu .btn:hover,#menu .btn:focus{background:linear-gradient(110deg,#a51e43,#3a101e);border-color:#ff9eb6;box-shadow:0 8px 32px #a91d3c35;transform:translateX(4px);filter:brightness(1.12)}
+#menu .btn.primary{background:linear-gradient(145deg,#c52b50 0%,#75132d 48%,#1b1019 100%);border-color:#ff9bb23b;box-shadow:0 18px 48px #000a,inset 0 1px #ffffff30;min-height:154px}
+#menu .btn.primary .big{font-size:clamp(23px,2.4vw,32px);letter-spacing:-1px}
+#menu .btn b{font-size:12px;letter-spacing:1.6px}
+#menu .btn small{font-size:9px;letter-spacing:.6px;line-height:1.5}
+#menu .setup{margin-top:20px;padding:15px;background:#070a10c9;border:1px solid #ffffff1c;border-radius:6px;box-shadow:0 15px 40px #0005;backdrop-filter:blur(12px)}
+#menu .setupTitle{font-size:9px;letter-spacing:1.7px;color:#d6dce5;line-height:1.6}
+#menu .leagueRow{gap:8px;margin-top:12px}
+#menu .league{border-radius:4px;background:#121823;border:1px solid #ffffff24;padding:10px 15px;font-weight:1000;letter-spacing:1px}
+#menu .league.active,#menu .league:hover{background:linear-gradient(120deg,#bd2449,#65152b);border-color:#ff9ab4;box-shadow:0 0 22px #a71c3c30}
+#menu .status{margin-top:10px;color:#aeb8c7;font-size:9px;letter-spacing:1.4px}
+#menu .hero{right:-2%;width:59%;height:100%;opacity:1;filter:saturate(1.18) contrast(1.08)}
+#menu .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#05070b 0%,transparent 30%),linear-gradient(0deg,#05070b 0%,transparent 34%),radial-gradient(ellipse at 55% 45%,#a3204640,transparent 54%);z-index:2;pointer-events:none}
+#menu .heroPlayer{filter:drop-shadow(0 20px 50px #000) drop-shadow(0 0 28px #a91f4640);transform:scale(1.06);transform-origin:bottom center}
+#menu .music{background:#080b11ef;border:1px solid #ffffff26;border-radius:5px;box-shadow:0 14px 45px #000b}
+#menu .music button{background:linear-gradient(135deg,#a51e43,#4a1022);border-radius:3px}
+@media(max-width:760px){#menu .menuWrap{grid-template-columns:1fr;background:radial-gradient(ellipse at 72% 82%,#78163375,transparent 48%),linear-gradient(150deg,#05070b,#11121a)}#menu .left{padding:95px 18px 245px}#menu .hero{width:90%;height:43%;right:-15%;opacity:.75}#menu .kicker{font-size:8px;letter-spacing:1.6px}#menu .kicker:after{font-size:7px;padding:5px}#menu .logo{font-size:clamp(50px,12vw,78px);letter-spacing:-.055em}#menu .setup{padding:11px}#menu .league{padding:9px 10px;font-size:10px}#menu .actions{gap:7px}#menu .btn{padding:13px 12px}#menu .btn.primary{min-height:100px}}
 </style>
 </head>
 <body>
@@ -217,7 +248,7 @@ const $=id=>document.getElementById(id), abbr=n=>n.replace(/\([^)]*\)/g,"").spli
 function toast(t){$("toast").textContent=t;$("toast").style.display="block";clearTimeout(window._toast);window._toast=setTimeout(()=>$("toast").style.display="none",1800)}
 function teamPalette(name,side="home"){
  const key=(name||"").toLowerCase();
- const palettes=[[/baltimore ravens|ravens/,[0x241773,0x9e7c0c,0xffffff]],[/cardinals|arizona/,[0x97233f,0x000000,0xffffff]],[/bills|buffalo/,[0x00338d,0xc60c30,0xffffff]],[/dolphins|miami/,[0x008e97,0xfc4c02,0xffffff]],[/falcons|atlanta/,[0xa71930,0x000000,0xffffff]],[/panthers|carolina/,[0x0085ca,0x101820,0xffffff]],[/bears|chicago/,[0x0b162a,0xc83803,0xffffff]],[/bengals|cincinnati/,[0xfb4f14,0x000000,0xffffff]],[/browns|cleveland/,[0x311d00,0xff3c00,0xffffff]],[/cowboys|dallas/,[0x003594,0x869397,0xffffff]],[/broncos|denver/,[0xfb4f14,0x002244,0xffffff]],[/lions|detroit/,[0x0076b6,0xb0b7bc,0xffffff]],[/packers|green bay/,[0x203731,0xffb612,0xffffff]],[/texans|houston/,[0x03202f,0xa71930,0xffffff]],[/chiefs|kansas city/,[0xe31837,0xffb81c,0xffffff]],[/raiders|las vegas/,[0x000000,0xa5acaf,0xffffff]],[/giants|new york giants/,[0x0b2265,0xa71930,0xffffff]],[/jets|new york jets/,[0x125740,0xffffff,0x000000]],[/eagles|philadelphia/,[0x004c54,0xa5acaf,0xffffff]],[/steelers|pittsburgh/,[0xffb612,0x101820,0xffffff]],[/49ers|san francisco/,[0xaa0000,0xb3995d,0xffffff]],[/seahawks|seattle/,[0x002244,0x69be28,0xffffff]],[/georgia bulldogs|georgia/,[0xba0c2f,0x000000,0xffffff]],[/alabama/,[0x9e1b32,0xffffff,0x000000]],[/auburn/,[0x0c2340,0xe87722,0xffffff]],[/clemson/,[0xf56600,0x522d80,0xffffff]],[/ohio state/,[0xbb0000,0x666666,0xffffff]],[/texas/,[0xbf5700,0xffffff,0x333f48]],[/michigan/,[0xffcb05,0x00274c,0xffffff]],[/oregon/,[0x154733,0xfce000,0xffffff]]];
+ const palettes=[[/baltimore ravens|ravens/,[0x241773,0x9e7c0c,0xffffff]],[/cardinals|arizona/,[0x97233f,0x000000,0xffffff]],[/bills|buffalo/,[0x00338d,0xc60c30,0xffffff]],[/dolphins|miami/,[0x008e97,0xfc4c02,0xffffff]],[/falcons|atlanta/,[0xa71930,0x000000,0xffffff]],[/panthers|carolina/,[0x0085ca,0x101820,0xffffff]],[/bears|chicago/,[0x0b162a,0xc83803,0xffffff]],[/bengals|cincinnati/,[0xfb4f14,0x000000,0xffffff]],[/browns|cleveland/,[0x311d00,0xff3c00,0xffffff]],[/cowboys|dallas/,[0x003594,0x869397,0xffffff]],[/broncos|denver/,[0xfb4f14,0x002244,0xffffff]],[/lions|detroit/,[0x0076b6,0xb0b7bc,0xffffff]],[/packers|green bay/,[0x203731,0xffb612,0xffffff]],[/texans|houston/,[0x03202f,0xa71930,0xffffff]],[/chiefs|kansas city/,[0xe31837,0xffb81c,0xffffff]],[/raiders|las vegas/,[0x000000,0xa5acaf,0xffffff]],[/giants|new york giants/,[0x0b2265,0xa71930,0xffffff]],[/jets|new york jets/,[0x125740,0xffffff,0x000000]],[/eagles|philadelphia/,[0x004c54,0xa5acaf,0xffffff]],[/steelers|pittsburgh/,[0xffb612,0x101820,0xffffff]],[/49ers|san francisco/,[0xaa0000,0xb3995d,0xffffff]],[/seahawks|seattle/,[0x002244,0x69be28,0xffffff]],[/georgia bulldogs|georgia/,[0xba0c2f,0x000000,0xffffff]],[/alabama/,[0x9e1b32,0xffffff,0x000000]],[/auburn/,[0x0c2340,0xe87722,0xffffff]],[/clemson/,[0xf56600,0x522d80,0xffffff]],[/ohio state/,[0xbb0000,0x666666,0xffffff]],[/texas/,[0xbf5700,0xffffff,0x333f48]],[/michigan/,[0xffcb05,0x00274c,0xffffff]],[/oregon/,[0x154733,0xfce000,0xffffff]],[/indianapolis colts|colts/,[0x002c5f,0xa2aaad,0xffffff]],[/jacksonville jaguars|jaguars/,[0x006778,0xd7a22a,0xffffff]],[/los angeles chargers|chargers/,[0x0080c6,0xffc20e,0xffffff]],[/los angeles rams|rams/,[0x003594,0xff8200,0xffffff]],[/minnesota vikings|vikings/,[0x4f2683,0xffc62f,0xffffff]],[/new england patriots|patriots/,[0x002244,0xc60c30,0xffffff]],[/new orleans saints|saints/,[0xd3bc8d,0x101820,0xffffff]],[/tampa bay buccaneers|buccaneers/,[0xd50a0a,0x34302b,0xffffff]],[/tennessee titans|titans/,[0x0c2340,0x4b92db,0xffffff]],[/washington commanders|commanders/,[0x5a1414,0xffb612,0xffffff]],[/new york jets|jets/,[0x125740,0xffffff,0x000000]],[/cleveland browns|browns/,[0x311d00,0xff3c00,0xffffff]]];
  const found=palettes.find(([re])=>re.test(key));let h=0;for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))>>>0;const base=found?found[1]:[0x3a1830+(h%0x170000),0x242b37,0xf4f4f4];return side==="home"?{primary:base[0],secondary:base[1],number:base[2]}:{primary:0xf4f4f4,secondary:base[0],number:base[0]};
 }
 function logoUrl(name){
@@ -325,12 +356,13 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  const g=new THREE.Group(),body=new THREE.Group();g.add(body);
  const palette=teamPalette(team==="home"?home:away,team);
  const homeColor=palette.primary;
+ const identityPalette=teamPalette(team==="home"?home:away,"home");
  const jerseyMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.42});
  const pantsMat=new THREE.MeshStandardMaterial({color:team==="home"?0x20242a:0xf4f4f4,roughness:.62});
  const skinTones=[0x5b3827,0x75452f,0x955c3b,0xb97852,0xd49a73,0xe2b08b];
  const skinMat=new THREE.MeshStandardMaterial({color:skinTones[Math.abs(Number(jersey)||1)%skinTones.length],roughness:.82});
  const shoeMat=new THREE.MeshStandardMaterial({color:0x101216,roughness:.35});
- const helmetMat=new THREE.MeshStandardMaterial({color:homeColor,roughness:.22,metalness:.08});
+ const helmetMat=new THREE.MeshStandardMaterial({color:identityPalette.primary,roughness:.22,metalness:.08});
  const padMat=new THREE.MeshStandardMaterial({color:palette.secondary,roughness:.48});
  const darkMat=new THREE.MeshStandardMaterial({color:0x11151a,roughness:.32});
  const whiteMat=new THREE.MeshStandardMaterial({color:0xf5f5f5,roughness:.45});
@@ -351,6 +383,8 @@ function makePlayer(x,z,jersey,team,scale=1,role=""){
  add(torso,new THREE.SphereGeometry(.30,18,12),jerseyMat,[.43,.20,0],[0,0,.25],[.72,.55,.92]);
  add(torso,new THREE.BoxGeometry(.76,.045,.025),trimMat,[0,-.35,-.30]);
  add(torso,new THREE.BoxGeometry(.78,.045,.025),trimMat,[0,-.35,.30]);
+ // Team-identity sleeve stripes stay visible on both home and away kits.
+ add(torso,new THREE.BoxGeometry(.13,.34,.78),trimMat,[-.48,.18,0],[0,0,-.12]);add(torso,new THREE.BoxGeometry(.13,.34,.78),trimMat,[.48,.18,0],[0,0,.12]);
  add(torso,new THREE.BoxGeometry(.67,.055,.055),darkMat,[0,-.48,-.30]);
  add(torso,new THREE.BoxGeometry(.67,.055,.055),darkMat,[0,-.48,.30]);
 

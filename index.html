@@ -682,7 +682,7 @@ function setFormation(){
  scrimmageX=-25;updateFirstDownMarkers();
 }
 function resetPlay(){ballLive=false;snapState=false;playMode="SCRIMMAGE";routeClock=0;playClock=25;ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData){p.userData.hasBall=false;p.userData.tacklePose=0}});
- $("presnap").style.display=awaitingTry?"none":"block";$("snapBar").style.display="none";$("routeLegend").style.display="none";$("footballControls").style.display="block";$("firstDownLegend").style.display="block";$("specialTeams").style.display=awaitingTry?"block":"none";if(awaitingTry)$("specialHint").textContent="TOUCHDOWN! Choose EXTRA POINT or 2-POINT CONVERSION.";ball.visible=false;action="";actionTimer=0;
+ $("presnap").style.display=awaitingTry?"none":"block";$("snapBar").style.display="none";$("routeLegend").style.display="none";$("footballControls").style.display="block";$("firstDownLegend").style.display="block";$("specialTeams").style.display=awaitingTry?"block":"none";if(awaitingTry)$("specialHint").textContent="TOUCHDOWN! Choose FIELD GOAL, FAKE FIELD GOAL, or 2-POINT CONVERSION.";ball.visible=false;action="";actionTimer=0;
  throwMeterActive=false;catchMeterActive=false;passTarget=null;ballVel.set(0,0,0);
  $("throw").style.display="none";$("catchMeter").style.display="none";
  setFormation();
@@ -692,7 +692,7 @@ function resetPlay(){ballLive=false;snapState=false;playMode="SCRIMMAGE";routeCl
  injured=false;
  $("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist+" • PRE-SNAP";
 }
-function snapBall(){if(!gameStarted||snapState)return;players.forEach(p=>{if(p.userData)p.userData.aiPassTimer=0});playMode="SCRIMMAGE";
+function snapBall(){if(!gameStarted||snapState)return;$("snapBar").style.display="none";players.forEach(p=>{if(p.userData)p.userData.aiPassTimer=0});playMode="SCRIMMAGE";
  ballCarrier=null;playResolved=false;tackleLock=0;players.forEach(p=>{if(p.userData)p.userData.hasBall=false});
  snapState=true;routeClock=0;playClock=0;$("presnap").style.display="none";$("routeLegend").style.display="none";
  const qb=players.find(p=>p.userData.jersey==="12"),snapper=players.find(p=>p.userData.jersey==="62");

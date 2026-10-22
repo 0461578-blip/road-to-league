@@ -437,6 +437,65 @@ body{background:#05070b}
 @media(max-width:850px){#menu .menuWrap{grid-template-columns:minmax(280px,42%) 1fr}#menu .left{padding:25px 15px}.m27-hero-copy{width:80%;padding-top:90px}.m27-hero-title{letter-spacing:-3px}#menu .heroPlayer{right:-5%;width:48%;opacity:.75}.m27-feature-row{flex-wrap:wrap}.m27-toplabel{font-size:8px;letter-spacing:1px}}
 @media(max-width:620px){.m27-topline{height:48px;padding:0 12px;gap:8px}.m27-brandmark{font-size:18px}.m27-toplabel{max-width:180px;line-height:1.3}.m27-season{font-size:8px}#menu .menuWrap{padding-top:48px;display:flex;flex-direction:column}#menu .left{padding:22px 16px 16px;border-right:0;border-bottom:1px solid #ffffff20}#menu .logo{font-size:46px;margin:12px 0}#menu .actions{margin-top:13px}#menu .btn{padding:11px 10px}#menu .btn.primary{min-height:70px}#menu .setup{margin-top:10px}#menu .hero{min-height:500px}#menu .music{top:54px;right:8px;transform:scale(.75)}#menu .musicPlayer{top:104px;right:8px} .m27-hero-copy{padding:65px 18px 90px;width:88%}.m27-hero-title{font-size:64px}.m27-hero-desc{max-width:270px}.m27-feature-row{gap:12px;margin-top:22px}.m27-feature-row span{font-size:7px}#menu .heroPlayer{height:58%;width:55%;right:-12%;opacity:.55}.m27-bottomline{padding:11px 12px;font-size:7px;letter-spacing:.5px}.m27-bottomline span:last-child{display:none}}
 
+
+/* FULL GAME MODE + CAREER BUILDER REFRESH */
+#modeOverlay{position:fixed;inset:0;z-index:120;display:none;overflow:auto;background:radial-gradient(ellipse at 78% 32%,#8c17353d,transparent 40%),linear-gradient(125deg,#050609,#11131a 55%,#09070b)}
+#modeOverlay.open{display:block}
+#modeOverlay .modeShell{max-width:1360px;margin:auto;padding:28px clamp(16px,4vw,54px) 42px;min-height:100%;display:flex;flex-direction:column}
+#modeOverlay .modeTop{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:1px solid #ffffff1b;padding:18px 0 24px}
+#modeOverlay .modeEyebrow{font-size:10px;font-weight:1000;letter-spacing:3px;color:#dc4669}
+#modeOverlay .modeTitle{font-size:clamp(32px,5vw,62px);font-weight:1000;letter-spacing:-2px;margin:12px 0 7px}
+#modeOverlay .modeSub{font-size:12px;line-height:1.7;color:#9fa6b2;max-width:680px}
+#modeOverlay .modeGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:28px 0;flex:1}
+#modeOverlay .modeCard{position:relative;min-height:280px;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;text-align:left;padding:20px 18px;color:#fff;border:1px solid #ffffff20;border-radius:4px;background:linear-gradient(145deg,#1a1d25,#0b0d12 75%);transition:transform .18s,border-color .18s,background .18s;overflow:hidden}
+#modeOverlay .modeCard:before{content:"";position:absolute;inset:auto -15% -20% 10%;height:55%;background:radial-gradient(ellipse,#9d1c3c3b,transparent 65%);pointer-events:none}
+#modeOverlay .modeCard:hover{transform:translateY(-4px);border-color:#d34565}
+#modeOverlay .modeCard.selected{border:1px solid #e34d70;box-shadow:inset 0 0 0 1px #e34d7040,0 15px 35px #0005;background:linear-gradient(145deg,#3b1522,#111016 78%)}
+#modeOverlay .modeIcon{width:55px;height:55px;display:grid;place-items:center;border:1px solid #ffffff22;background:#ffffff08;font-size:27px;margin-bottom:35px}
+#modeOverlay .modeCard strong{display:block;font-size:clamp(16px,1.6vw,22px);letter-spacing:.5px;margin-bottom:9px}
+#modeOverlay .modeCard small{display:block;font-size:10px;line-height:1.7;color:#aeb4be}
+#modeOverlay .modeCard>small{position:relative;z-index:1;margin-top:24px;padding-top:12px;border-top:1px solid #ffffff1c;letter-spacing:1.8px;font-weight:1000;color:#e8a2b1;font-size:8px}
+#modeOverlay .modeFooter{display:flex;justify-content:space-between;align-items:center;gap:15px;padding-top:18px;border-top:1px solid #ffffff1b}
+#modeOverlay .modeBack,#modeOverlay .modeStart{padding:14px 20px;border-radius:2px;font-size:10px;font-weight:1000;letter-spacing:1px}
+#modeOverlay .modeBack{background:#161920;border:1px solid #ffffff24;color:#fff}
+#modeOverlay .modeStart{background:linear-gradient(110deg,#b31e43,#70112a);border:1px solid #e75a7a;color:white}
+#build{background:radial-gradient(ellipse at 80% 30%,#79172e44,transparent 40%),linear-gradient(125deg,#050609,#12151d 60%,#08080b)}
+#build .buildCard{max-width:1150px;width:calc(100% - 30px);background:#0b0e14;border:1px solid #ffffff21;box-shadow:0 25px 100px #000c;border-radius:4px}
+#build .buildHead{background:linear-gradient(100deg,#201018,#10131a);border-bottom:1px solid #ffffff1b;padding:20px 24px}
+#build .buildHead h1{letter-spacing:1px;font-size:clamp(20px,3vw,32px)}
+#build .progress{margin:20px 24px}
+#build .stepTitle{font-size:clamp(18px,2vw,25px);font-weight:1000;letter-spacing:.5px;color:#fff;margin-bottom:20px}
+#build .field input,#build .field select{background:#111720!important;border:1px solid #ffffff23!important;color:#fff!important;border-radius:2px;padding:13px!important}
+#build .choice{background:linear-gradient(120deg,#151922,#0d1016)!important;border:1px solid #ffffff20!important;border-radius:3px!important;color:#fff!important;padding:15px!important}
+#build .choice.selected,#build .choice:hover{background:linear-gradient(110deg,#5c1428,#1a1118)!important;border-color:#d33b5e!important}
+#build .buildFoot{border-top:1px solid #ffffff1c;padding:18px 24px;background:#080a0f}
+#build .buildFoot button{background:#191d26;color:#fff;border:1px solid #ffffff27;padding:13px 20px;font-weight:1000}
+#build .buildFoot .next{background:linear-gradient(100deg,#b31e43,#71132b);border-color:#e35475}
+@media(max-width:900px){#modeOverlay .modeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}#modeOverlay .modeCard{min-height:220px}}
+@media(max-width:560px){#modeOverlay .modeShell{padding:14px}#modeOverlay .modeTop{padding-top:20px}#modeOverlay .modeGrid{gap:8px;margin:16px 0}#modeOverlay .modeCard{min-height:195px;padding:13px}#modeOverlay .modeIcon{margin-bottom:18px;width:42px;height:42px;font-size:22px}#modeOverlay .modeCard strong{font-size:15px}#modeOverlay .modeCard small{font-size:9px}#modeOverlay .modeFooter{align-items:stretch;flex-direction:column}#modeOverlay .modeFooter>div:last-child{display:flex;gap:8px}#modeOverlay .modeFooter button{flex:1}}
+
+#practiceSelect{z-index:130;background:radial-gradient(ellipse at 75% 25%,#8e1c3b3d,transparent 42%),linear-gradient(125deg,#050609,#11141b 58%,#08080b)}
+#practiceSelect.open{display:block}
+.practice-shell{max-width:1300px;margin:auto;padding:30px clamp(15px,4vw,50px) 40px;min-height:100%;display:flex;flex-direction:column}
+.practice-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:1px solid #ffffff20;padding:12px 0 23px}
+.practice-kicker{font-size:10px;font-weight:1000;letter-spacing:3px;color:#d94769}
+.practice-head h1{font-size:clamp(32px,5vw,60px);letter-spacing:-2px;margin:12px 0 7px}.practice-head h1 span{color:#ce3155}
+.practice-head p{font-size:12px;color:#a5abb5;line-height:1.7;margin:0}
+.practice-back{background:#151922;color:#fff;border:1px solid #ffffff26;padding:13px 16px;font-size:9px;font-weight:1000;letter-spacing:1px}
+.practice-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0;flex:1}
+.practice-card{position:relative;text-align:left;color:#fff;padding:19px;background:linear-gradient(140deg,#1a1e27,#0b0d12);border:1px solid #ffffff20;min-height:190px;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden}
+.practice-card:hover,.practice-card.selected{border-color:#d94265;background:linear-gradient(140deg,#421725,#101117);box-shadow:inset 0 0 0 1px #d9426530}
+.practice-number{position:absolute;right:14px;top:10px;font-size:28px;font-weight:1000;color:#ffffff15}
+.practice-icon{font-size:26px;margin-bottom:20px;color:#e24a6d}
+.practice-card strong{font-size:15px;letter-spacing:.5px;margin-bottom:8px}
+.practice-card small{font-size:10px;color:#aeb4bf;line-height:1.7;max-width:300px}
+.practice-tag{margin-top:auto;padding-top:15px;font-size:8px;letter-spacing:2px;color:#e99bad;font-weight:1000}
+.practice-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:18px;border-top:1px solid #ffffff20}
+.practice-footer b,.practice-footer small{display:block}.practice-footer b{font-size:12px;letter-spacing:1px}.practice-footer small{font-size:10px;color:#959ca8;margin-top:5px}
+#practiceStart{background:linear-gradient(100deg,#b51f43,#71112b);border:1px solid #e85879;color:#fff;padding:15px 22px;font-size:10px;font-weight:1000;letter-spacing:1px}
+@media(max-width:750px){.practice-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.practice-head{flex-direction:column}.practice-card{min-height:180px;padding:14px}}
+@media(max-width:480px){.practice-shell{padding:14px}.practice-cards{gap:7px;margin:15px 0}.practice-card{min-height:180px;padding:11px}.practice-card strong{font-size:12px}.practice-card small{font-size:9px}.practice-footer{align-items:stretch;flex-direction:column}.practice-footer button{width:100%}}
+
 </style>
 </head>
 <body>
@@ -1499,6 +1558,52 @@ resolveTackle=function(){const wasResolved=playResolved;_careerResolveTackle();i
 const _careerResetPlay=resetPlay;
 resetPlay=function(){_careerResetPlay();if(careerMode){$("careerHubBtn").style.display="block";saveCareer()}};
 
+</script>
+
+<section id="practiceSelect" class="overlay">
+ <div class="practice-shell">
+  <div class="practice-head"><div><div class="practice-kicker">ROAD TO THE LEAGUE 27 • TRAINING CENTER</div><h1>CHOOSE YOUR <span>DRILL</span></h1><p>Pick what you want to work on. Your selection carries into the practice session.</p></div><button id="practiceBack" class="practice-back">← GAME MODES</button></div>
+  <div class="practice-cards">
+   <button class="practice-card selected" data-drill="PASSING"><span class="practice-number">01</span><span class="practice-icon">🎯</span><strong>QB TARGET PASSING</strong><small>Time the throw meter and hit your receiver in stride.</small><span class="practice-tag">QUARTERBACKS</span></button>
+   <button class="practice-card" data-drill="ROUTES"><span class="practice-number">02</span><span class="practice-icon">↗</span><strong>ROUTE RUNNING</strong><small>Work on separation, receiver movement, and getting open.</small><span class="practice-tag">WIDE RECEIVERS</span></button>
+   <button class="practice-card" data-drill="CATCHING"><span class="practice-number">03</span><span class="practice-icon">👐</span><strong>CATCH &amp; HANDS</strong><small>Switch to your receiver and practice catch timing and jump catches.</small><span class="practice-tag">RECEIVERS</span></button>
+   <button class="practice-card" data-drill="DEFENSE"><span class="practice-number">04</span><span class="practice-icon">🛡</span><strong>DEFENSIVE FUNDAMENTALS</strong><small>Learn positioning, tackling, and defensive awareness.</small><span class="practice-tag">DEFENSE</span></button>
+   <button class="practice-card" data-drill="RUSHING"><span class="practice-number">05</span><span class="practice-icon">🏃</span><strong>RUSH ATTACK</strong><small>Practice running lanes and using movement to gain yards.</small><span class="practice-tag">RUNNING BACKS</span></button>
+   <button class="practice-card" data-drill="FUNDAMENTALS"><span class="practice-number">06</span><span class="practice-icon">🏈</span><strong>FULL TEAM REPS</strong><small>Use the existing game controls to rehearse plays and resets.</small><span class="practice-tag">ALL POSITIONS</span></button>
+  </div>
+  <div class="practice-footer"><div><b id="practiceChosen">QB TARGET PASSING</b><small id="practiceChosenDesc">Throw timing and accuracy reps</small></div><button id="practiceStart">CONTINUE TO TEAM SETUP →</button></div>
+ </div>
+</section>
+
+<script>
+(function(){
+ const $p=id=>document.getElementById(id);
+ let chosenPractice="PASSING";
+ const drillInfo={PASSING:["QB TARGET PASSING","Throw timing and accuracy reps"],ROUTES:["ROUTE RUNNING","Receiver movement and separation reps"],CATCHING:["CATCH & HANDS","Catch timing and jump-catch reps"],DEFENSE:["DEFENSIVE FUNDAMENTALS","Positioning and tackling reps"],RUSHING:["RUSH ATTACK","Running lanes and ball-carrier movement"],FUNDAMENTALS:["FULL TEAM REPS","Practice with the existing game controls"]};
+ function pickPractice(v){chosenPractice=v;document.querySelectorAll(".practice-card").forEach(b=>b.classList.toggle("selected",b.dataset.drill===v));$p("practiceChosen").textContent=drillInfo[v][0];$p("practiceChosenDesc").textContent=drillInfo[v][1];}
+ document.querySelectorAll(".practice-card").forEach(b=>b.addEventListener("click",()=>pickPractice(b.dataset.drill)));
+ const originalSelectMode=selectGameMode;
+ window.selectGameMode=selectGameMode;
+ document.querySelectorAll(".modeCard").forEach(b=>b.addEventListener("dblclick",()=>{}));
+ $p("modeContinue").onclick=()=>{
+   $p("modeOverlay").classList.remove("open");
+   if(selectedGameMode==="CAREER"){startIntro(true);return}
+   if(selectedGameMode==="PRACTICE"){$p("practiceSelect").classList.add("open");return}
+   if(selectedGameMode==="PASSING"){position="QB";selectedTarget="1";catchStyle="SECURE";}
+   openTeams(league);
+ };
+ $p("practiceBack").onclick=()=>{$p("practiceSelect").classList.remove("open");$p("modeOverlay").classList.add("open")};
+ $p("practiceStart").onclick=()=>{selectedGameMode="PRACTICE";window.roadToLeaguePracticeDrill=chosenPractice;$p("practiceSelect").classList.remove("open");homeScore=0;awayScore=0;down=1;dist=10;timeLeft=600;openTeams(league)};
+ const oldStartGame=startGame;
+ window.startGame=startGame;
+ startGame=function(forceStart=false){oldStartGame(forceStart);if(gameStarted&&selectedGameMode==="PRACTICE"){const label=drillInfo[chosenPractice]||drillInfo.FUNDAMENTALS;setTimeout(()=>toast("PRACTICE DRILL: "+label[0]+" • "+label[1]),250);}};
+ $p("careerBtn").querySelector(".big").textContent="ROAD TO GLORY";
+ const careerSub=$p("careerBtn").querySelector("small");if(careerSub)careerSub.textContent="CREATE YOUR PLAYER • BUILD YOUR CAREER";
+ const careerModeCard=document.querySelector('.modeCard[data-mode="CAREER"]');if(careerModeCard){careerModeCard.querySelector("strong").textContent="ROAD TO GLORY";careerModeCard.querySelector("small").textContent="Build your athlete, choose a position and archetype, start in high school, and progress through your football career.";}
+ const practiceModeCard=document.querySelector('.modeCard[data-mode="PRACTICE"]');if(practiceModeCard){practiceModeCard.querySelector("small").textContent="Choose a position-focused drill, then take those reps onto the field.";}
+ const oldCareerBtn=$p("careerBtn").onclick;
+ $p("careerBtn").onclick=()=>{if(oldCareerBtn)oldCareerBtn();};
+})();
 </script>
 </body>
 </html>

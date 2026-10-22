@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Road to the League</title>
+<title>Road to the League 27 | Pro Football Career</title>
 <style>
 :root{--orange:#74172b;--bg:#05070a;--panel:#0d1219;--muted:#87919d}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:#fff;font-family:Arial,Helvetica,sans-serif}button,select,input{font:inherit}button{cursor:pointer}
@@ -211,6 +211,66 @@ body{background:#05070a}
 .meter{box-shadow:0 5px 18px #0008}
 @media(max-width:800px){.menuWrap{grid-template-columns:1fr}.left{padding:85px 22px 28px;justify-content:flex-start}.hero{position:absolute;inset:0 0 0 25%;opacity:.45;pointer-events:none}.logo{font-size:clamp(48px,15vw,82px)}.tag{max-width:390px}.actions,.setup{max-width:100%}.btn{min-height:54px}.music{max-width:calc(100vw - 18px);flex-wrap:wrap;gap:6px}.musicPlayer{max-width:calc(100vw - 18px)}#teamOverlay .matchup{gap:6px;padding:10px}#teamOverlay .pickers{grid-template-columns:1fr}#teamOverlay .teamFooter{display:flex;gap:8px}#teamOverlay .start{flex:1}#teamOverlay .teamModes button{flex:1}#teamOverlay .hint{display:none}}
 @media(max-height:700px){.left{padding-top:65px;padding-bottom:16px}.logo{font-size:clamp(46px,6vw,76px)}.tag{margin-top:10px}.actions{margin-top:14px;gap:6px}.btn{min-height:48px}.setup{margin-top:12px;padding:9px 12px}}
+
+/* 27-edition broadcast overhaul: original presentation inspired by modern pro-football games */
+:root{--orange:#f05a28;--bg:#05070b;--panel:#10151d;--muted:#a6afbb;--accent:#f05a28}
+body{background:#05070b}
+#menu.screen.dark{background:radial-gradient(ellipse at 78% 50%,#f05a2830 0%,transparent 36%),radial-gradient(ellipse at 50% 100%,#1b2838 0%,transparent 50%),linear-gradient(120deg,#030406 0%,#0a0e14 52%,#171b22 100%)}
+.menuWrap:before{background:repeating-linear-gradient(115deg,transparent 0 56px,#ffffff06 57px 58px),linear-gradient(90deg,#00000040,transparent 72%)}
+.menuWrap:after{width:62%;background:linear-gradient(90deg,transparent,#f05a2808),repeating-linear-gradient(0deg,transparent 0 72px,#ffffff07 73px 74px)}
+.kicker{color:#c6ccd4;letter-spacing:3.4px}
+.dot{background:#f05a28;box-shadow:0 0 18px #f05a28}
+.logo{letter-spacing:-.075em;text-shadow:0 8px 35px #000,0 0 36px #f05a2820}
+.logo span{background:linear-gradient(180deg,#fff 0%,#d9dce1 50%,#f05a28 100%);background-clip:text;-webkit-background-clip:text;color:transparent}
+.tag{color:#bac2cc;letter-spacing:1.8px}
+.setup{background:linear-gradient(145deg,#111821eF,#090c11f2);border:1px solid #ffffff20;box-shadow:0 18px 48px #0007,inset 0 1px #ffffff0b;border-radius:5px}
+.setupTitle{color:#b7c0cb}
+.league{background:#161c25;border:1px solid #ffffff1a;color:#d7dce3;border-radius:3px}
+.league.active,.league:hover{background:#f05a28;color:#fff;border-color:#ff8a62;box-shadow:0 0 20px #f05a282c}
+.btn{background:linear-gradient(145deg,#171e28,#0c1016);border:1px solid #ffffff20;border-radius:3px;box-shadow:0 8px 20px #0004}
+.btn:hover,.btn:focus{background:linear-gradient(100deg,#f05a28,#9e2d15);border-color:#ff9a77;box-shadow:0 10px 28px #f05a2820}
+.btn.primary{background:linear-gradient(135deg,#f05a28,#9c2d15 68%,#17171b);border-color:#ff956e}
+.btn.primary:after{border-color:#ffffff45}
+.music{border-radius:4px;border-color:#ffffff25;background:linear-gradient(145deg,#151a22f5,#07090df5)}
+.music button{background:linear-gradient(135deg,#f05a28,#9b2e17);border-radius:3px}
+.musicBtns button:hover{background:#f05a28}
+#score{background:linear-gradient(180deg,#151b24f5,#080b10f7);border:1px solid #ffffff25;border-top:3px solid #f05a28;box-shadow:0 15px 40px #0009;backdrop-filter:blur(14px)}
+.scoreTop{background:#f05a28;color:#fff;font-weight:1000;letter-spacing:2px}
+.scoreMain{background:linear-gradient(90deg,#141a23,#090c11 48%,#141a23)}
+.scoreLogo{border-radius:3px;background:#f05a28!important;color:white!important;border:1px solid #ffffff35}
+.scoreNum{font-variant-numeric:tabular-nums;text-shadow:0 0 18px #f05a2830}
+.clock{color:#d3d8df;letter-spacing:1.5px}
+#fieldLabel{background:#080c12d9;border-left:3px solid #f05a28;color:#f2f4f7;letter-spacing:2px;box-shadow:0 8px 24px #0006}
+#presnap{background:linear-gradient(160deg,#121923f5,#070a0ff7);border:1px solid #ffffff22;border-top:3px solid #f05a28;box-shadow:0 20px 55px #0009;backdrop-filter:blur(12px)}
+.maddenHeader{background:linear-gradient(90deg,#f05a28,#9d2e17);color:#fff;letter-spacing:1.5px}
+.playButtons button{background:linear-gradient(145deg,#202936,#0e131a);border:1px solid #ffffff20;border-radius:3px}
+.playButtons button:hover,.playButtons button.active{border-color:#ff8b65;background:linear-gradient(140deg,#87331f,#1b1718);transform:translateY(-2px);box-shadow:0 6px 18px #f05a2820}
+.playButtons button b{color:#ff8057}
+#snapBar{background:#080b10f2;border:1px solid #ffffff25;border-left:3px solid #f05a28;box-shadow:0 8px 24px #0008}
+#snapBtn{background:linear-gradient(135deg,#f05a28,#a53018);border:1px solid #ff9873;border-radius:3px;font-weight:1000;box-shadow:0 5px 16px #f05a2824}
+#actions button,.actionBar button{border-radius:3px;background:linear-gradient(145deg,#18202b,#0b0f15f5);border:1px solid #ffffff24;color:#f3f5f8;font-weight:1000;letter-spacing:.03em;box-shadow:0 5px 14px #0007}
+#actions button:hover,.actionBar button:hover{background:#f05a28;border-color:#ff9873}
+.meter{box-shadow:0 5px 18px #0008}
+.maddenMeter{border:1px solid #ffffff55;box-shadow:0 0 22px #0008,0 0 14px #f05a2810}
+#routeLegend{background:#090e15dd;border:1px solid #ffffff24;border-left:3px solid #f05a28;backdrop-filter:blur(8px)}
+.overlay{background:radial-gradient(ellipse at 75% 35%,#f05a2824,transparent 42%),#030509eF;backdrop-filter:blur(10px)}
+.introCard,.buildCard,#teamOverlay .teamPanel{background:linear-gradient(145deg,#151c26,#080b10);border:1px solid #ffffff25;box-shadow:0 30px 90px #000b;border-top:3px solid #f05a28}
+.introKicker,.introPrompt{color:#ff8057;letter-spacing:2px}
+.introTitle{letter-spacing:-.04em;text-transform:uppercase}
+.journey>div,.choice,.teamGrid button{border-radius:3px}
+.journey>div.active,.choice.active,.teamGrid button.active{border-color:#f05a28;background:#f05a2820}
+.skip,.build button,.teamFooter button{border-radius:3px}
+#toast{border-left:3px solid #f05a28}
+@media(max-width:800px){
+ .menuWrap{grid-template-columns:1fr}
+ .left{padding:88px 20px 26px}
+ .hero{opacity:.36}
+ .music{right:9px;top:8px}
+ #score{max-width:calc(100vw - 16px)}
+ #presnap{max-width:calc(100vw - 14px)}
+ #actions button,.actionBar button{font-size:10px}
+}
+
 </style>
 </head>
 <body>
@@ -220,7 +280,7 @@ body{background:#05070a}
   <div class="music"><span class="musicDot"></span><div><div id="musicSong" class="musicSong"></div><div id="musicDate" class="musicDate"></div></div><button id="musicPlay">PLAY MUSIC</button><button id="musicShuffle">SHUFFLE</button></div><div id="musicPlayerPanel" class="musicPlayer"><iframe id="musicFrame" title="2000s R&amp;B music player" src="https://www.youtube-nocookie.com/embed/H64QG4UsrGI?autoplay=0&controls=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="musicHint">2000s R&amp;B ROTATION • USE THE PLAYER CONTROLS FOR PLAY / PAUSE</div><div class="musicBtns"><button id="musicPrev">PREVIOUS</button><button id="musicNext">NEXT TRACK ↗</button></div></div>
   <div class="menuWrap">
     <div class="left">
-      <div class="kicker"><span class="dot"></span>ROAD TO THE LEAGUE • SEASON 01</div>
+      <div class="kicker"><span class="dot"></span>ROAD TO THE LEAGUE 27 • NEXT-GEN FOOTBALL</div>
       <div class="logo">ROAD TO<br><span>THE LEAGUE</span></div>
       <div class="tag">BUILD YOUR PLAYER. START UNDER THE FRIDAY-NIGHT LIGHTS. EARN YOUR OFFER. TAKE OVER COLLEGE. CHASE THE LEAGUE.</div>
       <div class="actions">
@@ -314,9 +374,9 @@ body{background:#05070a}
   </div>
 </section>
 
-<div id="hud"></div><div id="fieldLabel" class="fieldLabel">SUNDAY NIGHT • LIVE FROM THE STADIUM</div>
+<div id="hud"></div><div id="fieldLabel" class="fieldLabel">PRO FOOTBALL • GAME DAY</div>
 <div id="routeLegend" class="routeLegend"><b>ROUTES</b><br>1 WR • GO &nbsp; 2 WR • POST<br>3 SLOT • SLANT &nbsp; RB • CHECK</div>
-<div id="presnap" class="presnap"><div class="maddenHeader"><span>OFFENSIVE PLAY CALL</span><span id="playClockLabel">PLAY CLOCK • 25</span></div><div class="playButtons maddenPlayButtons"><button data-play="HB ISO"><b>01</b><span>HB ISO</span><small>RUN</small></button><button data-play="HB SWEEP"><b>02</b><span>HB SWEEP</span><small>RUN</small></button><button data-play="SLANTS"><b>03</b><span>SLANTS</span><small>PASS</small></button><button data-play="MESH"><b>04</b><span>MESH</span><small>PASS</small></button><button data-play="PA CROSSERS"><b>05</b><span>PA CROSSERS</span><small>PLAY ACTION</small></button><button data-play="4 VERTICALS"><b>06</b><span>4 VERTICALS</span><small>DEEP PASS</small></button></div><div id="playName">SELECT A PLAY</div><div id="huddle">CHOOSE A PLAY • THEN HIKE THE BALL</div><div class="playbookUtility"><button onclick="startKickoff()">KICKOFF / RETURN</button><button onclick="simulateAIDrive()">OPPONENT AI DRIVE</button><label>FIELD <select id="fieldStyleSelect" onchange="changeField(this.value)"><option>PRO</option><option>COLLEGE</option><option>NIGHT</option><option>RETRO</option></select></label></div></div><div id="snapBar"><span id="snapPlayLabel">READY TO HIKE</span><button id="snapBtn">A / SPACE • HIKE BALL</button></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam"><span class="scoreLogo" id="scoreHomeLogo">BUF</span><span id="scoreHomeName">BUFFALO</span></div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam"><span id="scoreAwayName">MIAMI</span><span class="scoreLogo" id="scoreAwayLogo">MIA</span></div></div><div id="clock" class="clock">1Q • 10:00</div></div>
+<div id="presnap" class="presnap"><div class="maddenHeader"><span>OFFENSIVE PLAY CALL</span><span id="playClockLabel">PLAY CLOCK • 25</span></div><div class="playButtons maddenPlayButtons"><button data-play="HB ISO"><b>01</b><span>HB ISO</span><small>RUN</small></button><button data-play="HB SWEEP"><b>02</b><span>HB SWEEP</span><small>RUN</small></button><button data-play="SLANTS"><b>03</b><span>SLANTS</span><small>PASS</small></button><button data-play="MESH"><b>04</b><span>MESH</span><small>PASS</small></button><button data-play="PA CROSSERS"><b>05</b><span>PA CROSSERS</span><small>PLAY ACTION</small></button><button data-play="4 VERTICALS"><b>06</b><span>4 VERTICALS</span><small>DEEP PASS</small></button></div><div id="playName">SELECT A PLAY</div><div id="huddle">CHOOSE A PLAY • THEN HIKE THE BALL</div><div class="playbookUtility"><button onclick="startKickoff()">KICKOFF / RETURN</button><button onclick="simulateAIDrive()">OPPONENT AI DRIVE</button><label>FIELD <select id="fieldStyleSelect" onchange="changeField(this.value)"><option>PRO</option><option>COLLEGE</option><option>NIGHT</option><option>RETRO</option></select></label></div></div><div id="snapBar"><span id="snapPlayLabel">READY TO HIKE</span><button id="snapBtn">A / SPACE • HIKE BALL</button></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE 27</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam"><span class="scoreLogo" id="scoreHomeLogo">BUF</span><span id="scoreHomeName">BUFFALO</span></div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam"><span id="scoreAwayName">MIAMI</span><span class="scoreLogo" id="scoreAwayLogo">MIA</span></div></div><div id="clock" class="clock">1Q • 10:00</div></div>
 <div id="qbArc" class="qbArc"><div class="qbArcLabel">PASS ACCURACY</div><div id="qbArcNeedle" class="qbArcNeedle"></div><div class="qbArcHint">RELEASE</div></div><div id="throw" class="throw"><div class="throwTitle">PASS ACCURACY • RELEASE IN THE GREEN WINDOW</div><div class="meter maddenMeter"><i class="r"></i><i class="y"></i><i class="g"></i><i class="y"></i><i class="r"></i></div><div id="throwMarker" class="marker"></div><div class="meterLabels"><span>EARLY</span><span>PERFECT RELEASE</span><span>LATE</span></div></div><div id="catchMeter" class="catchMeter"><div class="catchTitle">CATCH TIMING • AIM FOR GREEN</div><div class="meter maddenMeter"><i class="r"></i><i class="y"></i><i class="g"></i><i class="y"></i><i class="r"></i></div><div id="catchMarker" class="marker"></div><div class="meterLabels"><span>DROP RISK</span><span>SECURE</span><span>DROP RISK</span></div></div>
 <div id="actions" class="actionBar"><button id="jumpBtn">A • JUMP</button><button id="diveBtn">B • DIVE</button><button id="catchBtn">C • CATCH</button><button id="jukeLeftBtn">LT • JUKE L</button><button id="jukeRightBtn">RT • JUKE R</button><button id="spinBtn">Y • SPIN</button><button id="truckBtn">X • TRUCK</button><button id="hitBtn">RS • HIT STICK</button><button id="cyclePlayerBtn">SWITCH</button><button id="callBallBtn">CALL FOR BALL</button></div><div id="specialTeams" class="presnap scoringChoices" style="display:none"><div class="maddenHeader"><span>TOUCHDOWN • CHOOSE YOUR TRY</span><span id="tryTeamLabel">OFFENSE</span></div><div class="playButtons maddenPlayButtons tryButtons"><button id="extraPointBtn"><b>01</b><span>FIELD GOAL</span><small>1 POINT</small></button><button id="fakeFieldGoalBtn"><b>02</b><span>FAKE FIELD GOAL</span><small>RISK / REWARD</small></button><button id="twoPointBtn"><b>03</b><span>2-POINT CONVERSION</span><small>2 POINTS</small></button></div><div id="specialHint">Choose how to finish the touchdown.</div><div class="playbookUtility"><button id="backToPlaysBtn">BACK TO PLAYBOOK</button></div></div>
 <div id="firstDownLegend"><span class="blue">BLUE — LINE OF SCRIMMAGE</span><br><span class="yellow">YELLOW — FIRST DOWN</span></div>

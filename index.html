@@ -305,6 +305,44 @@ body{background:#05070b}
 @media(max-width:850px){.modeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.modeCard{min-height:150px}}
 @media(max-width:480px){.modeGrid{gap:8px}.modeCard{padding:12px;min-height:165px}.modeTop{align-items:flex-start}.modeTitle{letter-spacing:-1px}}
 
+
+/* Cinematic menu / cutscene presentation refresh */
+#menu{background:#05070a}
+.menuWrap{grid-template-columns:minmax(350px,43%) 1fr;min-height:100%;background:radial-gradient(ellipse at 73% 42%,#9b203b42,transparent 32%),linear-gradient(100deg,#05070a 0%,#090c12 48%,#15151b 100%)}
+.menuWrap:after{width:70%;background:linear-gradient(90deg,#05070a00,#080a10aa 88%),radial-gradient(ellipse at 68% 40%,#a5284630,transparent 50%);z-index:1}
+.left{padding:clamp(28px,4.2vw,66px);max-width:720px}
+.logo{font-size:clamp(54px,7vw,98px);letter-spacing:-5px;text-shadow:0 8px 30px #000}
+.actions{grid-template-columns:1fr 1fr;max-width:520px}
+.btn.primary{grid-row:auto;min-height:92px;grid-column:span 2}
+.btn{min-height:64px;border-radius:2px;background:linear-gradient(115deg,#141922,#090c12);border-left:3px solid #7c1c32}
+.btn.primary{background:linear-gradient(110deg,#8a2038,#4b101f 65%,#17131a);border-left:4px solid #f3dbe0}
+.btn small{display:block;color:#9faab7;font-size:9px;letter-spacing:1px;margin-top:7px}
+.hero{z-index:2}
+.heroPlayer{filter:drop-shadow(0 25px 45px #000);transform:scale(1.16);transform-origin:bottom center}
+.setup{max-width:520px}
+.setupTitle{font-size:9px;letter-spacing:1.5px}
+.league{border-radius:2px}
+#modeOverlay{z-index:130}
+#teamOverlay{z-index:140}
+#intro{z-index:180;background:#030508}
+#intro.overlay.open{display:flex}
+#intro .introCard{width:100%;height:100%;max-height:none;min-height:100%;border:0;border-radius:0;padding:clamp(24px,6vw,90px);display:flex;flex-direction:column;justify-content:center;background:linear-gradient(90deg,#020408f5 0%,#05070ad9 48%,#070a10a0 100%);isolation:isolate}
+#intro .introCard:before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(ellipse at 72% 40%,#b3314c55,transparent 28%),linear-gradient(180deg,#03060c 0%,#121b29 42%,#101c1b 43%,#05080a 100%);animation:cinemaPan 8s ease-in-out infinite alternate}
+#intro .introCard:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 42px,#ffffff0c 43px 44px),linear-gradient(90deg,#0009,transparent 70%),linear-gradient(0deg,#000b,transparent 35%,#0007)}
+@keyframes cinemaPan{from{transform:scale(1) translateX(-1%)}to{transform:scale(1.08) translateX(1%)}}
+#intro .introCard>div:first-child{position:relative;z-index:2;max-width:780px}
+#intro .introTitle{font-size:clamp(48px,9vw,120px);max-width:850px;text-shadow:0 6px 30px #000;letter-spacing:-.055em}
+#intro .introCopy{font-size:clamp(13px,1.5vw,17px);max-width:580px}
+#intro .introRight{position:absolute;right:6%;bottom:0;height:88%;width:38%;align-items:flex-end;z-index:1;pointer-events:none}
+#intro .silhouette{width:100%;height:100%;max-width:390px;clip-path:polygon(36% 0,64% 0,72% 15%,90% 35%,100% 48%,81% 54%,82% 100%,56% 100%,50% 67%,44% 100%,18% 100%,19% 54%,0 48%,10% 35%,28% 15%);background:linear-gradient(140deg,#8e9bab55,#182330dd 50%,#07090e);filter:drop-shadow(0 0 35px #a72a4455);animation:playerEntrance 1s ease-out both}
+@keyframes playerEntrance{from{transform:translateX(60px);opacity:.2}to{transform:translateX(0);opacity:1}}
+#intro .journey{margin-top:25px;flex-wrap:wrap}
+#intro .introBottom{left:clamp(24px,6vw,90px);right:clamp(24px,6vw,90px);bottom:clamp(18px,4vh,42px)}
+#intro .introPrompt{font-size:11px;color:#e4e8ee}
+#intro .skip,#intro .cutsceneNext{padding:14px 20px;border:1px solid #ffffff40;background:#861e38;color:#fff;font-weight:1000;letter-spacing:1px;cursor:pointer}
+#intro .cutsceneNext{margin-left:auto;margin-right:10px}
+@media(max-width:700px){.menuWrap{grid-template-columns:1fr}.left{padding:90px 22px 30px}.hero{opacity:.45;position:absolute;inset:0}.heroPlayer{transform:scale(1.3)}.actions{max-width:none}.setup{position:relative;z-index:3}#intro .introRight{right:-9%;width:56%;height:68%;opacity:.72}#intro .introTitle{font-size:clamp(43px,12vw,75px)}#intro .introCard{padding:28px 22px 100px}}
+
 </style>
 </head>
 <body>
@@ -321,6 +359,7 @@ body{background:#05070b}
         <button id="careerBtn" class="btn primary"><span class="big">ROAD TO GLORY</span><small>BUILD YOUR PLAYER + START YOUR JOURNEY</small></button>
         <button id="playBtn" class="btn"><b>PLAY NOW</b><small>GAME MODES • PLAY SELECTION</small></button>
         <button id="teamBtn" class="btn"><b>TEAM SELECT</b><small>FIXED • NFL / COLLEGE / HIGH SCHOOL</small></button>
+        <button id="modeMenuBtn" class="btn"><b>GAME MODES</b><small>EXHIBITION • PRACTICE • PASS + CATCH</small></button>
         <button id="howBtn" class="btn"><b>HOW TO PLAY</b><small>CONTROLS + CATCHING</small></button>
       </div>
       <div class="setup">
@@ -378,7 +417,7 @@ body{background:#05070b}
       <div class="journey"><div id="jhs">HIGH SCHOOL</div><div id="jcol">COLLEGE</div><div id="jnfl">THE LEAGUE</div></div>
     </div>
     <div class="introRight"><div class="silhouette"></div></div>
-    <div class="introBottom"><div id="introPrompt" class="introPrompt">CLICK / TAP TO CONTINUE</div><button id="introSkip" class="skip">SKIP</button></div>
+    <div class="introBottom"><div id="introPrompt" class="introPrompt">CUTSCENE 01 / 03</div><button id="introNext" class="cutsceneNext">CONTINUE →</button><button id="introSkip" class="skip">SKIP</button></div>
   </div>
 </section>
 
@@ -498,7 +537,8 @@ $("modeContinue").onclick=()=>{
  openTeams(league);
 };
 $("teamBtn").onclick=()=>openTeams(league);
-$("playBtn").onclick=()=>openModes();
+$("playBtn").onclick=()=>{ $("modeOverlay").classList.remove("open");openTeams(league); };
+$("modeMenuBtn").onclick=()=>openModes();
 $("teamClose").onclick=$("teamCancel").onclick=()=>$("teamOverlay").classList.remove("open");
 $("homeSide").onclick=()=>{pickSide="home";renderMatchup()};$("awaySide").onclick=()=>{pickSide="away";renderMatchup()};
 $("teamStart").onclick=()=>{ $("teamOverlay").classList.remove("open");startIntro(false) };
@@ -508,10 +548,11 @@ let track=0,musicStarted=false;function music(loadTrack=false){const t=tracks[tr
 
 const introScenes=[["RECRUITING CUTSCENE • 01","FRIDAY NIGHT <span>LIGHTS</span>","Your journey starts as a high-school prospect. Your name, hometown and school are part of your recruiting profile. Choose your high school in the player builder, then earn attention with your performances.","HIGH SCHOOL"],["RECRUITING CUTSCENE • 02","PICK YOUR <span>DESTINATION</span>","Offers start coming in after your high-school chapter. Build your player, choose a college path in your career story, and work toward the next level. Your high-school name is editable in the build screen.","COLLEGE"],["PRO CAREER CUTSCENE • 03","EARN YOUR <span>SHOT</span>","Make it to the league and prove you belong with passing, routes, catches, runs, weather, penalties and highlight plays.","THE LEAGUE"]];
 let introStep=0,introCareer=false;
-function showIntro(){const s=introScenes[introStep];$("introKicker").textContent=s[0];$("introTitle").innerHTML=s[1];$("introCopy").textContent=s[2];$("jhs").classList.toggle("active",introStep===0);$("jcol").classList.toggle("active",introStep===1);$("jnfl").classList.toggle("active",introStep===2);$("introPrompt").textContent=introStep===2?"CLICK / TAP TO ENTER":"CLICK / TAP TO CONTINUE"}
-function startIntro(career){introCareer=career;introStep=0;showIntro();$("intro").style.display="flex"}
-function advanceIntro(){if(introStep<2){introStep++;showIntro()}else{$("intro").style.display="none";if(introCareer)openBuild();else startGame()}}
-$("intro").onclick=e=>{if(e.target!==$("introSkip"))advanceIntro()};$("introSkip").onclick=e=>{e.stopPropagation();$("intro").style.display="none";if(introCareer)openBuild();else startGame()};
+function showIntro(){const s=introScenes[introStep];$("introKicker").textContent=s[0];$("introTitle").innerHTML=s[1];$("introCopy").textContent=s[2];$("jhs").classList.toggle("active",introStep===0);$("jcol").classList.toggle("active",introStep===1);$("jnfl").classList.toggle("active",introStep===2);$("introPrompt").textContent="CINEMATIC PRESENTATION • "+String(introStep+1).padStart(2,"0")+" / 03";$("introNext").textContent=introStep===2?(introCareer?"BUILD YOUR PLAYER →":"KICK OFF →"):"CONTINUE →";const sil=$("intro").querySelector(".silhouette");sil.style.animation="none";void sil.offsetWidth;sil.style.animation="playerEntrance .8s ease-out both";}
+function startIntro(career){introCareer=career;introStep=0;showIntro();$("intro").classList.add("open");$("intro").style.display="flex"}
+function finishIntro(){ $("intro").classList.remove("open");$("intro").style.display="none";if(introCareer)openBuild();else startGame()}
+function advanceIntro(){if(introStep<2){introStep++;showIntro()}else finishIntro()}
+$("introNext").onclick=e=>{e.stopPropagation();advanceIntro()};$("introSkip").onclick=e=>{e.stopPropagation();finishIntro()};
 
 const arch={QB:["POCKET PASSER","DUAL THREAT","FIELD GENERAL","GUNSLINGER"],RB:["ELUSIVE BACK","POWER BACK","THREE-DOWN BACK","HOME RUN"],WR:["DEEP THREAT","ROUTE ARTIST","PHYSICAL RECEIVER","SLOT PLAYMAKER"],OL:["ANCHOR","PASS PROTECTOR","MAULER","ATHLETIC LINEMAN"],DL:["EDGE RUSHER","POWER RUSHER","NOSE TACKLE","DISRUPTOR"],LB:["RUN STOPPER","FIELD GENERAL","PASS RUSHER","COVER LB"],CB:["MAN COVER","ZONE HAWK","BALL HAWK","PRESS"],S:["FREE SAFETY","STRONG SAFETY","BALL HAWK","BOX SAFETY"]};
 let buildStep=0,buildState={star:"",position:"",arch:"",story:"",name:"",town:"",school:"",number:"1",body:"ATHLETIC",style:"EXPLOSIVE"};

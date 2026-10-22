@@ -388,27 +388,77 @@ body{background:#05070b}
 .chGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.chCard{border:1px solid #ffffff20;background:#ffffff06;padding:16px;min-width:0}.chCard h3{margin:0 0 8px;font-size:13px;color:#e6a1b1;letter-spacing:.08em}.chBig{font-size:clamp(22px,3vw,36px);font-weight:1000}.chMuted{color:#aeb8c5;font-size:13px;line-height:1.5}.chButtons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chButtons button{background:#7b1a32;color:#fff;border:1px solid #c64b69;padding:10px 12px;font-weight:800}.chButtons button:disabled{opacity:.4}.chFeed{display:grid;gap:10px}.chPost{border-left:3px solid #b83252;background:#ffffff07;padding:12px 14px;line-height:1.5}.chPost small{display:block;color:#9ba8b7;margin-top:5px}.chItem{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #ffffff1b;background:#ffffff05;margin:8px 0}.chItem button{background:#202936;color:white;border:1px solid #ffffff28;padding:8px 12px}
 @media(max-width:700px){#careerHubBtn{top:auto;bottom:12px;right:12px}.chGrid{grid-template-columns:1fr}.chBody{padding:13px}.chTop{padding:12px}.chShell{max-height:96vh}}
 
+
+/* MADDEN-INSPIRED RTTL 27 MAIN MENU REDESIGN */
+#menu{background:#050608;overflow:auto;isolation:isolate}
+#menu:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,#08090dcc,#05060820 48%,#050608f5),radial-gradient(ellipse at 75% 55%,#9b19374a,transparent 45%),repeating-linear-gradient(0deg,transparent 0 69px,#ffffff06 70px 71px);z-index:-1}
+.m27-topline{height:58px;position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:16px;padding:0 28px;border-bottom:1px solid #ffffff18;background:#050608d9}
+.m27-brandmark{font-weight:1000;font-size:23px;letter-spacing:-2px}.m27-brandmark span{color:#b51f43}.m27-toplabel{font-size:10px;letter-spacing:2.5px;color:#c4c6cc;font-weight:900}.m27-toplabel i{color:#c21e46;font-style:normal}.m27-season{margin-left:auto;font-size:9px;letter-spacing:2px;color:#9ca2ac}.m27-season b{color:#fff;font-size:12px;margin-left:6px}
+#menu .menuWrap{min-height:100%;padding-top:58px;grid-template-columns:minmax(315px,34%) 1fr;background:transparent}
+#menu .left{padding:38px clamp(18px,3vw,42px) 25px;justify-content:center;background:linear-gradient(90deg,#08090df5,#0a0b0fdf);border-right:1px solid #ffffff16}
+#menu .kicker{font-size:9px;letter-spacing:2px;color:#9ca5b2;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+#menu .m27-online{color:#9ce4b0;font-size:8px;letter-spacing:1px;margin-left:auto}
+#menu .logo{font-size:clamp(42px,4.8vw,70px);letter-spacing:-3px;line-height:.86;margin:17px 0 12px;text-shadow:0 7px 30px #000}
+#menu .logo span{background:linear-gradient(180deg,#fff,#d6d7dc 55%,#a51c3c);background-clip:text;-webkit-background-clip:text;color:transparent}
+#menu .tag{font-size:10px;letter-spacing:2px;line-height:1.5;color:#aab0ba}
+#menu .actions{grid-template-columns:1fr 1fr;gap:7px;margin-top:19px}
+#menu .btn{padding:13px 12px;border-radius:2px;background:linear-gradient(120deg,#16191f,#0e1015);border:1px solid #ffffff19;letter-spacing:.6px;min-width:0}
+#menu .btn b{font-size:11px;display:flex;justify-content:space-between;gap:4px}#menu .btn b span{color:#cf3457}
+#menu .btn small{font-size:8px;letter-spacing:.5px;line-height:1.4;color:#9ba2ac}
+#menu .btn:hover,#menu .btn:focus{background:linear-gradient(110deg,#9e1737,#4d0b1d);border-color:#e3a0b0;transform:translateY(-2px)}
+#menu .btn.primary{grid-row:auto;grid-column:1 / -1;min-height:82px;padding:15px 16px;background:linear-gradient(110deg,#a51b3c,#4c0c1d 70%,#151116);justify-content:center}
+#menu .btn.primary .big{font-size:22px;letter-spacing:1px}
+#menu .btn.primary:after{right:15px;top:-65px;width:90px;height:180px}
+#menu .setup{margin-top:15px;padding:11px 12px;background:#ffffff05;border:1px solid #ffffff18;border-radius:2px}
+#menu .setupTitle{font-size:8px;letter-spacing:1.8px;color:#a7adb7}
+#menu .league{padding:8px 10px!important;font-size:8px!important;letter-spacing:.8px}
+#menu .status{font-size:8px;color:#b5bac3}
+#menu .hero{position:relative;right:auto;bottom:auto;width:auto;height:auto;min-height:calc(100vh - 58px);pointer-events:none;filter:none;overflow:hidden;background:radial-gradient(ellipse at 70% 42%,#77132c4d,transparent 42%),linear-gradient(125deg,#111218 0%,#090a0f 55%,#150810 100%)}
+#menu .hero:before{inset:0;width:100%;height:100%;background:repeating-linear-gradient(90deg,transparent 0 52px,#ffffff08 53px 54px),linear-gradient(180deg,#ffffff04,transparent 35%,#0009);clip-path:none;opacity:1}
+#menu .hero:after{content:"27";right:4%;top:7%;font-size:clamp(100px,22vw,290px);letter-spacing:-15px;color:#ffffff08;transform:none;z-index:0}
+#menu .heroGlow{right:4%;bottom:5%;width:80%;height:20%;background:#a5193c55;filter:blur(65px)}
+#menu .heroPlayer{right:5%;bottom:0;width:min(47%,490px);height:83%;background:linear-gradient(145deg,#3c414b,#171a22 38%,#090a0f 70%);clip-path:polygon(28% 0,72% 0,85% 9%,94% 24%,100% 100%,0 100%,6% 24%,15% 9%);filter:drop-shadow(-25px 20px 45px #000);border:1px solid #ffffff1c}
+#menu .heroPlayer:before{content:"";position:absolute;left:14%;right:14%;top:7%;height:13%;border-radius:40% 40% 10% 10%;background:linear-gradient(180deg,#17191f,#050609);border:2px solid #a5a9b2;box-shadow:0 0 0 7px #ffffff09}
+#menu .heroPlayer:after{content:"";position:absolute;left:23%;right:23%;top:23%;height:40%;background:repeating-linear-gradient(180deg,transparent 0 23px,#ffffff1c 24px 26px);border-top:2px solid #a31b3b;border-bottom:2px solid #a31b3b;font-size:0}
+.m27-player-number{position:absolute;z-index:2;top:35%;left:0;right:0;text-align:center;font-size:clamp(60px,10vw,125px);font-weight:1000;letter-spacing:-8px;color:#ffffffd9;text-shadow:0 8px 20px #000}
+.m27-player-jersey{position:absolute;z-index:2;top:56%;left:0;right:0;text-align:center;font-size:13px;letter-spacing:5px;font-weight:1000;color:#d8d9df}
+.m27-stadium-grid{position:absolute;inset:0;background:linear-gradient(90deg,#07080a00 50%,#05060835),repeating-linear-gradient(0deg,transparent 0 34px,#ffffff08 35px 36px);opacity:.6}
+.m27-hero-copy{position:relative;z-index:3;padding:clamp(70px,10vh,115px) 5% 100px;width:68%;pointer-events:none}
+.m27-eyebrow{font-size:10px;letter-spacing:4px;font-weight:1000;color:#e45a78}
+.m27-hero-title{font-size:clamp(54px,8vw,112px);line-height:.83;font-weight:1000;letter-spacing:-5px;margin:20px 0;text-shadow:0 10px 40px #000}
+.m27-hero-title span{color:#c3284c}
+.m27-hero-desc{font-size:clamp(11px,1.2vw,14px);line-height:1.8;max-width:390px;color:#c1c5ce}
+.m27-feature-row{display:flex;gap:clamp(12px,2vw,30px);margin-top:32px;border-top:1px solid #ffffff2b;padding-top:17px}
+.m27-feature-row div{display:flex;gap:8px;align-items:flex-start}.m27-feature-row b{font-size:18px;color:#d12b50}.m27-feature-row span{font-size:8px;line-height:1.5;letter-spacing:1px;color:#d2d4da;font-weight:900}
+.m27-hero-stamp{margin-top:30px;font-size:13px;font-weight:1000;letter-spacing:2px;color:#ffffffd0}.m27-hero-stamp b{color:#d62b50}.m27-hero-stamp small{display:block;margin-top:5px;font-size:8px;letter-spacing:2px;color:#858b96}
+.m27-bottomline{position:absolute;bottom:0;left:0;right:0;z-index:4;display:flex;justify-content:space-between;gap:12px;padding:15px 24px;border-top:1px solid #ffffff19;background:#050608bd;font-size:8px;letter-spacing:1.5px;color:#8c929d;font-weight:900}.m27-bottomline b{color:#d42c50;margin-left:8px}
+#menu .music{top:70px;right:16px;transform:scale(.88);transform-origin:top right}
+#menu .musicPlayer{top:125px}
+@media(max-width:850px){#menu .menuWrap{grid-template-columns:minmax(280px,42%) 1fr}#menu .left{padding:25px 15px}.m27-hero-copy{width:80%;padding-top:90px}.m27-hero-title{letter-spacing:-3px}#menu .heroPlayer{right:-5%;width:48%;opacity:.75}.m27-feature-row{flex-wrap:wrap}.m27-toplabel{font-size:8px;letter-spacing:1px}}
+@media(max-width:620px){.m27-topline{height:48px;padding:0 12px;gap:8px}.m27-brandmark{font-size:18px}.m27-toplabel{max-width:180px;line-height:1.3}.m27-season{font-size:8px}#menu .menuWrap{padding-top:48px;display:flex;flex-direction:column}#menu .left{padding:22px 16px 16px;border-right:0;border-bottom:1px solid #ffffff20}#menu .logo{font-size:46px;margin:12px 0}#menu .actions{margin-top:13px}#menu .btn{padding:11px 10px}#menu .btn.primary{min-height:70px}#menu .setup{margin-top:10px}#menu .hero{min-height:500px}#menu .music{top:54px;right:8px;transform:scale(.75)}#menu .musicPlayer{top:104px;right:8px} .m27-hero-copy{padding:65px 18px 90px;width:88%}.m27-hero-title{font-size:64px}.m27-hero-desc{max-width:270px}.m27-feature-row{gap:12px;margin-top:22px}.m27-feature-row span{font-size:7px}#menu .heroPlayer{height:58%;width:55%;right:-12%;opacity:.55}.m27-bottomline{padding:11px 12px;font-size:7px;letter-spacing:.5px}.m27-bottomline span:last-child{display:none}}
+
 </style>
 </head>
 <body>
 <div id="app"></div>
 
 <section id="menu" class="screen dark">
-  <div class="music"><span class="musicDot"></span><div><div id="musicSong" class="musicSong"></div><div id="musicDate" class="musicDate"></div></div><button id="musicPlay">PLAY MUSIC</button><button id="musicShuffle">SHUFFLE</button></div><div id="musicPlayerPanel" class="musicPlayer"><iframe id="musicFrame" title="2000s R&amp;B music player" src="https://www.youtube-nocookie.com/embed/H64QG4UsrGI?autoplay=0&controls=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="musicHint">2000s R&amp;B ROTATION • USE THE PLAYER CONTROLS FOR PLAY / PAUSE</div><div class="musicBtns"><button id="musicPrev">PREVIOUS</button><button id="musicNext">NEXT TRACK ↗</button></div></div>
+  <div class="m27-topline"><div class="m27-brandmark">RT<span>27</span></div><div class="m27-toplabel">ROAD TO THE LEAGUE <i>•</i> FOOTBALL CAREER UNIVERSE</div><div class="m27-season">SEASON <b>2026</b></div></div>
+  <div class="music"><span class="musicDot"></span><div><div id="musicSong" class="musicSong"></div><div id="musicDate" class="musicDate"></div></div><button id="musicPlay">PLAY MUSIC</button><button id="musicShuffle">SHUFFLE</button></div><div id="musicPlayerPanel" class="musicPlayer"><iframe id="musicFrame" title="2000s R&amp;B music player" src="https://www.youtube-nocookie.com/embed/H64QG4UsrGI?autoplay=0&amp;controls=1&amp;rel=0&amp;modestbranding=1" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="musicHint">2000s R&amp;B ROTATION • USE THE PLAYER CONTROLS FOR PLAY / PAUSE</div><div class="musicBtns"><button id="musicPrev">PREVIOUS</button><button id="musicNext">NEXT TRACK ↗</button></div></div>
   <div class="menuWrap">
     <div class="left">
-      <div class="kicker"><span class="dot"></span>ROAD TO THE LEAGUE 27 • NEXT-GEN FOOTBALL</div>
+      <div class="kicker"><span class="dot"></span>MAIN MENU <span class="m27-online">● READY TO PLAY</span></div>
       <div class="logo">ROAD TO<br><span>THE LEAGUE</span></div>
-      <div class="tag">BUILD YOUR PLAYER. START UNDER THE FRIDAY-NIGHT LIGHTS. EARN YOUR OFFER. TAKE OVER COLLEGE. CHASE THE LEAGUE.</div>
+      <div class="tag">YOUR CAREER. YOUR TEAM. YOUR LEGACY.</div>
       <div class="actions">
-        <button id="careerBtn" class="btn primary"><span class="big">SUPERSTAR: THE LEAGUE</span><small>COMBINE • BUILD YOUR PLAYER • EARN YOUR SHOT</small></button>
-        <button id="playBtn" class="btn"><b>PLAY NOW</b><small>GAME MODES • PLAY SELECTION</small></button>
-        <button id="teamBtn" class="btn"><b>TEAM SELECT</b><small>FIXED • NFL / COLLEGE / HIGH SCHOOL</small></button>
-        <button id="modeMenuBtn" class="btn"><b>GAME MODES</b><small>EXHIBITION • PRACTICE • PASS + CATCH</small></button>
-        <button id="howBtn" class="btn"><b>HOW TO PLAY</b><small>CONTROLS + CATCHING</small></button>
+        <button id="careerBtn" class="btn primary"><span class="big">SUPERSTAR</span><small>THE LEAGUE • BUILD YOUR LEGACY</small></button>
+        <button id="playBtn" class="btn"><b>PLAY NOW <span>↗</span></b><small>JUMP INTO A MATCH</small></button>
+        <button id="teamBtn" class="btn"><b>TEAM SELECT <span>↗</span></b><small>CHOOSE YOUR SIDES</small></button>
+        <button id="modeMenuBtn" class="btn"><b>GAME MODES <span>↗</span></b><small>EXHIBITION • PRACTICE</small></button>
+        <button id="howBtn" class="btn"><b>HOW TO PLAY <span>↗</span></b><small>CONTROLS &amp; GAMEPLAY</small></button>
       </div>
       <div class="setup">
-        <div class="setupTitle">QUICK TEAM SETUP — CLICK A LEAGUE TO LOAD THE HOME + AWAY TEAMS</div>
+        <div class="setupTitle">QUICK LEAGUE SETUP</div>
         <div class="leagueRow">
           <button class="league active" data-league="NFL">NFL</button>
           <button class="league" data-league="COLLEGE">COLLEGE</button>
@@ -417,7 +467,10 @@ body{background:#05070b}
         <div id="menuStatus" class="status">NFL TEAMS READY</div>
       </div>
     </div>
-    <div class="hero"><div class="heroGlow"></div><div class="heroPlayer"></div></div>
+    <div class="hero">
+      <div class="m27-stadium-grid"></div><div class="heroGlow"></div><div class="m27-hero-copy"><div class="m27-eyebrow">THE NEXT SNAP STARTS HERE</div><div class="m27-hero-title">OWN<br><span>THE FIELD.</span></div><div class="m27-hero-desc">From Friday-night lights to the pros. Build your player, make the roster, and write your own football story.</div><div class="m27-feature-row"><div><b>01</b><span>CREATE YOUR<br>SUPERSTAR</span></div><div><b>02</b><span>CHOOSE YOUR<br>DESTINATION</span></div><div><b>03</b><span>MAKE YOUR<br>LEGACY</span></div></div><div class="m27-hero-stamp">RTTL <b>27</b><small>CAREER MODE • GAME DAY</small></div></div>
+      <div class="heroPlayer"><div class="m27-player-number">7</div><div class="m27-player-jersey">RTTL</div></div><div class="m27-bottomline"><span>FRIDAY NIGHT. SATURDAY AFTERNOON. SUNDAY LEGEND.</span><span>BUILT FOR THE NEXT PLAY <b>▶</b></span></div>
+    </div>
   </div>
 </section>
 

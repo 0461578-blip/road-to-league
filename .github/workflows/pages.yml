@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "3d.html"
+      - ".github/workflows/pages.yml"
       - ".github/workflows/godot-web.yml"
   workflow_dispatch:
 permissions:

@@ -529,6 +529,62 @@ button{transition:background .16s,border-color .16s,transform .16s}
 button:focus-visible{outline:2px solid #ff9a7f;outline-offset:2px}
 @media(max-width:760px){.menuWrap{grid-template-columns:minmax(0,1fr)}.left{padding:32px 22px}.hero{min-height:35vh}}
 </style>
+<style id="ufb-playgo-clean">
+/* UFB Play Go-inspired clean front end: keep the existing player art and gameplay. */
+#menu{background:#080b10!important;color:#fff}
+#menu .m27-topline{background:#080b10;border-bottom:1px solid #ffffff16}
+#menu .m27-toplabel{letter-spacing:1.4px}
+#menu .menuWrap{grid-template-columns:minmax(290px,38%) 1fr;background:linear-gradient(90deg,#080b10 0%,#0b1018e8 42%,#05070a30 100%)}
+#menu .left{padding:clamp(22px,3.5vw,52px);max-width:650px}
+#menu .kicker{font-size:10px;letter-spacing:2px}
+#menu .logo{font-size:clamp(40px,4.2vw,62px);line-height:.94;letter-spacing:-2px;margin:18px 0}
+#menu .tag{font-size:10px;letter-spacing:1.5px;color:#aab5c4}
+#menu .actions{display:grid;grid-template-columns:1fr;gap:9px;margin:24px 0}
+#menu .btn{min-height:54px;padding:13px 16px;border-radius:8px;background:#151c27;border:1px solid #ffffff1b;text-align:left;transition:background .15s,border-color .15s,transform .15s}
+#menu .btn b,#menu .btn .big{font-size:13px;letter-spacing:1.1px}
+#menu .btn small{font-size:9px}
+#menu .btn.primary{background:#d7ff38;color:#11170a;border-color:#d7ff38}
+#menu .btn.primary small{color:#29330d}
+#menu .btn:hover{transform:translateX(3px);border-color:#d7ff38;background:#202a37}
+#menu .btn.primary:hover{background:#e5ff85}
+#menu .setup{display:none!important}
+#menu .music{display:none!important}
+#menu .m27-hero-copy{max-width:470px}
+#menu .m27-eyebrow{letter-spacing:2px}
+#menu .m27-hero-title{font-size:clamp(48px,7vw,96px);line-height:.88}
+#menu .m27-hero-desc{max-width:330px}
+#menu .m27-feature-row{display:none!important}
+#menu .m27-hero-stamp{display:none!important}
+#menu .heroPlayer{filter:drop-shadow(0 16px 24px #0009)}
+#menu .m27-bottomline{font-size:8px;letter-spacing:1px}
+#modeOverlay .modeShell{background:#090d13;border:1px solid #ffffff20;border-radius:14px}
+#modeOverlay .modeTitle{letter-spacing:-1px}
+#modeOverlay .modeSub{max-width:500px;line-height:1.5}
+#modeOverlay .modeGrid{gap:10px}
+#modeOverlay .modeCard{border-radius:10px;background:#131b26;border:1px solid #ffffff1c;min-height:128px}
+#modeOverlay .modeCard.selected{border-color:#d7ff38;box-shadow:inset 0 0 0 1px #d7ff38;background:#1a241a}
+#modeOverlay .modeIcon{color:#d7ff38}
+#modeOverlay .modeCard strong{letter-spacing:.6px}
+#modeOverlay .modeContinue,#modeOverlay #modeContinue{background:#d7ff38;color:#11170a}
+@media(max-width:760px){
+ #menu .menuWrap{display:flex;flex-direction:column;min-height:100%}
+ #menu .left{padding:22px 18px 14px;border:0;background:#080b10}
+ #menu .logo{font-size:44px;margin:12px 0}
+ #menu .actions{grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+ #menu .btn{min-height:54px;padding:10px}
+ #menu .btn b,#menu .btn .big{font-size:11px}
+ #menu .btn small{font-size:8px}
+ #menu .hero{min-height:38vh;width:100%;right:0;opacity:1}
+ #menu .m27-hero-copy{left:18px;top:14%;max-width:56%}
+ #menu .m27-hero-title{font-size:clamp(38px,10vw,60px)}
+ #menu .m27-hero-desc{font-size:10px}
+ #menu .heroPlayer{right:0;transform:scale(.8);transform-origin:bottom right}
+ #menu .m27-bottomline{display:none}
+ #modeOverlay .modeShell{margin:12px;padding:18px}
+ #modeOverlay .modeGrid{grid-template-columns:1fr}
+ #modeOverlay .modeCard{min-height:94px}
+}
+</style>
 </head>
 <body>
 <div id="app"></div>
@@ -809,7 +865,7 @@ document.querySelectorAll(".league,.teamMode").forEach(b=>b.onclick=()=>openTeam
 let selectedGameMode="EXHIBITION";
 let oneVOneMode=false;
 const modeDescriptions={ONEVONE:"1v1 selected • one WR versus one DB. Choose teams and take the matchup to the field.",EXHIBITION:"Exhibition selected • pick teams and kick off.",PRACTICE:"Practice selected • focus on movement and play reps.",PASSING:"Pass + Catch Lab selected • work on throw timing, receiver control and catch timing.",CAREER:"Road to Glory selected • player creation opens next."};
-function openModes(){ $("modeOverlay").classList.add("open");$("menu").style.display="block"; }
+function openModes(){ $("menu").style.display="block";$("modeOverlay").classList.add("open");selectGameMode(selectedGameMode||"EXHIBITION"); }
 function selectGameMode(mode){selectedGameMode=mode;document.querySelectorAll(".modeCard").forEach(b=>b.classList.toggle("selected",b.dataset.mode===mode));$("modeDescription").textContent=modeDescriptions[mode]||modeDescriptions.EXHIBITION;}
 document.querySelectorAll(".modeCard").forEach(b=>b.onclick=()=>selectGameMode(b.dataset.mode));
 $("modeClose").onclick=()=> $("modeOverlay").classList.remove("open");
@@ -824,7 +880,7 @@ $("modeContinue").onclick=()=>{
  openTeams(league);
 };
 $("teamBtn").onclick=()=>openTeams(league);
-$("playBtn").onclick=()=>{ $("modeOverlay").classList.remove("open");openTeams(league); };
+$("playBtn").onclick=()=>{openModes();};
 $("modeMenuBtn").onclick=()=>openModes();
 $("teamClose").onclick=$("teamCancel").onclick=()=>$("teamOverlay").classList.remove("open");
 $("homeSide").onclick=()=>{pickSide="home";renderMatchup()};$("awaySide").onclick=()=>{pickSide="away";renderMatchup()};

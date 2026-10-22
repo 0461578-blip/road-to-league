@@ -1200,19 +1200,37 @@ function updateHomeFieldBranding(){
 }
 function startGame(forceStart=false){
   if(!forceStart&&!coinTossDone){showCoinToss();return}
-  if(typeof THREE==="undefined"){
-    const status=$("toast");status.textContent="LOADING 3D ENGINE…";status.style.display="block";
-    const trySources=["https://unpkg.com/three@0.159.0/build/three.min.js","https://cdnjs.cloudflare.com/ajax/libs/three.js/r159/three.min.js"];
-    const loadFallback=(i)=>{if(i>=trySources.length){status.textContent="3D ENGINE DID NOT LOAD. CHECK YOUR CONNECTION, THEN RELOAD.";status.style.display="block";return}
-      const sc=document.createElement("script");sc.src=trySources[i];sc.onload=()=>{status.style.display="none";startGame(forceStart)};sc.onerror=()=>{sc.remove();loadFallback(i+1)};document.head.appendChild(sc)};
-    loadFallback(0);return;
-  }
-  gameStarted=true;
-  $("menu").style.display="none";
-  $("modeOverlay").classList.remove("open");$("teamOverlay").classList.remove("open");if($("practiceSelect"))$("practiceSelect").classList.remove("open");
-  $("hud").style.display="block";$("score").style.display="block";
-  $("actions").style.display="flex";$("footballControls").style.display="block";$("firstDownLegend").style.display="none";$("presnap").style.display="block";$("snapBar").style.display="none";
+  const startupStatus=$("toast");
+  const hideSetupOverlays=()=>{
+    ["modeOverlay","teamOverlay","practiceSelect","intro"].forEach(id=>{const el=$(id);if(el){el.classList.remove("open");el.style.display="none"}});
+    const toss=$("coinTossScene");if(toss)toss.style.display="none";
+  };
   try{
+    if(typeof THREE==="undefined"){
+      if(startGame._loadingEngine){if(startupStatus){startupStatus.textContent="LOADING 3D ENGINE…";startupStatus.style.display="block"}return}
+      startGame._loadingEngine=true;
+      if(startupStatus){startupStatus.textContent="LOADING 3D ENGINE…";startupStatus.style.display="block"}
+      const trySources=["https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js","https://unpkg.com/three@0.159.0/build/three.min.js","https://cdnjs.cloudflare.com/ajax/libs/three.js/r159/three.min.js"];
+      const loadFallback=(i)=>{
+        if(i>=trySources.length){
+          startGame._loadingEngine=false;
+          if(startupStatus){startupStatus.textContent="3D ENGINE FAILED TO LOAD. CHECK CONNECTION OR RELOAD.";startupStatus.style.display="block"}
+          showStartupError("The 3D engine could not load from any backup address. Check the internet connection and reload the page.");
+          return;
+        }
+        const sc=document.createElement("script");sc.src=trySources[i];sc.async=true;
+        sc.onload=()=>{startGame._loadingEngine=false;if(typeof THREE==="undefined"){sc.remove();loadFallback(i+1)}else{if(startupStatus)startupStatus.style.display="none";startGame(true)}};
+        sc.onerror=()=>{sc.remove();loadFallback(i+1)};
+        document.head.appendChild(sc);
+      };
+      loadFallback(0);return;
+    }
+    gameStarted=true;
+    $("menu").style.display="none";
+    hideSetupOverlays();
+    $("hud").style.display="block";$("score").style.display="block";
+    $("actions").style.display="flex";$("footballControls").style.display="block";
+    $("firstDownLegend").style.display="none";$("presnap").style.display="block";$("snapBar").style.display="none";
     if(!scene||!renderer)makeScene();
     updateHomeFieldBranding();setFormation();
     const modeLabel=selectedGameMode==="PASSING"?"PASS + CATCH LAB":selectedGameMode==="PRACTICE"?"PRACTICE":selectedGameMode==="CAREER"?"ROAD TO GLORY":"EXHIBITION";
@@ -1220,17 +1238,24 @@ function startGame(forceStart=false){
     $("fieldLabel").textContent=modeLabel+" • "+home.toUpperCase()+" HOME FIELD";
     if(selectedGameMode==="PASSING")toast("PASS + CATCH LAB • TIME YOUR THROW, SWITCH TO A RECEIVER, PRESS C TO CATCH");
     else if(selectedGameMode==="PRACTICE")toast("PRACTICE • PICK A PLAY, HIKE THE BALL, RESET AND RUN IT BACK");
+    const errPanel=$("gameLoadError");if(errPanel)errPanel.remove();
   }catch(err){
     gameStarted=false;console.error("Road to the League start failure:",err);
-    $("hud").style.display="none";$("score").style.display="none";$("actions").style.display="none";$("footballControls").style.display="none";$("menu").style.display="none";
-    let panel=$("gameLoadError");
-    if(!panel){panel=document.createElement("div");panel.id="gameLoadError";panel.style.cssText="position:fixed;z-index:300;inset:0;display:grid;place-items:center;background:#060a11;color:#fff;font:600 16px Arial;padding:24px;text-align:center";document.body.appendChild(panel)}
-    panel.innerHTML='<div style="max-width:560px;background:#111925;border:1px solid #536273;padding:28px;border-radius:14px"><h2 style="margin-top:0;color:#ff754f">GAME START FAILED</h2><p>The game could not initialize its 3D field. Try retrying or return to the menu.</p><p style="color:#9ca9ba;font-size:12px;overflow-wrap:anywhere"></p><button id="retryGameStart" style="padding:12px 20px;background:#f05b3d;color:#fff;border:0;font-weight:900;cursor:pointer">RETRY GAME</button> <button id="returnGameMenu" style="padding:12px 20px;background:#273447;color:#fff;border:0;font-weight:900;cursor:pointer">MAIN MENU</button></div>';
-    panel.querySelector("p:nth-of-type(2)").textContent=String(err&&err.message||err||"Unknown engine error");
-    $("retryGameStart").onclick=()=>{panel.remove();startGame(true)};
-    $("returnGameMenu").onclick=()=>{panel.remove();$("menu").style.display="block"};
+    ["hud","score","actions","footballControls","presnap","snapBar"].forEach(id=>{const el=$(id);if(el)el.style.display="none"});
+    $("menu").style.display="none";
+    showStartupError(String(err&&err.stack||err&&err.message||err||"Unknown engine error"));
   }
 }
+function showStartupError(message){
+  let panel=$("gameLoadError");
+  if(!panel){panel=document.createElement("div");panel.id="gameLoadError";panel.style.cssText="position:fixed;z-index:99999;inset:0;display:grid;place-items:center;background:#060a11;color:#fff;font:600 16px Arial;padding:24px;text-align:center";document.body.appendChild(panel)}
+  panel.style.display="grid";
+  panel.innerHTML='<div style="max-width:600px;width:100%;background:#111925;border:1px solid #536273;padding:28px;border-radius:14px"><h2 style="margin-top:0;color:#ff754f">GAME START FAILED</h2><p>The game hit a startup error instead of silently returning to the main menu.</p><pre id="gameStartErrorDetail" style="white-space:pre-wrap;text-align:left;color:#ffd3c7;font-size:12px;max-height:32vh;overflow:auto;overflow-wrap:anywhere"></pre><button id="retryGameStart" style="padding:12px 20px;background:#f05b3d;color:#fff;border:0;font-weight:900;cursor:pointer">RETRY GAME</button> <button id="returnGameMenu" style="padding:12px 20px;background:#273447;color:#fff;border:0;font-weight:900;cursor:pointer">MAIN MENU</button></div>';
+  $("gameStartErrorDetail").textContent=String(message||"No error details were provided").slice(0,5000);
+  $("retryGameStart").onclick=()=>{panel.remove();startGame(true)};
+  $("returnGameMenu").onclick=()=>{panel.remove();gameStarted=false;$("menu").style.display="block"};
+}
+
 let coinTossDone=false;
 function showCoinToss(){
  let modal=$("coinTossScene");

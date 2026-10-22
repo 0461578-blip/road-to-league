@@ -373,6 +373,21 @@ body{background:#05070b}
 .ssResult{padding:14px;border:1px solid #ffffff20;background:#ffffff08;line-height:1.5}
 @media(max-width:760px){.ssShell{grid-template-columns:1fr}.ssRight{min-height:180px;grid-row:1}.ssAthlete{height:88%;width:36%}.ssDrills{grid-template-columns:1fr}.ssLeft{padding:22px}.ssTitle{font-size:38px}}
 
+
+/* Integrated career hub: available from the actual gameplay HUD */
+#careerHubBtn{display:none;position:fixed;z-index:90;top:12px;right:12px;border:1px solid #d84b6d;background:#70162b;color:#fff;padding:11px 14px;font-weight:900;letter-spacing:.06em;box-shadow:0 8px 28px #0008}
+#careerHubBtn:hover{background:#a52645}
+#careerHub{position:fixed;inset:0;z-index:220;display:none;align-items:center;justify-content:center;padding:14px;background:radial-gradient(ellipse at 75% 20%,#74172b66,transparent 40%),#03060bed;color:#fff;font-family:Arial,Helvetica,sans-serif;overflow:auto}
+#careerHub.open{display:flex}
+.chShell{width:min(1120px,100%);max-height:94vh;overflow:auto;background:#0c1119;border:1px solid #ffffff2b;box-shadow:0 28px 90px #000b}
+.chTop{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;background:#0b0f16f5;border-bottom:1px solid #ffffff1c}
+.chBrand{font-weight:1000;letter-spacing:.06em}.chBrand span{color:#df5374}.chClose{background:#ffffff12;border:1px solid #ffffff2a;color:white;padding:9px 13px}
+.chTabs{display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid #ffffff15}
+.chTabs button{background:#ffffff08;color:#dce2e9;border:1px solid #ffffff20;padding:10px 12px;font-weight:800}.chTabs button.active{background:#7c1a32;border-color:#d84b6d;color:#fff}
+.chBody{padding:20px}.chPanel{display:none}.chPanel.active{display:block}
+.chGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.chCard{border:1px solid #ffffff20;background:#ffffff06;padding:16px;min-width:0}.chCard h3{margin:0 0 8px;font-size:13px;color:#e6a1b1;letter-spacing:.08em}.chBig{font-size:clamp(22px,3vw,36px);font-weight:1000}.chMuted{color:#aeb8c5;font-size:13px;line-height:1.5}.chButtons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chButtons button{background:#7b1a32;color:#fff;border:1px solid #c64b69;padding:10px 12px;font-weight:800}.chButtons button:disabled{opacity:.4}.chFeed{display:grid;gap:10px}.chPost{border-left:3px solid #b83252;background:#ffffff07;padding:12px 14px;line-height:1.5}.chPost small{display:block;color:#9ba8b7;margin-top:5px}.chItem{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #ffffff1b;background:#ffffff05;margin:8px 0}.chItem button{background:#202936;color:white;border:1px solid #ffffff28;padding:8px 12px}
+@media(max-width:700px){#careerHubBtn{top:auto;bottom:12px;right:12px}.chGrid{grid-template-columns:1fr}.chBody{padding:13px}.chTop{padding:12px}.chShell{max-height:96vh}}
+
 </style>
 </head>
 <body>
@@ -531,6 +546,60 @@ body{background:#05070b}
   </div>
 </section>
 
+
+<button id="careerHubBtn">SUPERSTAR HUB</button>
+<section id="careerHub">
+ <div class="chShell">
+  <div class="chTop"><div><div class="chBrand">ROAD TO THE LEAGUE <span>• SUPERSTAR</span></div><div class="chMuted" id="chSubline">CAREER DASHBOARD</div></div><button id="chClose" class="chClose">RESUME GAME ×</button></div>
+  <div class="chTabs">
+   <button class="active" data-chtab="profile">PLAYER PROFILE</button><button data-chtab="practice">WEEKLY PREP</button><button data-chtab="gear">GEAR STORE</button><button data-chtab="media">MEDIA ROOM</button><button data-chtab="progress">PROGRESSION</button>
+  </div>
+  <div class="chBody">
+   <div class="chPanel active" data-chpanel="profile">
+    <div class="chGrid">
+     <div class="chCard"><h3>SUPERSTAR</h3><div class="chBig" id="chName">YOUR PLAYER</div><div class="chMuted" id="chBuild">POSITION • ARCHETYPE</div></div>
+     <div class="chCard"><h3>CAREER PROGRESSION</h3><div class="chBig" id="chXP">0 XP</div><div class="chMuted" id="chSkill">0 Skill Points • Week 1</div></div>
+     <div class="chCard"><h3>TEAMMATE GRADE</h3><div class="chBig" id="chGrade">B</div><div class="chMuted" id="chPersona">Team-First • Build your reputation</div></div>
+    </div>
+    <div class="chCard" style="margin-top:12px"><h3>CAREER OBJECTIVE</h3><div id="chObjective">Win your reps, complete assignments, and build your path to the next level.</div><div class="chButtons"><button id="chOpenPractice">PREPARE FOR THIS WEEK</button><button id="chOpenMedia">CHECK THE MEDIA</button></div></div>
+   </div>
+   <div class="chPanel" data-chpanel="practice">
+    <h2>WEEKLY STRATEGY & PRACTICE</h2><p class="chMuted">Choose a drill before your next game. Better results award more XP, skill points, and a temporary performance boost.</p>
+    <div class="chGrid">
+     <button class="chCard" data-chdrill="Target Passing"><h3>TARGET PASSING</h3><div class="chBig">QB</div><div class="chMuted">Accuracy, timing, reads, and decision-making.</div></button>
+     <button class="chCard" data-chdrill="Route Running"><h3>ROUTE RUNNING</h3><div class="chBig">WR</div><div class="chMuted">Release, separation, footwork, and catch timing.</div></button>
+     <button class="chCard" data-chdrill="Position Fundamentals"><h3>POSITION FUNDAMENTALS</h3><div class="chBig">ALL</div><div class="chMuted">Blocking, tackling, coverage, and assignment discipline.</div></button>
+    </div>
+    <div class="chCard" style="margin-top:12px" id="chPracticeResult">Choose a drill to earn a result.</div>
+    <div class="chButtons"><button id="chNextWeek">ADVANCE TO NEXT WEEK</button></div>
+   </div>
+   <div class="chPanel" data-chpanel="gear">
+    <h2>GEAR STORE</h2><p class="chMuted">Choose a real-world brand style. These are text-based cosmetic selections; no official licensed 3D gear assets are included.</p>
+    <div id="chGearItems">
+     <div class="chItem"><div><b>Nike Vapor</b><div class="chMuted">Lightweight speed look • gloves and cleats</div></div><button data-gear="Nike Vapor">EQUIP</button></div>
+     <div class="chItem"><div><b>Jordan Football</b><div class="chMuted">Statement cleats • bold tunnel style</div></div><button data-gear="Jordan Football">EQUIP</button></div>
+     <div class="chItem"><div><b>Oakley Visor</b><div class="chMuted">Tinted visor look • helmet style description</div></div><button data-gear="Oakley Visor">EQUIP</button></div>
+     <div class="chItem"><div><b>Classic Team Issue</b><div class="chMuted">Clean standard uniform</div></div><button data-gear="Classic Team Issue">EQUIP</button></div>
+    </div>
+    <div class="chCard" id="chGearStatus">Equipped: Classic Team Issue</div>
+   </div>
+   <div class="chPanel" data-chpanel="media">
+    <h2>MEDIA ROOM</h2><p class="chMuted">Commentary and social reactions are fictionalized in-game simulation, not real quotes or actual breaking news.</p>
+    <div class="chFeed" id="chMediaFeed"></div>
+    <div class="chButtons"><button id="chRefreshMedia">REFRESH REACTIONS</button></div>
+   </div>
+   <div class="chPanel" data-chpanel="progress">
+    <h2>PROGRESSION & ABILITIES</h2>
+    <div class="chGrid">
+     <div class="chCard"><h3>SKILL POINTS</h3><div class="chBig" id="chSkillBig">0</div><div class="chMuted">Earn points through practice and on-field reps.</div><div class="chButtons"><button data-upgrade="speed">SPEED +1</button><button data-upgrade="hands">HANDS +1</button><button data-upgrade="awareness">AWARENESS +1</button></div></div>
+     <div class="chCard"><h3>PLAYER BUILD</h3><div class="chBig" id="chOVR">OVR 65</div><div class="chMuted" id="chAttributes">Speed 70 • Hands 70 • Awareness 65</div></div>
+     <div class="chCard"><h3>ABILITIES</h3><div class="chBig" id="chAbilities">Developing</div><div class="chMuted">Unlock-style ability labels are simulated progression, not official Madden ratings.</div></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
 <div id="hud"></div><div id="fieldLabel" class="fieldLabel">PRO FOOTBALL • GAME DAY</div>
 <div id="routeLegend" class="routeLegend"><b>ROUTES</b><br>1 WR • GO &nbsp; 2 WR • POST<br>3 SLOT • SLANT &nbsp; RB • CHECK</div>
 <div id="presnap" class="presnap"><div class="maddenHeader"><span>OFFENSIVE PLAY CALL</span><span id="playClockLabel">PLAY CLOCK • 25</span></div><div class="playButtons maddenPlayButtons"><button data-play="HB ISO"><b>01</b><span>HB ISO</span><small>RUN</small></button><button data-play="HB SWEEP"><b>02</b><span>HB SWEEP</span><small>RUN</small></button><button data-play="HB DIVE"><b>03</b><span>HB DIVE</span><small>RUN</small></button><button data-play="HB STRETCH"><b>04</b><span>HB STRETCH</span><small>RUN</small></button><button data-play="SLANTS"><b>05</b><span>SLANTS</span><small>PASS</small></button><button data-play="MESH"><b>06</b><span>MESH</span><small>PASS</small></button><button data-play="QUICK OUTS"><b>07</b><span>QUICK OUTS</span><small>PASS</small></button><button data-play="CURLS"><b>08</b><span>CURLS</span><small>PASS</small></button><button data-play="PA CROSSERS"><b>09</b><span>PA CROSSERS</span><small>PLAY ACTION</small></button><button data-play="PA BOOT"><b>10</b><span>PA BOOT</span><small>PLAY ACTION</small></button><button data-play="SCREEN"><b>11</b><span>SCREEN</span><small>PASS</small></button><button data-play="4 VERTICALS"><b>12</b><span>4 VERTICALS</span><small>DEEP PASS</small></button></div><div id="playName">SELECT A PLAY</div><div id="huddle">CHOOSE A PLAY • THEN HIKE THE BALL</div><div class="playbookUtility"><button onclick="startKickoff()">KICKOFF / RETURN</button><button onclick="simulateAIDrive()">OPPONENT AI DRIVE</button><label>FIELD <select id="fieldStyleSelect" onchange="changeField(this.value)"><option>PRO</option><option>COLLEGE</option><option>NIGHT</option><option>RETRO</option></select></label></div></div><div id="snapBar"><span id="snapPlayLabel">READY TO HIKE</span><button id="snapBtn">A / SPACE • HIKE BALL</button></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE 27</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam"><span class="scoreLogo" id="scoreHomeLogo">BUF</span><span id="scoreHomeName">BUFFALO</span></div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam"><span id="scoreAwayName">MIAMI</span><span class="scoreLogo" id="scoreAwayLogo">MIA</span></div></div><div id="clock" class="clock">1Q • 10:00</div></div>
@@ -645,7 +714,7 @@ $("buildNext").onclick=()=>{if(buildStep<5){
   if(buildStep===3&&!buildState.arch){toast("CHOOSE YOUR ARCHETYPE");return}
   if(buildStep===4&&!buildState.story){toast("CHOOSE YOUR STORY");return}
   buildStep++;renderBuild()
-}else{player={...buildState};position=buildState.position==="RB"?"HB":buildState.position;careerMode=true;league="HIGH SCHOOL";home=(buildState.school||"YOUR HIGH SCHOOL").trim();away="Rival High School";player.personality=superstarPersona;player.xp=superstarXP;player.skillPoints=superstarSkillPoints;localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";$("weeklyPrep").classList.add("open");$("weeklyPrep").style.display="flex";$("ssCareerStats").innerHTML='<span class="ssPill">XP '+superstarXP+'</span><span class="ssPill">SKILL POINTS '+superstarSkillPoints+'</span><span class="ssPill">PERSONA '+superstarPersona.toUpperCase()+'</span><span class="ssPill">GRADE '+superstarGrade+'</span>';$("ssPrepIntro").textContent=(player.name||"Your Superstar")+" is preparing for a first high-school showcase before the college and pro journey. Choose one drill to earn XP and a temporary boost.";}};
+}else{player={...buildState};position=buildState.position==="RB"?"HB":buildState.position;careerMode=true;selectedGameMode="CAREER";careerWeek=1;superstarXP=0;superstarSkillPoints=0;superstarGrade="B";careerMode=true;league="HIGH SCHOOL";home=(buildState.school||"YOUR HIGH SCHOOL").trim();away="Rival High School";player.personality=superstarPersona;player.xp=superstarXP;player.skillPoints=superstarSkillPoints;localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";$("weeklyPrep").classList.add("open");$("weeklyPrep").style.display="flex";$("ssCareerStats").innerHTML='<span class="ssPill">XP '+superstarXP+'</span><span class="ssPill">SKILL POINTS '+superstarSkillPoints+'</span><span class="ssPill">PERSONA '+superstarPersona.toUpperCase()+'</span><span class="ssPill">GRADE '+superstarGrade+'</span>';$("ssPrepIntro").textContent=(player.name||"Your Superstar")+" is preparing for a first high-school showcase before the college and pro journey. Choose one drill to earn XP and a temporary boost.";}};
 
 let superstarPersona="Team-First",superstarXP=0,superstarSkillPoints=0,superstarGrade="B",superstarBoost=0;
 $("careerBtn").onclick=()=>{$("superstarCombine").classList.add("open");$("superstarCombine").style.display="flex"};
@@ -653,7 +722,7 @@ document.querySelectorAll(".ssChoice").forEach(b=>b.onclick=()=>{superstarPerson
 $("ssCombineContinue").onclick=()=>{$("superstarCombine").classList.remove("open");$("superstarCombine").style.display="none";startIntro(true)};
 $("ssCombineBack").onclick=()=>{$("superstarCombine").classList.remove("open");$("superstarCombine").style.display="none"};
 document.querySelectorAll(".ssDrill").forEach(b=>b.onclick=()=>{const drill=b.dataset.drill;const roll=Math.random();const grade=roll>.72?"GOLD":roll>.32?"SILVER":"BRONZE";const xp=grade==="GOLD"?150:grade==="SILVER"?100:60;superstarXP+=xp;superstarSkillPoints+=grade==="GOLD"?2:grade==="SILVER"?1:0;superstarGrade=grade==="GOLD"?"A":grade==="SILVER"?"B+":"B";superstarBoost=grade==="GOLD"?3:grade==="SILVER"?2:1;document.querySelectorAll(".ssDrill").forEach(x=>x.style.borderColor=x===b?"#e35c7b":"#ffffff20");$("ssDrillResult").innerHTML="<b>"+grade+" • "+drill+"</b><br>Practice complete. +"+xp+" XP"+(grade==="GOLD"?" • +2 skill points":grade==="SILVER"?" • +1 skill point":"")+" • Temporary +"+superstarBoost+" practice boost. Your teammate grade starts at "+superstarGrade+".";player={...player,personality:superstarPersona,xp:superstarXP,skillPoints:superstarSkillPoints,teammateGrade:superstarGrade,practiceDrill:drill,practiceBoost:superstarBoost};$("ssCareerStats").innerHTML='<span class="ssPill">XP '+superstarXP+'</span><span class="ssPill">SKILL POINTS '+superstarSkillPoints+'</span><span class="ssPill">PERSONA '+superstarPersona.toUpperCase()+'</span><span class="ssPill">GRADE '+superstarGrade+'</span>';$("ssStartDebut").disabled=false});
-$("ssStartDebut").onclick=()=>{$("weeklyPrep").classList.remove("open");$("weeklyPrep").style.display="none";startGame();toast("WEEK 1 DEBUT • "+(player.name||"SUPERSTAR").toUpperCase()+" • "+superstarPersona.toUpperCase())};
+$("ssStartDebut").onclick=()=>{$("weeklyPrep").classList.remove("open");$("weeklyPrep").style.display="none";startGame();$("careerHubBtn").style.display="block";toast("WEEK 1 DEBUT • "+(player.name||"SUPERSTAR").toUpperCase()+" • "+superstarPersona.toUpperCase())};
 renderBuild();
 
 let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,snapState=false,playClock=25,routeClock=0,action="",actionTimer=0,actionSide=1,throwMeterActive=false,throwMeterValue=0,throwMeterDir=1,catchMeterActive=false,catchMeterValue=0,catchMeterDir=1;let playMode="SCRIMMAGE",fieldStyle="PRO",fieldStripes=[],awaitingTry=false,tryTeam="home",returner=null,catchRequested=false,catchStyle="SECURE",fumbleRecoverTimer=0;let passTarget=null,passQuality="YELLOW",passGravity=17,passFlightTime=.8,selectedPassType="TOUCH",ballCarrier=null,playResolved=false,tackleLock=0;let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;let selectedTarget="1",selectedPlay="4 VERTICALS",scrimmageX=-25,lineOfScrimmageMarker=null,firstDownMarker=null;
@@ -1318,6 +1387,65 @@ function formatTime(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60
 $("howBtn").onclick=()=>toast("SPACE = JUMP/THROW • V = DIVE • X = TRUCK • Y = HIT • C = CATCH");
 renderTeams();
 loadRealisticFootballModel();
+
+/* Superstar career system is layered into the existing Road to the League gameplay. */
+let careerWeek=1,careerGear="Classic Team Issue",careerStats={speed:70,hands:70,awareness:65},careerLastDrill="",careerMediaSeed=0;
+function saveCareer(){try{localStorage.setItem("roadToLeagueCareer",JSON.stringify({player,superstarPersona,superstarXP,superstarSkillPoints,superstarGrade,superstarBoost,careerWeek,careerGear,careerStats,careerLastDrill}))}catch(e){}}
+function loadCareer(){try{const d=JSON.parse(localStorage.getItem("roadToLeagueCareer")||"null");if(d){player={...player,...(d.player||{})};superstarPersona=d.superstarPersona||superstarPersona;superstarXP=d.superstarXP||0;superstarSkillPoints=d.superstarSkillPoints||0;superstarGrade=d.superstarGrade||"B";superstarBoost=d.superstarBoost||0;careerWeek=d.careerWeek||1;careerGear=d.careerGear||careerGear;careerStats={...careerStats,...(d.careerStats||{})};careerLastDrill=d.careerLastDrill||""}}catch(e){}}
+function careerOVR(){return Math.min(99,Math.round(65+(superstarXP/500)+((careerStats.speed-70)+(careerStats.hands-70)+(careerStats.awareness-65))/3))}
+function renderCareerHub(){
+ $("careerHubBtn").style.display=careerMode?"block":"none";
+ $("chName").textContent=(player.name||"YOUR PLAYER").toUpperCase();
+ $("chBuild").textContent=[player.position||position,player.arch||"DEVELOPING ARCHETYPE",player.school||home,"#"+(player.number||"1")].join(" • ");
+ $("chXP").textContent=superstarXP+" XP";$("chSkill").textContent=superstarSkillPoints+" Skill Points • Week "+careerWeek;
+ $("chGrade").textContent=superstarGrade;$("chPersona").textContent=superstarPersona+" • "+careerGear;
+ $("chSubline").textContent="WEEK "+careerWeek+" • "+(home||"YOUR TEAM")+" • "+(player.story||"YOUR JOURNEY");
+ $("chSkillBig").textContent=superstarSkillPoints;$("chOVR").textContent="OVR "+careerOVR();
+ $("chAttributes").textContent="Speed "+careerStats.speed+" • Hands "+careerStats.hands+" • Awareness "+careerStats.awareness;
+ $("chAbilities").textContent=superstarXP>=500?"Developing X-Factor":superstarXP>=250?"Silver Ability":"Developing";
+ $("chGearStatus").textContent="Equipped: "+careerGear+" • Your player style is updated in career descriptions.";
+ document.querySelectorAll("[data-gear]").forEach(b=>{b.textContent=b.dataset.gear===careerGear?"EQUIPPED":"EQUIP";b.disabled=b.dataset.gear===careerGear});
+ const objective=superstarXP<150?"Complete a practice drill and earn your first XP.":superstarXP<500?"Keep improving your core attributes to raise your player OVR.":"You’re building momentum. Keep stacking strong reps to unlock higher-tier abilities.";
+ $("chObjective").textContent=objective;
+ if(!$("chMediaFeed").dataset.ready)renderCareerMedia();
+}
+function openCareerHub(tab="profile"){if(!careerMode){toast("START ROAD TO GLORY TO OPEN YOUR CAREER");return}renderCareerHub();$("careerHub").classList.add("open");document.querySelectorAll("[data-chtab]").forEach(b=>b.classList.toggle("active",b.dataset.chtab===tab));document.querySelectorAll("[data-chpanel]").forEach(p=>p.classList.toggle("active",p.dataset.chpanel===tab))}
+function renderCareerMedia(){
+ const name=player.name||"Your Superstar",persona=superstarPersona;
+ const posts=[
+  ["ROAD TO THE LEAGUE DESK",name+" is starting to build a name. The next step is turning practice reps into consistent production."],
+  ["FILM ROOM",persona==="Team-First"?"The coaching staff values the preparation and assignment-first approach.":persona==="Maverick"?"Confidence is part of the package. Now the challenge is backing it up snap after snap.":persona==="Showman"?"The spotlight is growing, but the film still decides the conversation.":"The quiet approach is keeping the focus on preparation and execution."],
+  ["FAN FEED",superstarXP>=250?"Fans are noticing the progress. More reps, more responsibility.":"Early days for this prospect. Fans want to see what happens on the field."],
+  ["LEAGUE INSIDER", "Career update: Week "+careerWeek+" prep is underway. Roster decisions and draft projections will depend on performance."]
+ ];
+ $("chMediaFeed").innerHTML=posts.map(p=>'<div class="chPost"><b>'+p[0]+'</b><br>'+p[1]+'<small>CAREER MODE SIMULATION • NOT A REAL NEWS REPORT</small></div>').join("");$("chMediaFeed").dataset.ready="1";
+}
+function awardCareerXP(amount,reason){if(!careerMode)return;superstarXP+=amount;if(superstarXP>=250)superstarSkillPoints=Math.max(superstarSkillPoints,1);if(superstarXP>=500)superstarSkillPoints=Math.max(superstarSkillPoints,2);if(amount>=40)superstarGrade=superstarGrade==="A+"?"A+":superstarGrade==="A"?"A+":superstarGrade==="B+"?"A":"B+";player={...player,personality:superstarPersona,xp:superstarXP,skillPoints:superstarSkillPoints,teammateGrade:superstarGrade,gear:careerGear};saveCareer();if($("careerHub").classList.contains("open"))renderCareerHub();toast("CAREER +"+amount+" XP • "+reason)}
+function runCareerDrill(drill){
+ careerLastDrill=drill;const roll=Math.random(),grade=roll>.72?"GOLD":roll>.32?"SILVER":"BRONZE",xp=grade==="GOLD"?150:grade==="SILVER"?100:60;
+ superstarXP+=xp;superstarSkillPoints+=grade==="GOLD"?2:grade==="SILVER"?1:0;superstarGrade=grade==="GOLD"?"A":grade==="SILVER"?"B+":"B";superstarBoost=grade==="GOLD"?3:grade==="SILVER"?2:1;
+ player={...player,personality:superstarPersona,xp:superstarXP,skillPoints:superstarSkillPoints,teammateGrade:superstarGrade,practiceDrill:drill,practiceBoost:superstarBoost,gear:careerGear};saveCareer();
+ $("chPracticeResult").innerHTML="<b>"+grade+" • "+drill+"</b><br>+"+xp+" XP • +"+(grade==="GOLD"?2:grade==="SILVER"?1:0)+" skill points • temporary +"+superstarBoost+" practice boost. Teammate grade: "+superstarGrade+".";
+ renderCareerHub();toast(grade+" PRACTICE • +"+xp+" XP");
+}
+$("careerHubBtn").onclick=()=>openCareerHub();
+$("chClose").onclick=()=>{$("careerHub").classList.remove("open");saveCareer()};
+document.querySelectorAll("[data-chtab]").forEach(b=>b.onclick=()=>openCareerHub(b.dataset.chtab));
+$("chOpenPractice").onclick=()=>openCareerHub("practice");$("chOpenMedia").onclick=()=>openCareerHub("media");
+document.querySelectorAll("[data-chdrill]").forEach(b=>b.onclick=()=>runCareerDrill(b.dataset.chdrill));
+document.querySelectorAll("[data-gear]").forEach(b=>b.onclick=()=>{careerGear=b.dataset.gear;player={...player,gear:careerGear};saveCareer();renderCareerHub();toast("EQUIPPED • "+careerGear)});
+$("chRefreshMedia").onclick=()=>{careerMediaSeed++;$("chMediaFeed").dataset.ready="";renderCareerMedia();toast("MEDIA REACTIONS UPDATED")};
+document.querySelectorAll("[data-upgrade]").forEach(b=>b.onclick=()=>{if(superstarSkillPoints<1){toast("NEED 1 SKILL POINT");return}const k=b.dataset.upgrade;careerStats[k]=Math.min(99,careerStats[k]+1);superstarSkillPoints--;saveCareer();renderCareerHub();toast(k.toUpperCase()+" +1")});
+$("chNextWeek").onclick=()=>{careerWeek++;superstarBoost=0;saveCareer();$("chPracticeResult").textContent="Week "+careerWeek+" prep is ready. Choose a drill, then close the hub to return to the field.";renderCareerHub();openCareerHub("practice");toast("WEEK "+careerWeek+" • WEEKLY PREP READY")};
+loadCareer();
+/* Keep the career progression tied to the actual on-field player actions. */
+const _careerFinishCatch=finishCatch;
+finishCatch=function(receiver){const wasLive=ballLive;_careerFinishCatch(receiver);if(careerMode&&wasLive)awardCareerXP(25,"COMPLETION / CATCH");};
+const _careerResolveTackle=resolveTackle;
+resolveTackle=function(){const wasResolved=playResolved;_careerResolveTackle();if(careerMode&&!wasResolved&&playResolved)awardCareerXP(10,"PLAY FINISHED");};
+const _careerResetPlay=resetPlay;
+resetPlay=function(){_careerResetPlay();if(careerMode){$("careerHubBtn").style.display="block";saveCareer()}};
+
 </script>
 </body>
 </html>

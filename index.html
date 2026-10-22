@@ -343,6 +343,36 @@ body{background:#05070b}
 #intro .cutsceneNext{margin-left:auto;margin-right:10px}
 @media(max-width:700px){.menuWrap{grid-template-columns:1fr}.left{padding:90px 22px 30px}.hero{opacity:.45;position:absolute;inset:0}.heroPlayer{transform:scale(1.3)}.actions{max-width:none}.setup{position:relative;z-index:3}#intro .introRight{right:-9%;width:56%;height:68%;opacity:.72}#intro .introTitle{font-size:clamp(43px,12vw,75px)}#intro .introCard{padding:28px 22px 100px}}
 
+
+/* SUPERSTAR: THE LEAGUE career layer */
+#superstarCombine,#weeklyPrep{position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;padding:18px;background:radial-gradient(ellipse at 78% 30%,#74172b66,transparent 38%),linear-gradient(130deg,#030508,#11151c 58%,#250b12);color:#fff;font-family:Arial,Helvetica,sans-serif;overflow:auto}
+#superstarCombine.open,#weeklyPrep.open{display:flex}
+.ssShell{width:min(1080px,100%);border:1px solid #ffffff24;background:linear-gradient(145deg,#121720f5,#080b10f7);box-shadow:0 30px 100px #000b;display:grid;grid-template-columns:1.05fr .95fr;min-height:520px;position:relative;overflow:hidden}
+.ssLeft{padding:clamp(22px,4vw,48px);display:flex;flex-direction:column;justify-content:center;gap:16px}
+.ssKicker{font-size:11px;font-weight:900;letter-spacing:.22em;color:#e56a88;text-transform:uppercase}
+.ssTitle{font-size:clamp(34px,5vw,64px);line-height:.94;font-weight:1000;letter-spacing:-.045em;text-transform:uppercase}
+.ssTitle span{color:#dc496d}
+.ssCopy{color:#c1c8d2;line-height:1.65;max-width:58ch}
+.ssQuote{border-left:3px solid #b42b4b;padding:12px 16px;background:#ffffff08;line-height:1.55}
+.ssChoices{display:grid;grid-template-columns:1fr;gap:9px;margin-top:4px}
+.ssChoice,.ssPrimary,.ssSecondary{border:1px solid #ffffff24;background:#ffffff08;color:#fff;padding:13px 15px;text-align:left;font-weight:800;transition:.15s}
+.ssChoice:hover,.ssChoice.selected{border-color:#e35c7b;background:#7d1a31aa}
+.ssChoice small{display:block;color:#aeb7c3;font-weight:500;margin-top:5px;line-height:1.4}
+.ssPrimary{background:#8e1e39;border-color:#c54a66;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+.ssPrimary:hover{background:#b42b4b}
+.ssSecondary{text-align:center;background:transparent;color:#aeb7c3}
+.ssRight{position:relative;min-height:380px;background:linear-gradient(180deg,#ffffff05,#0008),repeating-linear-gradient(115deg,transparent 0 42px,#ffffff08 43px 44px),radial-gradient(ellipse at 52% 25%,#b12c4b55,transparent 42%)}
+.ssRight:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#10151c,transparent 28%),linear-gradient(0deg,#080b10 0%,transparent 55%)}
+.ssAthlete{position:absolute;bottom:-5%;left:50%;transform:translateX(-50%);width:66%;height:77%;background:linear-gradient(90deg,#111820,#353d48 42%,#111720);clip-path:polygon(38% 0,62% 0,69% 10%,83% 15%,100% 44%,86% 50%,72% 31%,73% 58%,88% 100%,59% 100%,50% 68%,41% 100%,12% 100%,28% 58%,28% 31%,13% 50%,0 44%,17% 15%,31% 10%);filter:drop-shadow(0 0 32px #b82b4b55);animation:ssRise 1s ease-out both}
+@keyframes ssRise{from{opacity:0;transform:translate(-50%,30px)}to{opacity:1;transform:translate(-50%,0)}}
+.ssStats{display:flex;gap:8px;flex-wrap:wrap}.ssPill{border:1px solid #ffffff20;background:#ffffff09;padding:8px 10px;font-size:11px;font-weight:800;color:#dce2e9}
+.ssDrills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ssDrill{border:1px solid #ffffff20;background:#ffffff07;padding:14px;min-height:145px;color:#fff;text-align:left}
+.ssDrill:hover{border-color:#e35c7b;background:#7d1a3155}
+.ssDrill b{display:block;margin:8px 0}.ssDrill small{color:#adb7c4;line-height:1.45}
+.ssResult{padding:14px;border:1px solid #ffffff20;background:#ffffff08;line-height:1.5}
+@media(max-width:760px){.ssShell{grid-template-columns:1fr}.ssRight{min-height:180px;grid-row:1}.ssAthlete{height:88%;width:36%}.ssDrills{grid-template-columns:1fr}.ssLeft{padding:22px}.ssTitle{font-size:38px}}
+
 </style>
 </head>
 <body>
@@ -356,7 +386,7 @@ body{background:#05070b}
       <div class="logo">ROAD TO<br><span>THE LEAGUE</span></div>
       <div class="tag">BUILD YOUR PLAYER. START UNDER THE FRIDAY-NIGHT LIGHTS. EARN YOUR OFFER. TAKE OVER COLLEGE. CHASE THE LEAGUE.</div>
       <div class="actions">
-        <button id="careerBtn" class="btn primary"><span class="big">ROAD TO GLORY</span><small>BUILD YOUR PLAYER + START YOUR JOURNEY</small></button>
+        <button id="careerBtn" class="btn primary"><span class="big">SUPERSTAR: THE LEAGUE</span><small>COMBINE • BUILD YOUR PLAYER • EARN YOUR SHOT</small></button>
         <button id="playBtn" class="btn"><b>PLAY NOW</b><small>GAME MODES • PLAY SELECTION</small></button>
         <button id="teamBtn" class="btn"><b>TEAM SELECT</b><small>FIXED • NFL / COLLEGE / HIGH SCHOOL</small></button>
         <button id="modeMenuBtn" class="btn"><b>GAME MODES</b><small>EXHIBITION • PRACTICE • PASS + CATCH</small></button>
@@ -419,6 +449,46 @@ body{background:#05070b}
     <div class="introRight"><div class="silhouette"></div></div>
     <div class="introBottom"><div id="introPrompt" class="introPrompt">CUTSCENE 01 / 03</div><button id="introNext" class="cutsceneNext">CONTINUE →</button><button id="introSkip" class="skip">SKIP</button></div>
   </div>
+</section>
+
+
+<section id="superstarCombine">
+ <div class="ssShell">
+  <div class="ssLeft">
+   <div class="ssKicker">Road to the League • Superstar Career</div>
+   <div class="ssTitle">THE COMBINE.<br><span>YOUR MOMENT.</span></div>
+   <div class="ssCopy">The cameras are on. Scouts have your film, measurements, and testing results. Now they want to know what kind of teammate and competitor you will be. This is a fictionalized career scene, not a transcript of a real interview.</div>
+   <div class="ssQuote" id="ssInterviewText">SCOUTING PANEL: “We know your tape. Tell us who we’re bringing into the locker room when things get difficult.”</div>
+   <div class="ssKicker">Choose your personality response</div>
+   <div class="ssChoices">
+    <button class="ssChoice" data-persona="Maverick">MAVERICK — “I want the pressure. Give me the biggest moment.”<small>High confidence • bigger spotlight • higher expectations</small></button>
+    <button class="ssChoice" data-persona="Team-First">TEAM-FIRST — “I’m here to earn trust and help the whole team win.”<small>Leadership • steadier morale • team-first brand</small></button>
+    <button class="ssChoice" data-persona="Showman">SHOWMAN — “I’ll give the fans something to remember.”<small>Entertainment • endorsement potential • spotlight</small></button>
+    <button class="ssChoice" data-persona="Quiet Assassin">QUIET ASSASSIN — “I’ll let the work and the film speak for me.”<small>Composure • focus • performance-first reputation</small></button>
+   </div>
+   <button id="ssCombineContinue" class="ssPrimary" disabled>Continue to player creation →</button>
+   <button id="ssCombineBack" class="ssSecondary">Back to main menu</button>
+  </div>
+  <div class="ssRight"><div class="ssAthlete"></div></div>
+ </div>
+</section>
+<section id="weeklyPrep">
+ <div class="ssShell">
+  <div class="ssLeft">
+   <div class="ssKicker">Road to the League • Week 1</div>
+   <div class="ssTitle">EARN YOUR<br><span>REPS.</span></div>
+   <div class="ssCopy" id="ssPrepIntro">Your first week starts now. Pick one drill before your debut. Your result awards XP and a temporary boost for the first game.</div>
+   <div class="ssStats" id="ssCareerStats"><span class="ssPill">XP 0</span><span class="ssPill">OVR developing</span><span class="ssPill">GRADE B</span></div>
+   <div class="ssDrills">
+    <button class="ssDrill" data-drill="Target Passing"><icon name="target" size="lg"/><b>Target Passing</b><small>Timing, accuracy, decision-making. Best for QB builds.</small></button>
+    <button class="ssDrill" data-drill="Route Running"><icon name="route" size="lg"/><b>Route Running</b><small>Release, separation, footwork, and catch timing.</small></button>
+    <button class="ssDrill" data-drill="Position Fundamentals"><icon name="shield" size="lg"/><b>Position Fundamentals</b><small>Blocking, tackling, coverage, and assignment discipline.</small></button>
+   </div>
+   <div id="ssDrillResult" class="ssResult">Choose a drill to begin practice.</div>
+   <button id="ssStartDebut" class="ssPrimary" disabled>Start Week 1 Debut →</button>
+  </div>
+  <div class="ssRight"><div class="ssAthlete"></div></div>
+ </div>
 </section>
 
 <section id="build" class="overlay">
@@ -575,8 +645,16 @@ $("buildNext").onclick=()=>{if(buildStep<5){
   if(buildStep===3&&!buildState.arch){toast("CHOOSE YOUR ARCHETYPE");return}
   if(buildStep===4&&!buildState.story){toast("CHOOSE YOUR STORY");return}
   buildStep++;renderBuild()
-}else{player={...buildState};position=buildState.position==="RB"?"HB":buildState.position;careerMode=true;league="HIGH SCHOOL";home=(buildState.school||"YOUR HIGH SCHOOL").trim();away="Rival High School";localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";startGame();toast("WEEK 1 • HIGH SCHOOL DEBUT • "+(player.name||"ROAD PLAYER").toUpperCase())}};
-$("careerBtn").onclick=()=>startIntro(true);renderBuild();
+}else{player={...buildState};position=buildState.position==="RB"?"HB":buildState.position;careerMode=true;league="HIGH SCHOOL";home=(buildState.school||"YOUR HIGH SCHOOL").trim();away="Rival High School";player.personality=superstarPersona;player.xp=superstarXP;player.skillPoints=superstarSkillPoints;localStorage.setItem("roadToLeagueBuild",JSON.stringify(player));$("build").style.display="none";$("weeklyPrep").classList.add("open");$("weeklyPrep").style.display="flex";$("ssCareerStats").innerHTML='<span class="ssPill">XP '+superstarXP+'</span><span class="ssPill">SKILL POINTS '+superstarSkillPoints+'</span><span class="ssPill">PERSONA '+superstarPersona.toUpperCase()+'</span><span class="ssPill">GRADE '+superstarGrade+'</span>';$("ssPrepIntro").textContent=(player.name||"Your Superstar")+" is preparing for a first high-school showcase before the college and pro journey. Choose one drill to earn XP and a temporary boost.";}};
+
+let superstarPersona="Team-First",superstarXP=0,superstarSkillPoints=0,superstarGrade="B",superstarBoost=0;
+$("careerBtn").onclick=()=>{$("superstarCombine").classList.add("open");$("superstarCombine").style.display="flex"};
+document.querySelectorAll(".ssChoice").forEach(b=>b.onclick=()=>{superstarPersona=b.dataset.persona;document.querySelectorAll(".ssChoice").forEach(x=>x.classList.toggle("selected",x===b));$("ssCombineContinue").disabled=false;const lines={"Maverick":"SCOUTING PANEL: “Confidence is good. Now show us you can back it up when the pressure hits.”","Team-First":"SCOUTING PANEL: “Trust matters in this league. We’ll be watching how you make the people around you better.”","Showman":"SCOUTING PANEL: “The spotlight can open doors. Your work on the field will decide whether they stay open.”","Quiet Assassin":"SCOUTING PANEL: “Good. Stay composed, prepare every week, and let the film tell the story.”"};$("ssInterviewText").textContent=lines[superstarPersona]});
+$("ssCombineContinue").onclick=()=>{$("superstarCombine").classList.remove("open");$("superstarCombine").style.display="none";startIntro(true)};
+$("ssCombineBack").onclick=()=>{$("superstarCombine").classList.remove("open");$("superstarCombine").style.display="none"};
+document.querySelectorAll(".ssDrill").forEach(b=>b.onclick=()=>{const drill=b.dataset.drill;const roll=Math.random();const grade=roll>.72?"GOLD":roll>.32?"SILVER":"BRONZE";const xp=grade==="GOLD"?150:grade==="SILVER"?100:60;superstarXP+=xp;superstarSkillPoints+=grade==="GOLD"?2:grade==="SILVER"?1:0;superstarGrade=grade==="GOLD"?"A":grade==="SILVER"?"B+":"B";superstarBoost=grade==="GOLD"?3:grade==="SILVER"?2:1;document.querySelectorAll(".ssDrill").forEach(x=>x.style.borderColor=x===b?"#e35c7b":"#ffffff20");$("ssDrillResult").innerHTML="<b>"+grade+" • "+drill+"</b><br>Practice complete. +"+xp+" XP"+(grade==="GOLD"?" • +2 skill points":grade==="SILVER"?" • +1 skill point":"")+" • Temporary +"+superstarBoost+" practice boost. Your teammate grade starts at "+superstarGrade+".";player={...player,personality:superstarPersona,xp:superstarXP,skillPoints:superstarSkillPoints,teammateGrade:superstarGrade,practiceDrill:drill,practiceBoost:superstarBoost};$("ssCareerStats").innerHTML='<span class="ssPill">XP '+superstarXP+'</span><span class="ssPill">SKILL POINTS '+superstarSkillPoints+'</span><span class="ssPill">PERSONA '+superstarPersona.toUpperCase()+'</span><span class="ssPill">GRADE '+superstarGrade+'</span>';$("ssStartDebut").disabled=false});
+$("ssStartDebut").onclick=()=>{$("weeklyPrep").classList.remove("open");$("weeklyPrep").style.display="none";startGame();toast("WEEK 1 DEBUT • "+(player.name||"SUPERSTAR").toUpperCase()+" • "+superstarPersona.toUpperCase())};
+renderBuild();
 
 let scene,camera,renderer,clock3,field,players=[],controlled=null,ball,ballVel=new THREE.Vector3(),ballLive=false,snapState=false,playClock=25,routeClock=0,action="",actionTimer=0,actionSide=1,throwMeterActive=false,throwMeterValue=0,throwMeterDir=1,catchMeterActive=false,catchMeterValue=0,catchMeterDir=1;let playMode="SCRIMMAGE",fieldStyle="PRO",fieldStripes=[],awaitingTry=false,tryTeam="home",returner=null,catchRequested=false,catchStyle="SECURE",fumbleRecoverTimer=0;let passTarget=null,passQuality="YELLOW",passGravity=17,passFlightTime=.8,selectedPassType="TOUCH",ballCarrier=null,playResolved=false,tackleLock=0;let homeScore=0,awayScore=0,timeLeft=600,down=1,dist=10,injured=false;let selectedTarget="1",selectedPlay="4 VERTICALS",scrimmageX=-25,lineOfScrimmageMarker=null,firstDownMarker=null;
 // High-detail CC0 football-player GLB; procedural players remain as a fallback if loading fails.

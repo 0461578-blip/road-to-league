@@ -497,6 +497,38 @@ body{background:#05070b}
 @media(max-width:480px){.practice-shell{padding:14px}.practice-cards{gap:7px;margin:15px 0}.practice-card{min-height:180px;padding:11px}.practice-card strong{font-size:12px}.practice-card small{font-size:9px}.practice-footer{align-items:stretch;flex-direction:column}.practice-footer button{width:100%}}
 
 </style>
+<style id="rttl-madden27-inspired">
+:root{--orange:#ef5a3c;--bg:#05080e;--panel:#111925;--muted:#a5afbd}
+html,body,#app{background:#05080e;color:#f6f8fb}
+.screen.dark{background:radial-gradient(ellipse at 76% 36%,#28415b55 0%,transparent 39%),radial-gradient(ellipse at 15% 86%,#ed5a3c16 0%,transparent 33%),linear-gradient(118deg,#03060b 0%,#0b111a 48%,#151d29 100%)}
+.menuWrap:before{background:repeating-linear-gradient(115deg,transparent 0 62px,#ffffff06 63px 64px),linear-gradient(90deg,#00000055,transparent 68%)}
+.menuWrap:after{background:radial-gradient(circle at 58% 46%,#8fa7c522,transparent 36%),linear-gradient(115deg,transparent,#ffffff04)}
+.kicker,.m27-eyebrow{color:#c4cedb}.dot{background:#ef5a3c;box-shadow:0 0 18px #ef5a3c}
+.logo span,.m27-hero-title span{color:#ef5a3c}
+.btn{border-color:#344153;background:linear-gradient(110deg,#121b28,#0b111a);color:#f7f9fc}
+.btn:hover,.btn:focus-visible{border-color:#ef5a3c;background:linear-gradient(110deg,#252e3a,#121b28)}
+.btn.primary,.modeStart,#modeContinue{background:linear-gradient(110deg,#ed5739,#a92c2c);border-color:#ff8b70;color:#fff}
+.m27-online,.status,.setupTitle,.m27-bottomline,.m27-feature-row{color:#aeb9c7}
+.m27-hero-stamp{border-color:#596b80;background:#0a111bd9}
+.hero{background:radial-gradient(ellipse at 58% 45%,#4c607744,transparent 44%),linear-gradient(120deg,#080d15,#172232)}
+#modeOverlay,.overlay{background:rgba(3,7,13,.94)}
+.modeShell,.buildCard,.practice-shell{background:linear-gradient(145deg,#121c29,#070b12);border-color:#3a4b5e;color:#f6f8fb}
+.modeCard,.practice-card{background:linear-gradient(145deg,#182332,#0c121b);border-color:#344458;color:#f7f9fc}
+.modeCard.selected,.practice-card.selected{border-color:#ef5a3c;box-shadow:0 0 0 1px #ef5a3c55,0 14px 32px #0007}
+.modeTitle,.practice-head h1{color:#f8fafc}.modeTitle span,.practice-head h1 span{color:#ef5a3c!important}
+.modeBack,.practice-back{background:#1b2939;color:#fff;border-color:#4b5b6d}
+.modeStart,.practice-footer button{background:linear-gradient(110deg,#ed5739,#a92c2c);color:#fff;border:0}
+.teamModes .active,.teamItem.selected,.side.selected{border-color:#ef5a3c;box-shadow:0 0 0 1px #ef5a3c44}
+.teamItem,.side{background:#111b28;border-color:#354559;color:#fff}
+.topbar,.teamBody{color:#f5f7fa}
+#coinTossScene .broadcast{background:#080e18e8;border-bottom:1px solid #5d6d80}
+#coinTossScene .coinStage{border-color:#d8e1ed;background:radial-gradient(circle at 30% 25%,#fff,#b7c3d2 55%,#536174);color:#101722}
+#coinTossScene button.primary{background:#ef5a3c;border-color:#ff9478}
+#coinTossScene .field{filter:saturate(.78)}
+button{transition:background .16s,border-color .16s,transform .16s}
+button:focus-visible{outline:2px solid #ff9a7f;outline-offset:2px}
+@media(max-width:760px){.menuWrap{grid-template-columns:minmax(0,1fr)}.left{padding:32px 22px}.hero{min-height:35vh}}
+</style>
 </head>
 <body>
 <div id="app"></div>
@@ -1168,13 +1200,36 @@ function updateHomeFieldBranding(){
 }
 function startGame(forceStart=false){
   if(!forceStart&&!coinTossDone){showCoinToss();return}
+  if(typeof THREE==="undefined"){
+    const status=$("toast");status.textContent="LOADING 3D ENGINE…";status.style.display="block";
+    const trySources=["https://unpkg.com/three@0.160.0/build/three.min.js","https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"];
+    const loadFallback=(i)=>{if(i>=trySources.length){status.textContent="3D ENGINE DID NOT LOAD. CHECK YOUR CONNECTION, THEN RELOAD.";status.style.display="block";return}
+      const sc=document.createElement("script");sc.src=trySources[i];sc.onload=()=>{status.style.display="none";startGame(forceStart)};sc.onerror=()=>{sc.remove();loadFallback(i+1)};document.head.appendChild(sc)};
+    loadFallback(0);return;
+  }
   gameStarted=true;
   $("menu").style.display="none";
-  $("hud").style.display="block";
-  $("score").style.display="block";
+  $("modeOverlay").classList.remove("open");$("teamOverlay").classList.remove("open");if($("practiceSelect"))$("practiceSelect").classList.remove("open");
+  $("hud").style.display="block";$("score").style.display="block";
   $("actions").style.display="flex";$("footballControls").style.display="block";$("firstDownLegend").style.display="none";$("presnap").style.display="block";$("snapBar").style.display="none";
-  try{if(!scene)makeScene();updateHomeFieldBranding();setFormation();const modeLabel=selectedGameMode==="PASSING"?"PASS + CATCH LAB":selectedGameMode==="PRACTICE"?"PRACTICE":selectedGameMode==="CAREER"?"ROAD TO GLORY":"EXHIBITION";$("hud").textContent=modeLabel+" • "+position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist;$("fieldLabel").textContent=modeLabel+" • "+home.toUpperCase()+" HOME FIELD";if(selectedGameMode==="PASSING")toast("PASS + CATCH LAB • TIME YOUR THROW, SWITCH TO A RECEIVER, PRESS C TO CATCH");else if(selectedGameMode==="PRACTICE")toast("PRACTICE • PICK A PLAY, HIKE THE BALL, RESET AND RUN IT BACK")}
-  catch(err){gameStarted=false;$("menu").style.display="block";$("hud").style.display="none";$("score").style.display="none";$("actions").style.display="none";console.error(err);toast("GAME LOAD ERROR — RETURNING TO MENU");}
+  try{
+    if(!scene||!renderer)makeScene();
+    updateHomeFieldBranding();setFormation();
+    const modeLabel=selectedGameMode==="PASSING"?"PASS + CATCH LAB":selectedGameMode==="PRACTICE"?"PRACTICE":selectedGameMode==="CAREER"?"ROAD TO GLORY":"EXHIBITION";
+    $("hud").textContent=modeLabel+" • "+position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist;
+    $("fieldLabel").textContent=modeLabel+" • "+home.toUpperCase()+" HOME FIELD";
+    if(selectedGameMode==="PASSING")toast("PASS + CATCH LAB • TIME YOUR THROW, SWITCH TO A RECEIVER, PRESS C TO CATCH");
+    else if(selectedGameMode==="PRACTICE")toast("PRACTICE • PICK A PLAY, HIKE THE BALL, RESET AND RUN IT BACK");
+  }catch(err){
+    gameStarted=false;console.error("Road to the League start failure:",err);
+    $("hud").style.display="none";$("score").style.display="none";$("actions").style.display="none";$("footballControls").style.display="none";$("menu").style.display="none";
+    let panel=$("gameLoadError");
+    if(!panel){panel=document.createElement("div");panel.id="gameLoadError";panel.style.cssText="position:fixed;z-index:300;inset:0;display:grid;place-items:center;background:#060a11;color:#fff;font:600 16px Arial;padding:24px;text-align:center";document.body.appendChild(panel)}
+    panel.innerHTML='<div style="max-width:560px;background:#111925;border:1px solid #536273;padding:28px;border-radius:14px"><h2 style="margin-top:0;color:#ff754f">GAME START FAILED</h2><p>The game could not initialize its 3D field. Try retrying or return to the menu.</p><p style="color:#9ca9ba;font-size:12px;overflow-wrap:anywhere"></p><button id="retryGameStart" style="padding:12px 20px;background:#f05b3d;color:#fff;border:0;font-weight:900;cursor:pointer">RETRY GAME</button> <button id="returnGameMenu" style="padding:12px 20px;background:#273447;color:#fff;border:0;font-weight:900;cursor:pointer">MAIN MENU</button></div>';
+    panel.querySelector("p:nth-of-type(2)").textContent=String(err&&err.message||err||"Unknown engine error");
+    $("retryGameStart").onclick=()=>{panel.remove();startGame(true)};
+    $("returnGameMenu").onclick=()=>{panel.remove();$("menu").style.display="block"};
+  }
 }
 let coinTossDone=false;
 function showCoinToss(){

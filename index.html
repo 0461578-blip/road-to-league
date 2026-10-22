@@ -571,6 +571,7 @@ button:focus-visible{outline:2px solid #ff9a7f;outline-offset:2px}
   <div class="modeTop"><div><div class="modeEyebrow">ROAD TO THE LEAGUE 27 • GAME SETUP</div><div class="modeTitle">CHOOSE YOUR <span style="color:#d95a78">MODE</span></div><div class="modeSub">Pick how you want to play, then set your teams. This is an original browser football game with its own systems—not a full copy of Madden.</div></div><button id="modeClose" class="modeBack">BACK</button></div>
   <div class="modeGrid">
    <button class="modeCard selected" data-mode="EXHIBITION"><div><div class="modeIcon">🏈</div><strong>EXHIBITION</strong><small>Choose home and away teams, call plays, pass, catch, tackle and compete on the field.</small></div><small>QUICK MATCH</small></button>
+   <button class="modeCard" data-mode="ONEVONE"><div><div class="modeIcon">⚡</div><strong>1V1 • WR VS DB</strong><small>One receiver against one defensive back. Quick reps, route releases, separation and catches.</small></div><small>ONE-ON-ONE</small></button>
    <button class="modeCard" data-mode="PRACTICE"><div><div class="modeIcon">🎯</div><strong>PRACTICE</strong><small>Work on movement, throwing timing, receiver control and catch timing without a career setup.</small></div><small>REPS & CONTROLS</small></button>
    <button class="modeCard" data-mode="PASSING"><div><div class="modeIcon">🟩</div><strong>PASS + CATCH LAB</strong><small>Focus on the throw meter, receiver positioning, jump timing and catch-style choices.</small></div><small>SKILL FOCUS</small></button>
    <button class="modeCard" data-mode="CAREER"><div><div class="modeIcon">⭐</div><strong>ROAD TO GLORY</strong><small>Create a player, choose a position and archetype, and start your high-school journey.</small></div><small>PLAYER CAREER</small></button>
@@ -806,7 +807,8 @@ function openTeams(l=league){league=l;document.querySelectorAll(".teamMode").for
 document.querySelectorAll(".league,.teamMode").forEach(b=>b.onclick=()=>openTeams(b.dataset.league));
 
 let selectedGameMode="EXHIBITION";
-const modeDescriptions={EXHIBITION:"Exhibition selected • pick teams and kick off.",PRACTICE:"Practice selected • focus on movement and play reps.",PASSING:"Pass + Catch Lab selected • work on throw timing, receiver control and catch timing.",CAREER:"Road to Glory selected • player creation opens next."};
+let oneVOneMode=false;
+const modeDescriptions={ONEVONE:"1v1 selected • one WR versus one DB. Choose teams and take the matchup to the field.",EXHIBITION:"Exhibition selected • pick teams and kick off.",PRACTICE:"Practice selected • focus on movement and play reps.",PASSING:"Pass + Catch Lab selected • work on throw timing, receiver control and catch timing.",CAREER:"Road to Glory selected • player creation opens next."};
 function openModes(){ $("modeOverlay").classList.add("open");$("menu").style.display="block"; }
 function selectGameMode(mode){selectedGameMode=mode;document.querySelectorAll(".modeCard").forEach(b=>b.classList.toggle("selected",b.dataset.mode===mode));$("modeDescription").textContent=modeDescriptions[mode]||modeDescriptions.EXHIBITION;}
 document.querySelectorAll(".modeCard").forEach(b=>b.onclick=()=>selectGameMode(b.dataset.mode));
@@ -815,6 +817,8 @@ $("modeTeamSelect").onclick=()=>{$("modeOverlay").classList.remove("open");openT
 $("modeContinue").onclick=()=>{
  $("modeOverlay").classList.remove("open");
  if(selectedGameMode==="CAREER"){startIntro(true);return}
+ oneVOneMode=selectedGameMode==="ONEVONE";
+ if(oneVOneMode){position="WR";selectedTarget="1";catchStyle="SECURE";homeScore=0;awayScore=0;down=1;dist=10;timeLeft=600;}
  if(selectedGameMode==="PASSING") {position="QB";selectedTarget="1";catchStyle="SECURE";}
  if(selectedGameMode==="PRACTICE") {homeScore=0;awayScore=0;down=1;dist=10;timeLeft=600;}
  openTeams(league);
@@ -1369,9 +1373,21 @@ function startFieldGoal(kind="FIELDGOAL"){if(!gameStarted)return;$("presnap").st
 
 function setFormation(){
  const spots={12:[-31,-3],22:[-29,4],1:[-25,-22],2:[-25,22],3:[-25,-12],48:[-28,0]};
+ const oneWR=players.find(p=>p.userData.team==="home"&&String(p.userData.jersey)==="1");
+ const oneDB=players.find(p=>p.userData.team==="away"&&p.userData.role==="CB");
  for(const p of players){p.userData.route=null;p.userData.hasBall=false;p.userData.tacklePose=0;p.position.y=0;p.rotation.z=0;posePlayer(p,p.userData.role,"pre");const j=String(p.userData.jersey),role=p.userData.role;let x=-25,z=0;
- if(p.userData.team==="home"){if(spots[j])[x,z]=spots[j];else if(role==="OL"){x=-25.25;z=(Number(j)-62)*1.35}else if(role==="C"){x=-25;z=0}}
- else{if(role==="DL"){x=-22.9;z=([-6,-2,2,6][Number(j)-90]??0)}else if(role==="LB"){x=-19.5;z=([-9,0,9][Number(j)-100]??0)}else if(role==="CB"){x=-22;z=Number(j)%2?-20:20}else if(role==="S"){x=-15;z=Number(j)%2?-12:12}}
+ if(oneVOneMode){
+   const active=p===oneWR||p===oneDB||p.userData.team==="home"&&j==="12";
+   p.visible=active;
+   if(p===oneWR){x=-24;z=-4;posePlayer(p,"WR","pre");}
+   else if(p===oneDB){x=-21;z=-4;posePlayer(p,"CB","pre");}
+   else if(p.userData.team==="home"&&j==="12"){x=-30;z=-4;posePlayer(p,"QB","pre");}
+   else {x=-25;z=35;}
+ }else{
+   p.visible=true;
+   if(p.userData.team==="home"){if(spots[j])[x,z]=spots[j];else if(role==="OL"){x=-25.25;z=(Number(j)-62)*1.35}else if(role==="C"){x=-25;z=0}}
+   else{if(role==="DL"){x=-22.9;z=([-6,-2,2,6][Number(j)-90]??0)}else if(role==="LB"){x=-19.5;z=([-9,0,9][Number(j)-100]??0)}else if(role==="CB"){x=-22;z=Number(j)%2?-20:20}else if(role==="S"){x=-15;z=Number(j)%2?-12:12}}
+ }
  p.position.set(x,0,z);p.rotation.y=-Math.PI/2;}
  scrimmageX=-25;updateFirstDownMarkers();
 }
@@ -1380,7 +1396,7 @@ function resetPlay(){ballLive=false;snapState=false;playMode="SCRIMMAGE";routeCl
  throwMeterActive=false;catchMeterActive=false;passTarget=null;ballVel.set(0,0,0);
  $("throw").style.display="none";$("catchMeter").style.display="none";
  setFormation();
- controlled=position==="QB"?players.find(p=>p.userData.jersey==="12"):position==="HB"||position==="RB"?players.find(p=>p.userData.jersey==="22"):position==="WR"?players.find(p=>p.userData.jersey==="1"):controlled;
+ controlled=oneVOneMode?players.find(p=>p.userData.team==="home"&&p.userData.jersey==="1"):position==="QB"?players.find(p=>p.userData.jersey==="12"):position==="HB"||position==="RB"?players.find(p=>p.userData.jersey==="22"):position==="WR"?players.find(p=>p.userData.jersey==="1"):controlled;
  if(controlled)position=String(controlled.userData.jersey)==="12"?"QB":String(controlled.userData.jersey)==="22"?"RB":"WR";
  if(controlled) controlled.rotation.z=0;
  injured=false;
@@ -1569,8 +1585,8 @@ function animate(){
 }
  if(actionTimer>0){actionTimer=Math.max(0,actionTimer-dt);if(controlled){const j=controlled.userData.joints;if(j){if(action==="THROW"){j.torso.rotation.x=-.22;j.armR.rotation.x=-1.25;j.foreR.rotation.x=-1.1;j.armL.rotation.x=.4}else if(action==="JUKE_L"||action==="JUKE_R"){const side=action==="JUKE_L"?-1:1;j.torso.rotation.z=-side*.34;j.head.rotation.z=side*.12;j.armL.rotation.z=.65*side;j.armR.rotation.z=-.65*side;j.thighL.rotation.x=.6;j.thighR.rotation.x=-.35}else if(action==="SPIN"){j.torso.rotation.y=Math.sin((.58-actionTimer)/.58*Math.PI*2)*.9;j.armL.rotation.z=.45;j.armR.rotation.z=-.45}else if(action==="TRUCK"){j.torso.rotation.x=-.48;j.armL.rotation.z=.85;j.armR.rotation.z=-.85;j.foreL.rotation.x=-.9;j.foreR.rotation.x=-.9}else if(action==="HIT"){j.torso.rotation.x=-.55;j.armL.rotation.z=1.05;j.armR.rotation.z=-1.05;j.foreL.rotation.x=-.7;j.foreR.rotation.x=-.7}else if(action==="DIVE"){j.torso.rotation.x=-.8;j.armL.rotation.z=.9;j.armR.rotation.z=-.9}}if(action==="JUMP"){controlled.position.y=Math.max(0,controlled.position.y-.025);if(controlled.position.y===0)actionTimer=0}if(action==="DIVE"){controlled.position.x+=.05;controlled.position.y=Math.max(0,controlled.position.y-.035);if(controlled.position.y===0)actionTimer=0}if(actionTimer===0){action="";controlled.rotation.z=0;if(controlled.userData.joints){const jj=controlled.userData.joints;jj.torso.rotation.z=0;jj.head.rotation.z=0;jj.torso.rotation.x=0;jj.armR.rotation.x=0;jj.foreR.rotation.x=0;jj.armL.rotation.x=0;jj.armL.rotation.z=0;jj.armR.rotation.z=0;jj.foreL.rotation.x=0;jj.thighL.rotation.x=0;jj.thighR.rotation.x=0}}}}
  const camTarget=new THREE.Vector3(controlled.position.x,1.25,controlled.position.z);
- const preTarget=new THREE.Vector3(-25,1.2,-1),camTargetFinal=snapState?camTarget:preTarget;
- const camPos=snapState?new THREE.Vector3(controlled.position.x-10,8.5,controlled.position.z+18):new THREE.Vector3(-25,8.8,21);
+ const preTarget=oneVOneMode?new THREE.Vector3(-23,1.2,-4):new THREE.Vector3(-25,1.2,-1),camTargetFinal=snapState?camTarget:preTarget;
+ const camPos=snapState?new THREE.Vector3(controlled.position.x-(oneVOneMode?7:10),oneVOneMode?5.5:8.5,controlled.position.z+(oneVOneMode?10:18)):new THREE.Vector3(-25,oneVOneMode?5.5:8.8,oneVOneMode?10:21);
  camera.position.lerp(camPos,.055);camera.lookAt(camTargetFinal);
  const homeAbbr=abbr(home),awayAbbr=abbr(away);$("scoreHomeLogo").textContent=homeAbbr;$("scoreAwayLogo").textContent=awayAbbr;$("scoreHomeName").textContent=home.toUpperCase();$("scoreAwayName").textContent=away.toUpperCase();$("scoreNums").textContent=homeScore+"–"+awayScore;$("clock").textContent=(careerMode?"HIGH SCHOOL • ":"1Q • ")+formatTime(timeLeft);const arc=$("qbArc");if(throwMeterActive&&controlled&&camera){const point=controlled.position.clone().add(new THREE.Vector3(0,3.6,0));point.project(camera);arc.style.display="block";arc.style.left=((point.x*.5+.5)*innerWidth-58)+"px";arc.style.top=((-point.y*.5+.5)*innerHeight-72)+"px";$("qbArcNeedle").style.transform="rotate("+(-90+throwMeterValue*180)+"deg)"}else arc.style.display="none";const catchHud=$("catchMeter");if(catchMeterActive&&controlled&&camera){const cp=controlled.position.clone().add(new THREE.Vector3(0,3.0,0));cp.project(camera);catchHud.style.left=((cp.x*.5+.5)*innerWidth)+"px";catchHud.style.top=((-cp.y*.5+.5)*innerHeight-40)+"px";catchHud.style.bottom="auto";catchHud.style.transform="translateX(-50%)";}
  renderer.render(scene,camera)

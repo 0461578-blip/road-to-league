@@ -285,6 +285,26 @@ body{background:#05070b}
 #footballControls button.active,#footballControls button:focus{border-color:#ff8057;background:#7b2a1d;color:#fff}
 #footballControls button{border-radius:3px}
 
+
+/* Game mode hub + broadcast presentation */
+#modeOverlay{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#74172b55,transparent 55%),#030508f5;overflow:auto}
+#modeOverlay.open{display:flex}
+.modeShell{width:min(1120px,100%);margin:auto;border:1px solid #ffffff25;background:linear-gradient(145deg,#111720f7,#05070bf9);box-shadow:0 30px 100px #000c;padding:clamp(18px,3vw,34px);position:relative}
+.modeTop{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:24px}
+.modeEyebrow{font-size:10px;letter-spacing:3px;font-weight:1000;color:#e6a3b0}
+.modeTitle{font-size:clamp(30px,5vw,58px);font-weight:1000;letter-spacing:-2px;margin:7px 0}
+.modeSub{color:#aab4c1;font-size:13px;line-height:1.6;max-width:640px}
+.modeGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:22px 0}
+.modeCard{min-height:190px;text-align:left;padding:18px 15px;border:1px solid #ffffff24;background:linear-gradient(155deg,#202833,#0a0e14);color:#fff;display:flex;flex-direction:column;justify-content:space-between;transition:.15s}
+.modeCard:hover,.modeCard.selected{border-color:#d95a78;transform:translateY(-3px);background:linear-gradient(155deg,#48202b,#11151d);box-shadow:0 12px 35px #0007}
+.modeIcon{font-size:28px;margin-bottom:18px}.modeCard strong{font-size:15px;letter-spacing:.7px}.modeCard small{font-size:11px;color:#b8c1cd;line-height:1.5;margin-top:9px}
+.modeFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #ffffff1b;padding-top:18px}
+.modeFooter .modeSub{max-width:560px}
+.modeStart{background:linear-gradient(100deg,#8d1e39,#4b0b1c);color:white;border:1px solid #ffffff35;padding:15px 24px;font-weight:1000;letter-spacing:1px}
+.modeBack{background:#171d26;color:#fff;border:1px solid #ffffff25;padding:14px 18px;font-weight:900}
+@media(max-width:850px){.modeGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.modeCard{min-height:150px}}
+@media(max-width:480px){.modeGrid{gap:8px}.modeCard{padding:12px;min-height:165px}.modeTop{align-items:flex-start}.modeTitle{letter-spacing:-1px}}
+
 </style>
 </head>
 <body>
@@ -299,7 +319,7 @@ body{background:#05070b}
       <div class="tag">BUILD YOUR PLAYER. START UNDER THE FRIDAY-NIGHT LIGHTS. EARN YOUR OFFER. TAKE OVER COLLEGE. CHASE THE LEAGUE.</div>
       <div class="actions">
         <button id="careerBtn" class="btn primary"><span class="big">ROAD TO GLORY</span><small>BUILD YOUR PLAYER + START YOUR JOURNEY</small></button>
-        <button id="playBtn" class="btn"><b>PLAY NOW</b><small>ENTER THE FIELD</small></button>
+        <button id="playBtn" class="btn"><b>PLAY NOW</b><small>GAME MODES • PLAY SELECTION</small></button>
         <button id="teamBtn" class="btn"><b>TEAM SELECT</b><small>FIXED • NFL / COLLEGE / HIGH SCHOOL</small></button>
         <button id="howBtn" class="btn"><b>HOW TO PLAY</b><small>CONTROLS + CATCHING</small></button>
       </div>
@@ -315,6 +335,20 @@ body{background:#05070b}
     </div>
     <div class="hero"><div class="heroGlow"></div><div class="heroPlayer"></div></div>
   </div>
+</section>
+
+
+<section id="modeOverlay">
+ <div class="modeShell">
+  <div class="modeTop"><div><div class="modeEyebrow">ROAD TO THE LEAGUE 27 • GAME SETUP</div><div class="modeTitle">CHOOSE YOUR <span style="color:#d95a78">MODE</span></div><div class="modeSub">Pick how you want to play, then set your teams. This is an original browser football game with its own systems—not a full copy of Madden.</div></div><button id="modeClose" class="modeBack">BACK</button></div>
+  <div class="modeGrid">
+   <button class="modeCard selected" data-mode="EXHIBITION"><div><div class="modeIcon">🏈</div><strong>EXHIBITION</strong><small>Choose home and away teams, call plays, pass, catch, tackle and compete on the field.</small></div><small>QUICK MATCH</small></button>
+   <button class="modeCard" data-mode="PRACTICE"><div><div class="modeIcon">🎯</div><strong>PRACTICE</strong><small>Work on movement, throwing timing, receiver control and catch timing without a career setup.</small></div><small>REPS & CONTROLS</small></button>
+   <button class="modeCard" data-mode="PASSING"><div><div class="modeIcon">🟩</div><strong>PASS + CATCH LAB</strong><small>Focus on the throw meter, receiver positioning, jump timing and catch-style choices.</small></div><small>SKILL FOCUS</small></button>
+   <button class="modeCard" data-mode="CAREER"><div><div class="modeIcon">⭐</div><strong>ROAD TO GLORY</strong><small>Create a player, choose a position and archetype, and start your high-school journey.</small></div><small>PLAYER CAREER</small></button>
+  </div>
+  <div class="modeFooter"><div id="modeDescription" class="modeSub">Exhibition selected • pick teams and kick off.</div><div><button id="modeTeamSelect" class="modeBack">TEAM SELECT</button> <button id="modeContinue" class="modeStart">CONTINUE →</button></div></div>
+ </div>
 </section>
 
 <section id="teamOverlay" class="overlay">
@@ -390,7 +424,7 @@ body{background:#05070b}
 
 <div id="hud"></div><div id="fieldLabel" class="fieldLabel">PRO FOOTBALL • GAME DAY</div>
 <div id="routeLegend" class="routeLegend"><b>ROUTES</b><br>1 WR • GO &nbsp; 2 WR • POST<br>3 SLOT • SLANT &nbsp; RB • CHECK</div>
-<div id="presnap" class="presnap"><div class="maddenHeader"><span>OFFENSIVE PLAY CALL</span><span id="playClockLabel">PLAY CLOCK • 25</span></div><div class="playButtons maddenPlayButtons"><button data-play="HB ISO"><b>01</b><span>HB ISO</span><small>RUN</small></button><button data-play="HB SWEEP"><b>02</b><span>HB SWEEP</span><small>RUN</small></button><button data-play="SLANTS"><b>03</b><span>SLANTS</span><small>PASS</small></button><button data-play="MESH"><b>04</b><span>MESH</span><small>PASS</small></button><button data-play="PA CROSSERS"><b>05</b><span>PA CROSSERS</span><small>PLAY ACTION</small></button><button data-play="4 VERTICALS"><b>06</b><span>4 VERTICALS</span><small>DEEP PASS</small></button></div><div id="playName">SELECT A PLAY</div><div id="huddle">CHOOSE A PLAY • THEN HIKE THE BALL</div><div class="playbookUtility"><button onclick="startKickoff()">KICKOFF / RETURN</button><button onclick="simulateAIDrive()">OPPONENT AI DRIVE</button><label>FIELD <select id="fieldStyleSelect" onchange="changeField(this.value)"><option>PRO</option><option>COLLEGE</option><option>NIGHT</option><option>RETRO</option></select></label></div></div><div id="snapBar"><span id="snapPlayLabel">READY TO HIKE</span><button id="snapBtn">A / SPACE • HIKE BALL</button></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE 27</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam"><span class="scoreLogo" id="scoreHomeLogo">BUF</span><span id="scoreHomeName">BUFFALO</span></div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam"><span id="scoreAwayName">MIAMI</span><span class="scoreLogo" id="scoreAwayLogo">MIA</span></div></div><div id="clock" class="clock">1Q • 10:00</div></div>
+<div id="presnap" class="presnap"><div class="maddenHeader"><span>OFFENSIVE PLAY CALL</span><span id="playClockLabel">PLAY CLOCK • 25</span></div><div class="playButtons maddenPlayButtons"><button data-play="HB ISO"><b>01</b><span>HB ISO</span><small>RUN</small></button><button data-play="HB SWEEP"><b>02</b><span>HB SWEEP</span><small>RUN</small></button><button data-play="HB DIVE"><b>03</b><span>HB DIVE</span><small>RUN</small></button><button data-play="HB STRETCH"><b>04</b><span>HB STRETCH</span><small>RUN</small></button><button data-play="SLANTS"><b>05</b><span>SLANTS</span><small>PASS</small></button><button data-play="MESH"><b>06</b><span>MESH</span><small>PASS</small></button><button data-play="QUICK OUTS"><b>07</b><span>QUICK OUTS</span><small>PASS</small></button><button data-play="CURLS"><b>08</b><span>CURLS</span><small>PASS</small></button><button data-play="PA CROSSERS"><b>09</b><span>PA CROSSERS</span><small>PLAY ACTION</small></button><button data-play="PA BOOT"><b>10</b><span>PA BOOT</span><small>PLAY ACTION</small></button><button data-play="SCREEN"><b>11</b><span>SCREEN</span><small>PASS</small></button><button data-play="4 VERTICALS"><b>12</b><span>4 VERTICALS</span><small>DEEP PASS</small></button></div><div id="playName">SELECT A PLAY</div><div id="huddle">CHOOSE A PLAY • THEN HIKE THE BALL</div><div class="playbookUtility"><button onclick="startKickoff()">KICKOFF / RETURN</button><button onclick="simulateAIDrive()">OPPONENT AI DRIVE</button><label>FIELD <select id="fieldStyleSelect" onchange="changeField(this.value)"><option>PRO</option><option>COLLEGE</option><option>NIGHT</option><option>RETRO</option></select></label></div></div><div id="snapBar"><span id="snapPlayLabel">READY TO HIKE</span><button id="snapBtn">A / SPACE • HIKE BALL</button></div><div id="score"><div class="scoreTop">LIVE • ROAD TO THE LEAGUE 27</div><div class="scoreMain"><div id="scoreHome" class="scoreTeam"><span class="scoreLogo" id="scoreHomeLogo">BUF</span><span id="scoreHomeName">BUFFALO</span></div><div id="scoreNums" class="scoreNum">0–0</div><div id="scoreAway" class="scoreTeam"><span id="scoreAwayName">MIAMI</span><span class="scoreLogo" id="scoreAwayLogo">MIA</span></div></div><div id="clock" class="clock">1Q • 10:00</div></div>
 <div id="qbArc" class="qbArc"><div class="qbArcLabel">PASS ACCURACY</div><div id="qbArcNeedle" class="qbArcNeedle"></div><div class="qbArcHint">RELEASE</div></div><div id="throw" class="throw"><div class="throwTitle">PASS ACCURACY • RELEASE IN THE GREEN WINDOW</div><div class="meter maddenMeter"><i class="r"></i><i class="y"></i><i class="g"></i><i class="y"></i><i class="r"></i></div><div id="throwMarker" class="marker"></div><div class="meterLabels"><span>EARLY</span><span>PERFECT RELEASE</span><span>LATE</span></div></div><div id="catchMeter" class="catchMeter"><div class="catchTitle">CATCH TIMING • AIM FOR GREEN</div><div class="meter maddenMeter"><i class="r"></i><i class="y"></i><i class="g"></i><i class="y"></i><i class="r"></i></div><div id="catchMarker" class="marker"></div><div class="meterLabels"><span>DROP RISK</span><span>SECURE</span><span>DROP RISK</span></div></div>
 <div id="actions" class="actionBar"><button id="jumpBtn">A • JUMP</button><button id="diveBtn">B • DIVE</button><button id="catchBtn">C • CATCH</button><button id="jukeLeftBtn">LT • JUKE L</button><button id="jukeRightBtn">RT • JUKE R</button><button id="spinBtn">Y • SPIN</button><button id="truckBtn">X • TRUCK</button><button id="hitBtn">RS • HIT STICK</button><button id="cyclePlayerBtn">SWITCH</button><button id="callBallBtn">CALL FOR BALL</button></div><div id="specialTeams" class="presnap scoringChoices" style="display:none"><div class="maddenHeader"><span>TOUCHDOWN • CHOOSE YOUR TRY</span><span id="tryTeamLabel">OFFENSE</span></div><div class="playButtons maddenPlayButtons tryButtons"><button id="extraPointBtn"><b>01</b><span>FIELD GOAL</span><small>1 POINT</small></button><button id="fakeFieldGoalBtn"><b>02</b><span>FAKE FIELD GOAL</span><small>RISK / REWARD</small></button><button id="twoPointBtn"><b>03</b><span>2-POINT CONVERSION</span><small>2 POINTS</small></button></div><div id="specialHint">Choose how to finish the touchdown.</div><div class="playbookUtility"><button id="backToPlaysBtn">BACK TO PLAYBOOK</button></div></div>
 <div id="firstDownLegend"><span class="blue">BLUE — LINE OF SCRIMMAGE</span><br><span class="yellow">YELLOW — FIRST DOWN</span></div>
@@ -448,7 +482,23 @@ function renderTeams(){
 function renderMatchup(){$("homeName").textContent=home;$("awayName").textContent=away;$("homeLogo").innerHTML=logoHTML(home,true);$("awayLogo").innerHTML=logoHTML(away,true);$("homeOverall").innerHTML="OVR <b>"+teamOverall(home)+"</b>";$("awayOverall").innerHTML="OVR <b>"+teamOverall(away)+"</b>";$("homeSide").classList.toggle("selected",pickSide==="home");$("awaySide").classList.toggle("selected",pickSide==="away")}
 function openTeams(l=league){league=l;document.querySelectorAll(".teamMode").forEach(x=>x.classList.toggle("active",x.dataset.league===league));renderTeams();$("teamOverlay").classList.add("open")}
 document.querySelectorAll(".league,.teamMode").forEach(b=>b.onclick=()=>openTeams(b.dataset.league));
-$("teamBtn").onclick=()=>openTeams(league);$("playBtn").onclick=()=>openTeams(league);
+
+let selectedGameMode="EXHIBITION";
+const modeDescriptions={EXHIBITION:"Exhibition selected • pick teams and kick off.",PRACTICE:"Practice selected • focus on movement and play reps.",PASSING:"Pass + Catch Lab selected • work on throw timing, receiver control and catch timing.",CAREER:"Road to Glory selected • player creation opens next."};
+function openModes(){ $("modeOverlay").classList.add("open");$("menu").style.display="block"; }
+function selectGameMode(mode){selectedGameMode=mode;document.querySelectorAll(".modeCard").forEach(b=>b.classList.toggle("selected",b.dataset.mode===mode));$("modeDescription").textContent=modeDescriptions[mode]||modeDescriptions.EXHIBITION;}
+document.querySelectorAll(".modeCard").forEach(b=>b.onclick=()=>selectGameMode(b.dataset.mode));
+$("modeClose").onclick=()=> $("modeOverlay").classList.remove("open");
+$("modeTeamSelect").onclick=()=>{$("modeOverlay").classList.remove("open");openTeams(league)};
+$("modeContinue").onclick=()=>{
+ $("modeOverlay").classList.remove("open");
+ if(selectedGameMode==="CAREER"){startIntro(true);return}
+ if(selectedGameMode==="PASSING") {position="QB";selectedTarget="1";catchStyle="SECURE";}
+ if(selectedGameMode==="PRACTICE") {homeScore=0;awayScore=0;down=1;dist=10;timeLeft=600;}
+ openTeams(league);
+};
+$("teamBtn").onclick=()=>openTeams(league);
+$("playBtn").onclick=()=>openModes();
 $("teamClose").onclick=$("teamCancel").onclick=()=>$("teamOverlay").classList.remove("open");
 $("homeSide").onclick=()=>{pickSide="home";renderMatchup()};$("awaySide").onclick=()=>{pickSide="away";renderMatchup()};
 $("teamStart").onclick=()=>{ $("teamOverlay").classList.remove("open");startIntro(false) };

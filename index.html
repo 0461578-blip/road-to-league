@@ -271,6 +271,20 @@ body{background:#05070b}
  #actions button,.actionBar button{font-size:10px}
 }
 
+
+/* Catch timing and player-action readability */
+#catchMeter{min-width:min(310px,76vw);padding:10px 12px;background:linear-gradient(180deg,#111a25f2,#06090ef5);border:1px solid #ffffff35;border-top:3px solid #f05a28;border-radius:4px;box-shadow:0 12px 34px #000b,0 0 22px #f05a2820;backdrop-filter:blur(10px)}
+#catchMeter .catchTitle{font-size:11px;font-weight:1000;letter-spacing:1.3px;color:#fff;text-shadow:0 1px 4px #000}
+#catchMeter .meter{height:15px;border-radius:2px;overflow:visible;position:relative;margin-top:8px}
+#catchMeter .meter i.g{box-shadow:0 0 14px #44e98288}
+#catchMeter .marker{width:4px;height:25px;top:-6px;background:#fff;border:1px solid #10151c;box-shadow:0 0 9px #fff,0 0 18px #f05a28}
+#catchMeter .meterLabels{font-size:8px;font-weight:900;letter-spacing:.7px;color:#d6dce4}
+#throw .marker{box-shadow:0 0 10px #fff,0 0 18px #f05a28}
+#footballControls{border:1px solid #ffffff22;border-top:3px solid #f05a28;background:linear-gradient(160deg,#111923f5,#070a10f5);box-shadow:0 14px 38px #0009}
+#footballControls .controlTitle{color:#ff906d;font-weight:1000;letter-spacing:1.2px}
+#footballControls button.active,#footballControls button:focus{border-color:#ff8057;background:#7b2a1d;color:#fff}
+#footballControls button{border-radius:3px}
+
 </style>
 </head>
 <body>
@@ -626,6 +640,8 @@ function animateHumanMotion(dt){
    const j=p.userData.joints,ud=p.userData;
    ud.animTime=(ud.animTime||0)+dt;
    const t=ud.animTime,jersey=Number(ud.jersey)||0;
+   if(ud.jumpTimer>0)ud.jumpTimer=Math.max(0,ud.jumpTimer-dt);
+   if(ud.catchAnimTimer>0)ud.catchAnimTimer=Math.max(0,ud.catchAnimTimer-dt);
    const moving=!!(snapState&&((ud.route&&p!==controlled)||ud.role==="DL"||ud.role==="CB"||(p===controlled&&ud.isMoving)));
    const sprinting=p===controlled&&ud.isSprinting;
    const phase=t*(sprinting?15.2:moving?10.2:2.0)+jersey*.43;
@@ -662,7 +678,11 @@ function animateHumanMotion(dt){
    j.head.rotation.x=mix(Math.sin(t*1.8+jersey)*.018,-.025-Math.abs(stride)*.018,running);
    j.head.rotation.y=Math.sin(t*1.25+jersey*.3)*.035+Math.sin(phase*.5)*.018*running;
    j.helmet.rotation.z=Math.sin(phase)*.012*running+Math.sin(t*1.8)*.006;
-   p.position.y=Math.max(0,Math.abs(Math.sin(phase*2))*(sprinting?.065:.038)*running);
+   const runBob=Math.abs(Math.sin(phase*2))*(sprinting?.065:.038)*running;
+   const jumpProgress=ud.jumpTimer>0?1-ud.jumpTimer/.62:1;
+   const jumpLift=ud.jumpTimer>0?Math.sin(Math.PI*Math.max(0,Math.min(1,jumpProgress)))*(ud.jumpPeak||1.05):0;
+   p.position.y=Math.max(0,runBob+jumpLift);
+   if(ud.jumpTimer>0){j.torso.rotation.x=-.12;j.armL.rotation.x=-1.7;j.armR.rotation.x=-1.7;j.foreL.rotation.x=-.65;j.foreR.rotation.x=-.65;j.thighL.rotation.x=.45;j.thighR.rotation.x=.45;j.head.rotation.x=-.12;}
    // Preserve the actual pre-snap football stance at idle; do not let the idle animation straighten everyone up.
    if(running<.06&&!snapState){posePlayer(p,ud.role||"","pre");p.position.y=0;}
 
@@ -670,13 +690,15 @@ function animateHumanMotion(dt){
    const receiving=catchMeterActive&&p===controlled;
    if(receiving){
      const reach=Math.sin(t*12)*.035;
-     j.torso.rotation.x=-.12;j.armL.rotation.x=-1.02+reach;j.armR.rotation.x=-1.02-reach;
-     j.armL.rotation.z=.38;j.armR.rotation.z=-.38;
-     j.foreL.rotation.x=-.72;j.foreR.rotation.x=-.72;
+     j.torso.rotation.x=catchStyle==="AGGRESSIVE"?-.25:-.12;
+     j.armL.rotation.x=catchStyle==="AGGRESSIVE"?-1.48:-1.02+reach;j.armR.rotation.x=catchStyle==="AGGRESSIVE"?-1.48:-1.02-reach;
+     j.armL.rotation.z=catchStyle==="RAC"?.16:.38;j.armR.rotation.z=catchStyle==="RAC"?-.16:-.38;
+     j.foreL.rotation.x=catchStyle==="AGGRESSIVE"?-1.0:-.72;j.foreR.rotation.x=catchStyle==="AGGRESSIVE"?-1.0:-.72;
      j.head.rotation.x=-.08;
    }
 
    // Ball-carrier posture protects the ball against the chest with bent elbows.
+   if(ud.catchAnimTimer>0){j.torso.rotation.x=-.22;j.armL.rotation.x=-1.0;j.armR.rotation.x=-1.0;j.foreL.rotation.x=-.85;j.foreR.rotation.x=-.85;}
    if(ud.hasBall){
      j.torso.rotation.x=-.12-Math.abs(stride)*.025;
      j.armR.rotation.x=-.8;j.armR.rotation.z=-.36;j.foreR.rotation.x=-.98;
@@ -950,7 +972,7 @@ function snapBall(){if(!gameStarted||snapState)return;$("snapBar").style.display
  $("hud").textContent=position+" • "+home+" vs "+away+" • SNAP • "+selectedPlay;
  toast("HIKE • LONG SNAP → QB");
 }
-function triggerMove(name,side=1){if(!gameStarted||!controlled)return;action=name;actionSide=side;actionTimer=name.startsWith("JUKE")?.42:name==="SPIN"?.58:name==="TRUCK"?.52:name==="HIT"?.38:name==="DIVE"?.72:.38;if(name.startsWith("JUKE")){controlled.position.z+=side*1.35;controlled.position.x+=.35;controlled.rotation.z=-side*.42;toast(side<0?"JUKE LEFT • CUT MOVE":"JUKE RIGHT • CUT MOVE")}else if(name==="SPIN"){controlled.rotation.y+=Math.PI*.8;controlled.position.x+=.35;toast("SPIN MOVE")}else if(name==="TRUCK"){controlled.position.x+=.8;controlled.rotation.z=-.2;toast("TRUCK • POWER THROUGH CONTACT")}else if(name==="HIT"){controlled.rotation.z=-.28;toast("HIT STICK • SQUARE UP")}else if(name==="DIVE"){controlled.rotation.z=-.72;controlled.position.x+=.25;toast("DIVE • PLAYER LEAVES FEET")}else if(name==="JUMP"){controlled.position.y=1.2;toast("JUMP / HIGH-POINT CATCH")}}
+function triggerMove(name,side=1){if(!gameStarted||!controlled)return;action=name;actionSide=side;actionTimer=name.startsWith("JUKE")?.42:name==="SPIN"?.58:name==="TRUCK"?.52:name==="HIT"?.38:name==="DIVE"?.72:name==="JUMP"?.62:.38;if(name==="JUMP"){controlled.userData.jumpTimer=.62;controlled.userData.jumpPeak=catchMeterActive?1.55:1.05;}if(name.startsWith("JUKE")){controlled.position.z+=side*1.35;controlled.position.x+=.35;controlled.rotation.z=-side*.42;toast(side<0?"JUKE LEFT • CUT MOVE":"JUKE RIGHT • CUT MOVE")}else if(name==="SPIN"){controlled.rotation.y+=Math.PI*.8;controlled.position.x+=.35;toast("SPIN MOVE")}else if(name==="TRUCK"){controlled.position.x+=.8;controlled.rotation.z=-.2;toast("TRUCK • POWER THROUGH CONTACT")}else if(name==="HIT"){controlled.rotation.z=-.28;toast("HIT STICK • SQUARE UP")}else if(name==="DIVE"){controlled.rotation.z=-.72;controlled.position.x+=.25;toast("DIVE • PLAYER LEAVES FEET")}else if(name==="JUMP"){controlled.position.y=1.2;toast("JUMP / HIGH-POINT CATCH")}}
  function jump(){triggerMove("JUMP")}
  function dive(){triggerMove("DIVE")}
  function jukeLeft(){triggerMove("JUKE_L",-1)}
@@ -1030,7 +1052,7 @@ function throwBall(){
  toast("PASS "+selectedPassType+" TO "+(selectedTarget==="22"?"RB":selectedTarget==="3"?"SLOT":"WR "+selectedTarget)+" • "+passQuality);
 }
 function finishCatch(receiver){
- if(!ballLive||!receiver||playMode!=="PASS")return;ballLive=false;playMode="RUN";ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";action="CATCH";actionTimer=.65;if(receiver.userData.joints){receiver.userData.joints.armL.rotation.x=-1.05;receiver.userData.joints.armR.rotation.x=-1.05;receiver.userData.joints.foreL.rotation.x=-.7;receiver.userData.joints.foreR.rotation.x=-.7;}
+ if(!ballLive||!receiver||playMode!=="PASS")return;ballLive=false;receiver.userData.catchAnimTimer=.55;receiver.userData.jumpTimer=0;playMode="RUN";ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";action="CATCH";actionTimer=.65;if(receiver.userData.joints){receiver.userData.joints.armL.rotation.x=-1.05;receiver.userData.joints.armR.rotation.x=-1.05;receiver.userData.joints.foreL.rotation.x=-.7;receiver.userData.joints.foreR.rotation.x=-.7;}
  if(passQuality==="RED"){ball.visible=false;down=Math.min(4,down+1);toast("INCOMPLETE • OFF-TARGET PASS");playResolved=true;setTimeout(resetPlay,850);return}
  ballCarrier=receiver;receiver.userData.hasBall=true;receiver.userData.route=null;ball.visible=true;
  controlled=receiver;position=String(receiver.userData.jersey)==="22"?"RB":"WR";
@@ -1102,7 +1124,7 @@ function animate(){
  if(ballLive){ball.position.addScaledVector(ballVel,dt);const airSpin=ball.userData.passSpin||8;ball.rotation.z+=dt*airSpin;ball.rotation.x+=dt*(airSpin*.72);ballVel.y-=passGravity*dt;if(playMode==="PASS"){ballVel.multiplyScalar(Math.max(.994,1-dt*.018))}if(playMode==="KICKOFF"&&ball.position.y<=.25){ball.position.y=.25;ballLive=false;ball.position.y=.35;ballVel.set(0,0,0);const r=returner||controlled;if(r){controlled=r;ballCarrier=r;r.userData.hasBall=true;r.position.x=Math.max(-48,Math.min(-35,ball.position.x));ball.position.copy(r.position).add(new THREE.Vector3(.45,1.1,0));playMode="RUN";playResolved=false;toast("KICKOFF RETURN • RUN IT OUT!")}else{ball.visible=false;setTimeout(resetPlay,900)}}if((playMode==="FIELDGOAL"||playMode==="EXTRAPOINT")&&(ball.position.x>=55||ball.position.y<=.25)){ballLive=false;ball.visible=false;playResolved=true;if(ball.position.x>=55&&ball.position.y>9.5&&Math.abs(ball.position.z)<2.5){if(playMode==="EXTRAPOINT"){homeScore+=1;toast("EXTRA POINT GOOD • +1")}else{homeScore+=3;toast("FIELD GOAL GOOD • +3")}}else{down=Math.min(4,down+1);toast(playMode==="EXTRAPOINT"?"EXTRA POINT NO GOOD":"FIELD GOAL NO GOOD • DEFENSE TAKES OVER")}setTimeout(resetPlay,1200)}
   const candidates=playMode==="PASS"?players.filter(p=>p.userData.team==="home"&&["WR","RB","HB"].includes(p.userData.role)&&p.position.distanceTo(ball.position)<2.55).sort((a,b)=>a.position.distanceTo(ball.position)-b.position.distanceTo(ball.position)):[];
   const receiver=candidates.find(p=>p===passTarget)||candidates[0];
-   if(receiver&&catchRequested&&controlled===receiver&&receiver.position.distanceTo(ball.position)<3.1&&ball.position.y>.25&&ball.position.y<4.2){const timing=1-Math.min(1,Math.abs(catchMeterValue-.5)*2);const threshold=catchStyle==="AGGRESSIVE"?.18:catchStyle==="RAC"?.43:.30;const catchWindow=controlled.position.distanceTo(ball.position)<2.45;const highPoint=ball.position.y>2.15;const styleBonus=catchStyle==="AGGRESSIVE"&&highPoint?.12:0;const success=catchWindow&&((timing+styleBonus>threshold&&passQuality!=="RED")||(passQuality==="GREEN"&&timing>.2));if(success){finishCatch(receiver);catchRequested=false}else{ballLive=false;ball.visible=false;ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";down=Math.min(4,down+1);playResolved=true;toast("DROPPED / INCOMPLETE • NEXT DOWN");setTimeout(resetPlay,850)}}
+   if(receiver&&catchRequested&&controlled===receiver&&receiver.position.distanceTo(ball.position)<3.1&&ball.position.y>.25&&ball.position.y<4.2){const timing=1-Math.min(1,Math.abs(catchMeterValue-.5)*2);const threshold=catchStyle==="AGGRESSIVE"?.16:catchStyle==="RAC"?.40:.27;const catchWindow=controlled.position.distanceTo(ball.position)<(catchStyle==="AGGRESSIVE"?2.8:2.45);const highPoint=ball.position.y>2.15;const styleBonus=catchStyle==="AGGRESSIVE"&&highPoint?.20:0;const stylePenalty=catchStyle==="RAC"?.04:0;const success=catchWindow&&((timing+styleBonus-stylePenalty>threshold&&passQuality!=="RED")||(passQuality==="GREEN"&&timing>.2));if(success){finishCatch(receiver);catchRequested=false}else{ballLive=false;ball.visible=false;ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";down=Math.min(4,down+1);playResolved=true;toast("DROPPED / INCOMPLETE • NEXT DOWN");setTimeout(resetPlay,850)}}
   if(ballLive&&playMode==="FUMBLE"){ballVel.y-=passGravity*dt;ballVel.multiplyScalar(Math.max(.96,1-dt*.8));if(ball.position.y<.22){ball.position.y=.22;ballVel.y=Math.abs(ballVel.y)*.28;ballVel.x*=.68;ballVel.z*=.68}fumbleRecoverTimer-=dt;players.filter(p=>p.userData.team==="away"||p===controlled).forEach(p=>{const d=p.position.distanceTo(ball.position);if(d>1.2&&d<15){const v=ball.position.clone().sub(p.position);v.y=0;v.normalize();p.position.addScaledVector(v,Math.min(4*dt,d-1.1));p.rotation.y=Math.atan2(v.z,v.x)-Math.PI/2}});const nearest=players.filter(p=>p.position.distanceTo(ball.position)<1.8).sort((a,b)=>a.position.distanceTo(ball.position)-b.position.distanceTo(ball.position))[0];if(nearest&&nearest.userData){nearest.userData.hasBall=true;ballCarrier=nearest;controlled=nearest;position=nearest.userData.team==="away"?"DEF":"RB";ballLive=false;playMode="RUN";playResolved=false;ball.position.copy(nearest.position).add(new THREE.Vector3(.45,1.1,0));toast(nearest.userData.team==="home"?"FUMBLE RECOVERED • RUN!":"DEFENSE RECOVERS • TURNOVER!")}else if(fumbleRecoverTimer<=0){ballLive=false;ball.visible=false;playResolved=true;down=Math.min(4,down+1);toast("LOOSE BALL • PLAY DEAD");setTimeout(resetPlay,900)}}
   if(ballLive&&(ball.position.y<.15||Math.abs(ball.position.z)>29||ball.position.x>58||ball.position.x< -58)){
     ballLive=false;ball.visible=false;ballVel.set(0,0,0);catchMeterActive=false;$("catchMeter").style.display="none";toast("INCOMPLETE • NEXT DOWN");down=Math.min(4,down+1);playResolved=true;setTimeout(resetPlay,700);

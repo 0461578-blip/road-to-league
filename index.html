@@ -873,7 +873,7 @@ function startGame(forceStart=false){
   $("hud").style.display="block";
   $("score").style.display="block";
   $("actions").style.display="flex";$("footballControls").style.display="block";$("firstDownLegend").style.display="none";$("presnap").style.display="block";$("snapBar").style.display="none";
-  try{if(!scene)makeScene();updateHomeFieldBranding();setFormation();$("hud").textContent=position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist}
+  try{if(!scene)makeScene();updateHomeFieldBranding();setFormation();const modeLabel=selectedGameMode==="PASSING"?"PASS + CATCH LAB":selectedGameMode==="PRACTICE"?"PRACTICE":selectedGameMode==="CAREER"?"ROAD TO GLORY":"EXHIBITION";$("hud").textContent=modeLabel+" • "+position+" • "+home+" vs "+away+" • DOWN "+down+" & "+dist;$("fieldLabel").textContent=modeLabel+" • "+home.toUpperCase()+" HOME FIELD";if(selectedGameMode==="PASSING")toast("PASS + CATCH LAB • TIME YOUR THROW, SWITCH TO A RECEIVER, PRESS C TO CATCH");else if(selectedGameMode==="PRACTICE")toast("PRACTICE • PICK A PLAY, HIKE THE BALL, RESET AND RUN IT BACK")}
   catch(err){gameStarted=false;$("menu").style.display="block";$("hud").style.display="none";$("score").style.display="none";$("actions").style.display="none";console.error(err);toast("GAME LOAD ERROR — RETURNING TO MENU");}
 }
 let coinTossDone=false;

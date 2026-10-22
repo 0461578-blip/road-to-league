@@ -754,7 +754,7 @@ button:focus-visible{outline:2px solid #ff9a7f;outline-offset:2px}
 <div id="touch" class="touch"><button class="stick">MOVE</button><button id="touchA" class="a">A<br>JUMP</button><button id="touchB" class="b">B<br>DIVE</button><button id="touchC" class="c">X<br>TRUCK</button><button id="touchD" class="d">Y<br>HIT</button></div>
 <div id="toast" class="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
 <script>
 const NFL=["Arizona Cardinals","Atlanta Falcons","Baltimore Ravens","Buffalo Bills","Carolina Panthers","Chicago Bears","Cincinnati Bengals","Cleveland Browns","Dallas Cowboys","Denver Broncos","Detroit Lions","Green Bay Packers","Houston Texans","Indianapolis Colts","Jacksonville Jaguars","Kansas City Chiefs","Las Vegas Raiders","Los Angeles Chargers","Los Angeles Rams","Miami Dolphins","Minnesota Vikings","New England Patriots","New Orleans Saints","New York Giants","New York Jets","Philadelphia Eagles","Pittsburgh Steelers","San Francisco 49ers","Seattle Seahawks","Tampa Bay Buccaneers","Tennessee Titans","Washington Commanders"];
 const COLLEGE=["Alabama","Auburn","Clemson","Florida","Florida State","Georgia","Georgia Tech","LSU","Miami","Michigan","Michigan State","Notre Dame","Ohio State","Oklahoma","Oklahoma State","Ole Miss","Oregon","Penn State","South Carolina","Tennessee","Texas","Texas A&M","Texas Tech","TCU","UCLA","USC","Utah","Washington","Wisconsin","Arkansas","Baylor","BYU","Colorado","Duke","Iowa","Iowa State","Kansas","Kansas State","Kentucky","Louisville","Mississippi State","NC State","North Carolina","Pittsburgh","Rutgers","Syracuse","UCF","Virginia","Virginia Tech","West Virginia"];
@@ -1202,7 +1202,7 @@ function startGame(forceStart=false){
   if(!forceStart&&!coinTossDone){showCoinToss();return}
   if(typeof THREE==="undefined"){
     const status=$("toast");status.textContent="LOADING 3D ENGINE…";status.style.display="block";
-    const trySources=["https://unpkg.com/three@0.160.0/build/three.min.js","https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"];
+    const trySources=["https://unpkg.com/three@0.159.0/build/three.min.js","https://cdnjs.cloudflare.com/ajax/libs/three.js/r159/three.min.js"];
     const loadFallback=(i)=>{if(i>=trySources.length){status.textContent="3D ENGINE DID NOT LOAD. CHECK YOUR CONNECTION, THEN RELOAD.";status.style.display="block";return}
       const sc=document.createElement("script");sc.src=trySources[i];sc.onload=()=>{status.style.display="none";startGame(forceStart)};sc.onerror=()=>{sc.remove();loadFallback(i+1)};document.head.appendChild(sc)};
     loadFallback(0);return;
